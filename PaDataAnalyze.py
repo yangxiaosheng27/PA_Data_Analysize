@@ -81,9 +81,10 @@ Note            The internal increment defaults to 1um, Ts defaults to 0.001s
 # Update: Init Version
 #################################################################################
 
-from matplotlib import pyplot as plt
 from mpldatacursor import datacursor
+from matplotlib import pyplot as plt
 import numpy as np
+import matplotlib
 import sys
 import re
 
@@ -150,7 +151,7 @@ class PA_Class:
         ##################################################################################
         # ----------------------------------User Define--------------------------------- #
         ##################################################################################
-        self.Precision_um   = 1; # 1 internal incremental = Precision * 1um
+        self.Precision_um   = 1; # 1 internal incremental = Precision_um * 1um
         self.Ts             = 0.001  # sample time, unit: s
         self.DataFile       = r'F:\CNCVariableTrace.txt'
         self.TextRange      = [0, 0]  # select Text from file in range of [minIndex, maxIndex], [0, 0] means select all Text
@@ -184,7 +185,10 @@ class PA_Class:
     # -----------------------------------Plot Data---------------------------------- #
     ##################################################################################
     def PlotData(self):
-
+        
+        if self.Data['DataLen'] == 0:
+            return None
+        
         # ---------------------------------Plot 1D---------------------------------- #
         # BlockNo
         if self.PlotFlag.BlockNo == True:
@@ -192,7 +196,7 @@ class PA_Class:
                 block = self.Data['BlockNo']
                 self.ShareAxes.Time = self.Plot1D(block, dataName='BlockNo', newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error BlockNo\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError BlockNo\033[0m')
 
         # PathVel
         if self.PlotFlag.PathVel == True:
@@ -202,7 +206,7 @@ class PA_Class:
                 self.Data['ActPathVel'] = np.sqrt(self.Data['ActVel_X'] ** 2 + self.Data['ActVel_Y'] ** 2 + self.Data['ActVel_Z'] ** 2) # mm/min
                 self.ShareAxes.Time = self.Plot1D(self.Data['ActPathVel'], axis1Label='Vel (mm/min)', dataName='ActPathVel', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error PathVel\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError PathVel\033[0m')
 
         # PathAcc
         if self.PlotFlag.PathAcc == True:
@@ -213,7 +217,7 @@ class PA_Class:
                 self.Data['ActPathAcc'] = np.diff(self.Data['ActPathVel']) / 1e3 / 60 / self.Ts # m/s^2
                 self.ShareAxes.Time = self.Plot1D(self.Data['ActPathAcc'], axis1Label='Acc (m/s^2)', dataName='ActPathAcc', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error PathAcc\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError PathAcc\033[0m')
 
         # PathJerk
         if self.PlotFlag.PathJerk == True:
@@ -225,7 +229,7 @@ class PA_Class:
                 self.Data['ActPathJerk'] = np.diff(self.Data['ActPathAcc']) / self.Ts # m/s^3
                 self.ShareAxes.Time = self.Plot1D(self.Data['ActPathJerk'], axis1Label='Jerk (m/s^3)', dataName='ActPathJerk', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error PathJerk\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError PathJerk\033[0m')
 
         # X
         # Pos_X
@@ -235,7 +239,7 @@ class PA_Class:
                 self.ShareAxes.Time = self.Plot1D(self.Data['CmdPos_X'], axis1Label='Pos (mm)', dataName='CmdPos_X', shareAxes=self.ShareAxes.Time, newFig=False)
                 self.ShareAxes.Time = self.Plot1D(self.Data['ActPos_X'], axis1Label='Pos (mm)', dataName='ActPos_X', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error Pos_X\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError Pos_X\033[0m')
         # Vel_X
         if self.PlotFlag.Vel_X == True:
             try:
@@ -243,7 +247,7 @@ class PA_Class:
                 self.ShareAxes.Time = self.Plot1D(self.Data['CmdVel_X'], axis1Label='Vel (mm/min)', dataName='CmdVel_X', shareAxes=self.ShareAxes.Time, newFig=False)
                 self.ShareAxes.Time = self.Plot1D(self.Data['ActVel_X'], axis1Label='Vel (mm/min)', dataName='ActVel_X', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error Vel_X\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError Vel_X\033[0m')
         # Acc_X
         if self.PlotFlag.Acc_X == True:
             try:
@@ -251,7 +255,7 @@ class PA_Class:
                 self.ShareAxes.Time = self.Plot1D(self.Data['CmdAcc_X'], axis1Label='Acc (m/s^2)', dataName='CmdAcc_X', shareAxes=self.ShareAxes.Time, newFig=False)
                 self.ShareAxes.Time = self.Plot1D(self.Data['ActAcc_X'], axis1Label='Acc (m/s^2)', dataName='ActAcc_X', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error Acc_X\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError Acc_X\033[0m')
         # Jerk_X
         if self.PlotFlag.Jerk_X == True:
             try:
@@ -259,7 +263,7 @@ class PA_Class:
                 self.ShareAxes.Time = self.Plot1D(self.Data['CmdJerk_X'], axis1Label='Jerk (m/s^3)', dataName='CmdJerk_X', shareAxes=self.ShareAxes.Time, newFig=False)
                 # self.ShareAxes.Time = self.Plot1D(self.Data['ActJerk_X'], axis1Label='Jerk (m/s^3)', dataName='ActJerk_X', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error Jerk_X\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError Jerk_X\033[0m')
 
         # Y
         # Pos_Y
@@ -269,15 +273,15 @@ class PA_Class:
                 self.ShareAxes.Time = self.Plot1D(self.Data['CmdPos_Y'], axis1Label='Pos (mm)', dataName='CmdPos_Y', shareAxes=self.ShareAxes.Time, newFig=False)
                 self.ShareAxes.Time = self.Plot1D(self.Data['ActPos_Y'], axis1Label='Pos (mm)', dataName='ActPos_Y', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error Pos_Y\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError Pos_Y\033[0m')
         # Vel_Y
         if self.PlotFlag.Vel_Y == True:
             try:
                 self.ShareAxes.Time = self.Plot1D(self.Data['SetVel_Y'], axis1Label='Vel (mm/min)', dataName='SetVel_Y', shareAxes=self.ShareAxes.Time, newFig=True)
                 self.ShareAxes.Time = self.Plot1D(self.Data['CmdVel_Y'], axis1Label='Vel (mm/min)', dataName='CmdVel_Y', shareAxes=self.ShareAxes.Time, newFig=False)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdVel_Y'], axis1Label='Vel (mm/min)', dataName='ActVel_Y', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['ActVel_Y'], axis1Label='Vel (mm/min)', dataName='ActVel_Y', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error Vel_Y\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError Vel_Y\033[0m')
         # Acc_Y
         if self.PlotFlag.Acc_Y == True:
             try:
@@ -285,7 +289,7 @@ class PA_Class:
                 self.ShareAxes.Time = self.Plot1D(self.Data['CmdAcc_Y'], axis1Label='Acc (m/s^2)', dataName='CmdAcc_Y', shareAxes=self.ShareAxes.Time, newFig=False)
                 self.ShareAxes.Time = self.Plot1D(self.Data['ActAcc_Y'], axis1Label='Acc (m/s^2)', dataName='ActAcc_Y', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error Acc_Y\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError Acc_Y\033[0m')
         # Jerk_Y
         if self.PlotFlag.Jerk_Y == True:
             try:
@@ -293,7 +297,7 @@ class PA_Class:
                 self.ShareAxes.Time = self.Plot1D(self.Data['CmdJerk_Y'], axis1Label='Jerk (m/s^3)', dataName='CmdJerk_Y', shareAxes=self.ShareAxes.Time, newFig=False)
                 # self.ShareAxes.Time = self.Plot1D(self.Data['ActJerk_Y'], axis1Label='Jerk (m/s^3)', dataName='ActJerk_Y', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error Jerk_Y\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError Jerk_Y\033[0m')
 
         # Z
         #Pos_Z
@@ -303,7 +307,7 @@ class PA_Class:
                 self.ShareAxes.Time = self.Plot1D(self.Data['CmdPos_Z'], axis1Label='Pos (mm)', dataName='CmdPos_Z', shareAxes=self.ShareAxes.Time, newFig=False)
                 self.ShareAxes.Time = self.Plot1D(self.Data['ActPos_Z'], axis1Label='Pos (mm)', dataName='ActPos_Z', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error Pos_Z\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError Pos_Z\033[0m')
         #Vel_Z
         if self.PlotFlag.Vel_Z == True:
             try:
@@ -311,7 +315,7 @@ class PA_Class:
                 self.ShareAxes.Time = self.Plot1D(self.Data['CmdVel_Z'], axis1Label='Vel (mm/min)', dataName='CmdVel_Z', shareAxes=self.ShareAxes.Time, newFig=False)
                 self.ShareAxes.Time = self.Plot1D(self.Data['ActVel_Z'], axis1Label='Vel (mm/min)', dataName='ActVel_Z', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error Vel_Z\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError Vel_Z\033[0m')
         #Acc_Z
         if self.PlotFlag.Acc_Z == True:
             try:
@@ -319,7 +323,7 @@ class PA_Class:
                 self.ShareAxes.Time = self.Plot1D(self.Data['CmdAcc_Z'], axis1Label='Acc (m/s^2)', dataName='CmdAcc_Z', shareAxes=self.ShareAxes.Time, newFig=False)
                 self.ShareAxes.Time = self.Plot1D(self.Data['ActAcc_Z'], axis1Label='Acc (m/s^2)', dataName='ActAcc_Z', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error Acc_Z\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError Acc_Z\033[0m')
         # Jerk_Z
         if self.PlotFlag.Jerk_Z == True:
             try:
@@ -327,7 +331,7 @@ class PA_Class:
                 self.ShareAxes.Time = self.Plot1D(self.Data['CmdJerk_Z'], axis1Label='Jerk (m/s^3)', dataName='CmdJerk_Z', shareAxes=self.ShareAxes.Time, newFig=False)
                 # self.ShareAxes.Time = self.Plot1D(self.Data['ActJerk_Z'], axis1Label='Jerk (m/s^3)', dataName='ActJerk_Z', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error Jerk_Z\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError Jerk_Z\033[0m')
 
         # A
         #Pos_A
@@ -337,7 +341,7 @@ class PA_Class:
                 self.ShareAxes.Time = self.Plot1D(self.Data['CmdPos_A'], axis1Label='Pos (mm)', dataName='CmdPos_A', shareAxes=self.ShareAxes.Time, newFig=False)
                 self.ShareAxes.Time = self.Plot1D(self.Data['ActPos_A'], axis1Label='Pos (mm)', dataName='ActPos_A', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error Pos_A\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError Pos_A\033[0m')
         #Vel_A
         if self.PlotFlag.Vel_A == True:
             try:
@@ -345,7 +349,7 @@ class PA_Class:
                 self.ShareAxes.Time = self.Plot1D(self.Data['CmdVel_A'], axis1Label='Vel (mm/min)', dataName='CmdVel_A', shareAxes=self.ShareAxes.Time, newFig=False)
                 self.ShareAxes.Time = self.Plot1D(self.Data['ActVel_A'], axis1Label='Vel (mm/min)', dataName='ActVel_A', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error Vel_A\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError Vel_A\033[0m')
         #Acc_A
         if self.PlotFlag.Acc_A == True:
             try:
@@ -353,7 +357,7 @@ class PA_Class:
                 self.ShareAxes.Time = self.Plot1D(self.Data['CmdAcc_A'], axis1Label='Acc (m/s^2)', dataName='CmdAcc_A', shareAxes=self.ShareAxes.Time, newFig=False)
                 self.ShareAxes.Time = self.Plot1D(self.Data['ActAcc_A'], axis1Label='Acc (m/s^2)', dataName='ActAcc_A', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error Acc_A\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError Acc_A\033[0m')
         # Jerk_A
         if self.PlotFlag.Jerk_A == True:
             try:
@@ -361,7 +365,7 @@ class PA_Class:
                 self.ShareAxes.Time = self.Plot1D(self.Data['CmdJerk_A'], axis1Label='Jerk (m/s^3)', dataName='CmdJerk_A', shareAxes=self.ShareAxes.Time, newFig=False)
                 # self.ShareAxes.Time = self.Plot1D(self.Data['ActJerk_A'], axis1Label='Jerk (m/s^3)', dataName='ActJerk_A', shareAxes=self.ShareAxes.Time, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error Jerk_A\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError Jerk_A\033[0m')
 
         # ---------------------------------Plot 2D---------------------------------- #
         # XY
@@ -371,42 +375,42 @@ class PA_Class:
                 self.ShareAxes.XY = self.Plot2D(self.Data['CmdPos_X'], self.Data['CmdPos_Y'], axis1Label='X (mm)', axis2Label='Y (mm)', dataName='CmdPos', shareAxes=self.ShareAxes.XY, newFig=False)
                 self.ShareAxes.XY = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Y'], axis1Label='X (mm)', axis2Label='Y (mm)', dataName='ActPos', shareAxes=self.ShareAxes.XY, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error XY\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XY\033[0m')
         # XY with BlockNo
         if self.PlotFlag.XY_BlockNo == True:
             try:
                 color = self.Data['BlockNo']
                 self.ShareAxes.XY = self.Plot2D(self.Data['SetPos_X'], self.Data['SetPos_Y'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', colorLabel='BlockNo', shareAxes=self.ShareAxes.XY, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error BlockNo\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError BlockNo\033[0m')
         # XY with Time
         if self.PlotFlag.XY_Time == True:
             try:
                 color = self.Data['Time']
                 self.ShareAxes.XY = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Y'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', colorLabel='Time (s)', shareAxes=self.ShareAxes.XY, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error XY_Time\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XY_Time\033[0m')
         #XY with PathVel
         if self.PlotFlag.XY_PathVel == True:
             try:
                 color = self.Data['CmdPathVel']
                 self.ShareAxes.XY = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Y'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', colorLabel='PathVel (mm/min)', shareAxes=self.ShareAxes.XY, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error XY_PathVel\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XY_PathVel\033[0m')
         #XY with PathAcc
         if self.PlotFlag.XY_PathAcc == True:
             try:
                 color = self.Data['CmdPathAcc']
                 self.ShareAxes.XY = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Y'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', colorLabel='PathAcc (m/s^2)', shareAxes=self.ShareAxes.XY, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error XY_PathAcc\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XY_PathAcc\033[0m')
         #XY with PathJerk
         if self.PlotFlag.XY_PathJerk == True:
             try:
                 color = self.Data['CmdPathJerk']
                 self.ShareAxes.XY = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Y'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', colorLabel='PathJerk (m/s^3)', shareAxes=self.ShareAxes.XY, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error XY_PathJerk\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XY_PathJerk\033[0m')
         #XY with FollowPosErr
         if self.PlotFlag.XY_FollowPosErr == True:
             try:
@@ -417,7 +421,7 @@ class PA_Class:
                 color = PosErr
                 self.ShareAxes.XY = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Y'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', colorLabel='FollowPosErr (mm)', shareAxes=self.ShareAxes.XY, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error XY_FollowPosErr\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XY_FollowPosErr\033[0m')
         
         # YZ
         if self.PlotFlag.YZ == True:
@@ -426,42 +430,42 @@ class PA_Class:
                 self.ShareAxes.YZ = self.Plot2D(self.Data['CmdPos_Y'], self.Data['CmdPos_Z'], axis1Label='Y (mm)', axis2Label='Z (mm)', dataName='CmdPos', shareAxes=self.ShareAxes.YZ, newFig=False)
                 self.ShareAxes.YZ = self.Plot2D(self.Data['ActPos_Y'], self.Data['ActPos_Z'], axis1Label='Y (mm)', axis2Label='Z (mm)', dataName='ActPos', shareAxes=self.ShareAxes.YZ, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error YZ\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ\033[0m')
         # YZ with BlockNo
         if self.PlotFlag.YZ_BlockNo == True:
             try:
                 color = self.Data['BlockNo']
                 self.ShareAxes.YZ = self.Plot2D(self.Data['SetPos_Y'], self.Data['SetPos_Z'], color=color, axis1Label='Y (mm)', axis2Label='Z (mm)', colorLabel='BlockNo', shareAxes=self.ShareAxes.YZ, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error YZ_BlockNo\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ_BlockNo\033[0m')
         # YZ with Time
         if self.PlotFlag.YZ_Time == True:
             try:
                 color = self.Data['Time']
                 self.ShareAxes.YZ = self.Plot2D(self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='Y (mm)', axis2Label='Z (mm)', colorLabel='Time (s)', shareAxes=self.ShareAxes.YZ, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error YZ_Time\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ_Time\033[0m')
         #YZ with PathVel
         if self.PlotFlag.YZ_PathVel == True:
             try:
                 color = self.Data['CmdPathVel']
                 self.ShareAxes.YZ = self.Plot2D(self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='Y (mm)', axis2Label='Z (mm)', colorLabel='PathVel (mm/min)', shareAxes=self.ShareAxes.YZ, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error YZ_PathVel\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathVel\033[0m')
         #YZ with PathAcc
         if self.PlotFlag.YZ_PathAcc == True:
             try:
                 color = self.Data['CmdPathAcc']
                 self.ShareAxes.YZ = self.Plot2D(self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='Y (mm)', axis2Label='Z (mm)', colorLabel='PathAcc (m/s^2)', shareAxes=self.ShareAxes.YZ, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error YZ_PathAcc\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathAcc\033[0m')
         #YZ with PathJerk
         if self.PlotFlag.YZ_PathJerk == True:
             try:
                 color = self.Data['CmdPathJerk']
                 self.ShareAxes.YZ = self.Plot2D(self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='Y (mm)', axis2Label='Z (mm)', colorLabel='PathJerk (m/s^3)', shareAxes=self.ShareAxes.YZ, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error YZ_PathJerk\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathJerk\033[0m')
         #YZ with FollowPosErr
         if self.PlotFlag.YZ_FollowPosErr == True:
             try:
@@ -472,7 +476,7 @@ class PA_Class:
                 color = PosErr
                 self.ShareAxes.YZ = self.Plot2D(self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='Y (mm)', axis2Label='Z (mm)', colorLabel='FollowPosErr (mm)', shareAxes=self.ShareAxes.YZ, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error YZ_FollowPosErr\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ_FollowPosErr\033[0m')
 
         # XZ
         if self.PlotFlag.XZ == True:
@@ -481,42 +485,42 @@ class PA_Class:
                 self.ShareAxes.XZ = self.Plot2D(self.Data['CmdPos_X'], self.Data['CmdPos_Z'], axis1Label='X (mm)', axis2Label='Z (mm)', dataName='CmdPos', shareAxes=self.ShareAxes.XZ, newFig=False)
                 self.ShareAxes.XZ = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Z'], axis1Label='X (mm)', axis2Label='Z (mm)', dataName='ActPos', shareAxes=self.ShareAxes.XZ, newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error XZ\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ\033[0m')
         # XZ with BlockNo
         if self.PlotFlag.XZ_BlockNo == True:
             try:
                 color = self.Data['BlockNo']
                 self.ShareAxes.XZ = self.Plot2D(self.Data['SetPos_X'], self.Data['SetPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Z (mm)', colorLabel='BlockNo', shareAxes=self.ShareAxes.XZ, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error XZ_BlockNo\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ_BlockNo\033[0m')
         # XZ with Time
         if self.PlotFlag.XZ_Time == True:
             try:
                 color = self.Data['Time']
                 self.ShareAxes.XZ = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Z (mm)', colorLabel='Time (s)', shareAxes=self.ShareAxes.XZ, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error XZ_Time\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ_Time\033[0m')
         #XZ with PathVel
         if self.PlotFlag.XZ_PathVel == True:
             try:
                 color = self.Data['CmdPathVel']
                 self.ShareAxes.XZ = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Z (mm)', colorLabel='PathVel (mm/min)', shareAxes=self.ShareAxes.XZ, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error XZ_PathVel\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathVel\033[0m')
         #XZ with PathAcc
         if self.PlotFlag.XZ_PathAcc == True:
             try:
                 color = self.Data['CmdPathAcc']
                 self.ShareAxes.XZ = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Z (mm)', colorLabel='PathAcc (m/s^2)', shareAxes=self.ShareAxes.XZ, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error XZ_PathAcc\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathAcc\033[0m')
         #XZ with PathJerk
         if self.PlotFlag.XZ_PathJerk == True:
             try:
                 color = self.Data['CmdPathJerk']
                 self.ShareAxes.XZ = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Z (mm)', colorLabel='PathJerk (m/s^3)', shareAxes=self.ShareAxes.XZ, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error XZ_PathJerk\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathJerk\033[0m')
         #XZ with FollowPosErr
         if self.PlotFlag.XZ_FollowPosErr == True:
             try:
@@ -527,7 +531,7 @@ class PA_Class:
                 color = PosErr
                 self.ShareAxes.XZ = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Z (mm)', colorLabel='FollowPosErr (mm)', shareAxes=self.ShareAxes.XZ, newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error XZ_FollowPosErr\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ_FollowPosErr\033[0m')
 
         # ---------------------------------Plot 3D---------------------------------- #
         #XYZ
@@ -537,7 +541,7 @@ class PA_Class:
                 self.Plot3D(self.Data['CmdPos_X'], self.Data['CmdPos_Y'], self.Data['CmdPos_Z'], axis1Label='X (mm)', axis2Label='Y (mm)', axis3Label='Z (mm)', dataName='CmdPos', newFig=False)
                 self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], axis1Label='X (mm)', axis2Label='Y (mm)', axis3Label='Z (mm)', dataName='ActPos', newFig=False)
             except:
-                print('\033[1;31m\nPlotData: Error XYZ\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XYZ\033[0m')
 
         #XYZ with Time
         if self.PlotFlag.XYZ_Time == True:
@@ -545,7 +549,7 @@ class PA_Class:
                 color = self.Data['Time']
                 self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', axis3Label='Z (mm)', colorLabel='Time (s)', newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error XYZ_Time\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XYZ_Time\033[0m')
 
         #XYZ with Z
         if self.PlotFlag.XYZ_Z == True:
@@ -553,7 +557,7 @@ class PA_Class:
                 color = self.Data['ActPos_Z']
                 self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', axis3Label='Z (mm)', colorLabel='Z (mm)', newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error XYZ_Z\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XYZ_Z\033[0m')
 
         #XYZ with CmdPathVel
         if self.PlotFlag.XYZ_PathVel == True:
@@ -561,7 +565,7 @@ class PA_Class:
                 color = self.Data['CmdPathVel']
                 self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', axis3Label='Z (mm)', colorLabel='PathVel (mm/min)', newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error XYZ_PathVel\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XYZ_PathVel\033[0m')
 
         #XYZ with CmdPathAcc
         if self.PlotFlag.XYZ_PathAcc == True:
@@ -569,7 +573,7 @@ class PA_Class:
                 color = self.Data['CmdPathAcc']
                 self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', axis3Label='Z (mm)', colorLabel='PathAcc (m/s^2)', newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error XYZ_PathAcc\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XYZ_PathAcc\033[0m')
 
         #XYZ with CmdPathJerk
         if self.PlotFlag.XYZ_PathJerk == True:
@@ -577,7 +581,7 @@ class PA_Class:
                 color = self.Data['CmdPathJerk']
                 self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', axis3Label='Z (mm)', colorLabel='PathJerk (m/s^3)', newFig=True)
             except:
-                print('\033[1;31m\nPlotData: Error XYZ_PathJerk\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XYZ_PathJerk\033[0m')
 
         # ----------------------------Plot Circle Error----------------------------- #
         # circular error of XY
@@ -589,7 +593,7 @@ class PA_Class:
                 R = (max(self.Data['SetPos_X']) - min(self.Data['SetPos_X'])) / 2
                 self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data['CmdPos_X'], self.Data['CmdPos_Y'], self.Data['ActPos_X'], self.Data['ActPos_Y'], F=None)
             except:
-                print('\033[1;31m\nPlotData: Error CircleErr_XY\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_XY\033[0m')
 
         # circular error of YZ
         if self.PlotFlag.CircleErr_YZ == True:
@@ -600,7 +604,7 @@ class PA_Class:
                 R = (max(self.Data['SetPos_Y']) - min(self.Data['SetPos_Y'])) / 2
                 self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data['CmdPos_Y'], self.Data['CmdPos_Z'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], F=None)
             except:
-                print('\033[1;31m\nPlotData: Error CircleErr_YZ\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_YZ\033[0m')
 
         # circular error of XZ
         if self.PlotFlag.CircleErr_XZ == True:
@@ -611,7 +615,7 @@ class PA_Class:
                 R = (max(self.Data['SetPos_X']) - min(self.Data['SetPos_X'])) / 2
                 self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data['CmdPos_X'], self.Data['CmdPos_Z'], self.Data['ActPos_X'], self.Data['ActPos_Z'], F=None)
             except:
-                print('\033[1;31m\nPlotData: Error CircleErr_XZ\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_XZ\033[0m')
 
         return None
 
@@ -624,7 +628,7 @@ class PA_Class:
         if newFig:
             self.FigNum += 1
             print('')
-        sys.stdout.write("\033[1;34m\rPlotData: Figure %2d Drawning\033[0m" % self.FigNum)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mFigure %2d Drawning\033[0m" % self.FigNum)
         fig = plt.figure(self.FigNum)
         if newFig:
             fig.clf()
@@ -652,7 +656,7 @@ class PA_Class:
         plt.ion()
         plt.draw()
         plt.pause(0.001)
-        sys.stdout.write("\033[1;34m\rPlotData: Figure %2d \033[1;32mDone      \033[0m" % self.FigNum)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mFigure %2d \033[1;32mDone      \033[0m" % self.FigNum)
         plt.ioff()
         return ax
 
@@ -673,7 +677,7 @@ class PA_Class:
         if newFig:
             self.FigNum += 1
             print('')
-        sys.stdout.write("\033[1;34m\rPlotData: Figure %2d Drawning\033[0m" % self.FigNum)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mFigure %2d Drawning\033[0m" % self.FigNum)
         fig = plt.figure(self.FigNum)
         if newFig:
             fig.clf()
@@ -704,7 +708,7 @@ class PA_Class:
         plt.ion()
         plt.draw()
         plt.pause(0.001)
-        sys.stdout.write("\033[1;34m\rPlotData: Figure %2d \033[1;32mDone      \033[0m" % self.FigNum)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mFigure %2d \033[1;32mDone      \033[0m" % self.FigNum)
         plt.ioff()
         return ax
 
@@ -726,7 +730,7 @@ class PA_Class:
         if newFig:
             self.FigNum += 1
             print('')
-        sys.stdout.write("\033[1;34m\rPlotData: Figure %2d Drawning\033[0m" % self.FigNum)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mFigure %2d Drawning\033[0m" % self.FigNum)
         fig = plt.figure(self.FigNum)
         if newFig:
             fig.clf()
@@ -759,7 +763,7 @@ class PA_Class:
         plt.ion()
         plt.draw()
         plt.pause(0.001)
-        sys.stdout.write("\033[1;34m\rPlotData: Figure %2d \033[1;32mDone      \033[0m" % self.FigNum)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mFigure %2d \033[1;32mDone      \033[0m" % self.FigNum)
         plt.ioff()
         return None
 
@@ -816,7 +820,7 @@ class PA_Class:
         if newFig:
             self.FigNum += 1
             print('')
-        sys.stdout.write("\033[1;34m\rPlotData: Figure %2d Drawning\033[0m" % self.FigNum)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mFigure %2d Drawning\033[0m" % self.FigNum)
         fig = plt.figure(self.FigNum)
         if newFig:
             fig.clf()
@@ -830,7 +834,7 @@ class PA_Class:
         plt.ion()
         plt.draw()
         plt.pause(0.001)
-        sys.stdout.write("\033[1;34m\rPlotData: Figure %2d \033[1;32mDone      \033[0m" % self.FigNum)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mFigure %2d \033[1;32mDone      \033[0m" % self.FigNum)
         plt.ioff()
         return None
 
@@ -856,9 +860,10 @@ class PA_Class:
         for element in elementList:
             if re.match("[0-9a-zA-Z\\[\\]]*", element).group():
                 self.ParamName.append(element)
-        print('\nParamName in the file:')
+        print('\033[1;34m\nParamName in the file:\033[0m')
         for i in range(self.ParamName.__len__()):
             print("%02d : \033[1;33m%s\033[0m" % (i + 1, self.ParamName[i]))
+        print('')
         return self.ParamName
 
     ##################################################################################
@@ -871,19 +876,19 @@ class PA_Class:
             txt = f.readlines()
         textLen = txt.__len__() - 1  # Remove end line
         if textLen <= 1:
-            print('\033[1;31m\nLoadData  Error (Line %d): textLen <= 1 \033[0m' % sys._getframe().f_lineno)
+            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): textLen <= 1 \033[0m' % sys._getframe().f_lineno)
             self.Data = dict()
             return None
         # -----------------------------get ParamName-------------------------------- #
         self.ParamName = self.ReadParamName(txt[0])
         varNum = self.ParamName.__len__()
         if varNum <= 0:
-            print('\033[1;31m\nLoadData  Error (Line %d): varNum <= 0 \033[0m' % sys._getframe().f_lineno)
+            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): varNum <= 0 \033[0m' % sys._getframe().f_lineno)
             self.Data = dict()
             return None
         # -----------------------------get TextRange-------------------------------- #
         if self.TextRange.__len__() != 2:
-            print('\033[1;31m\nLoadData  Error (Line %d): TextRange.__len__() != 2 \033[0m' % sys._getframe().f_lineno)
+            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): TextRange.__len__() != 2 \033[0m' % sys._getframe().f_lineno)
             self.Data = dict()
             return None
         else:
@@ -892,26 +897,26 @@ class PA_Class:
         if self.TextRange[1] <= 0:
             self.TextRange[1] += textLen - 1
         if self.TextRange[0] > self.TextRange[1]:
-            print('\033[1;31m\nLoadData  Error (Line %d): TextRange[0] > TextRange[1] \033[0m' % sys._getframe().f_lineno)
+            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): TextRange[0] > TextRange[1] \033[0m' % sys._getframe().f_lineno)
             self.Data = dict()
             return None
         # ---------------------get minDataIndex and maxDataIndex--------------------- #
         minTextIndex = max(1, self.TextRange[0])  # Remove first lines
         maxTextIndex = min(textLen - 1, self.TextRange[1])
         if minTextIndex > maxTextIndex:
-            print('\033[1;31m\nLoadData  Error (Line %d): minTextIndex > maxTextIndex \033[0m' % sys._getframe().f_lineno)
+            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): minTextIndex > maxTextIndex \033[0m' % sys._getframe().f_lineno)
             self.Data = dict()
             return None
         # -----------------------------get BlockRange--------------------------------- #
         if self.BlockRange.__len__() != 2:
-            print('\033[1;31m\nLoadData  Error (Line %d): BlockRange.__len__() != 2 \033[0m' % sys._getframe().f_lineno)
+            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): BlockRange.__len__() != 2 \033[0m' % sys._getframe().f_lineno)
             self.Data = dict()
             return None
         else:
             self.BlockRange[0] = int(self.BlockRange[0])
             self.BlockRange[1] = int(self.BlockRange[1])
         if self.BlockRange[0] > self.BlockRange[1] and self.BlockRange[1] != 0:
-            print('\033[1;31m\nLoadData  Error (Line %d): BlockRange[0] > BlockRange[1] \033[0m' % sys._getframe().f_lineno)
+            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): BlockRange[0] > BlockRange[1] \033[0m' % sys._getframe().f_lineno)
             self.Data = dict()
             return None
         # ---------------------------------init Data--------------------------------- #
@@ -926,12 +931,12 @@ class PA_Class:
         LastBlockNo = 0
         for i in range(minTextIndex, maxTextIndex + 1):
             self.LoadDataProgressPercentage = (i - minTextIndex) / (maxTextIndex - minTextIndex) * 100
-            sys.stdout.write("\033[1;34m\rLoadData: %3d%% \033[0m" % (self.LoadDataProgressPercentage))
+            sys.stdout.write("\033[1;34m\rLoadData: \033[0m%3d%%" % (self.LoadDataProgressPercentage))
             self.LineData = self.SplitDataStr(txt[i])
             while True:
                 self.LineData = self.RemainingLineData + self.LineData
                 if self.LineData.__len__() < varNum:
-                    print('\033[1;31m\nLoadData  Error (File Line %d): LineData.__len__ < varNum (%d < %d) \033[0m' % ( i+1, self.LineData.__len__(), varNum))
+                    print('\033[1;34m\nLoadData: \033[1;31mError (File Line %d): LineData.__len__ < varNum (%d < %d) \033[0m' % ( i+1, self.LineData.__len__(), varNum))
                     self.Data = dict()
                     return None
                 if blockVarExistFlag and float(self.LineData[BlockNoActive]) >= 1.23456789e308:
@@ -965,12 +970,13 @@ class PA_Class:
         if blockVarExistFlag and self.Data['DataLen'] > 0:
             self.Data['TextRange']  = [int(minTextIndex), int(maxTextIndex)]
             self.Data['BlockRange'] = [int(minBlockNo),   int(maxBlockNo)]
-            print('\033[1;34m, DataLen=%d, TextRange=[%d, %d], BlockRange=[%d, %d] \033[0m' % (
+            print('\033[1;34m\rLoadData: \033[1;32m100%%\033[0m\nDataLen=%d, TextRange=[%d, %d], BlockRange=[%d, %d] \033[0m' % (
             self.Data['DataLen'], minTextIndex, maxTextIndex, minBlockNo, maxBlockNo))
+        elif self.Data.__len__() <= 0 or self.Data['DataLen'] <= 0:
+            print('\033[1;34m\nLoadData: \033[1;31mError: Data Len = %d! (CodeLine %d) \033[0m' % (self.Data['DataLen'], sys._getframe().f_lineno))
+            return None
         else:
-            print(', DataLen=%d' % self.Data['DataLen'])
-        if self.Data.__len__() <= 0 or self.Data['DataLen'] <= 0:
-            print('\033[1;31m\nData Len <= 0 (Line %d)! \033[0m' % sys._getframe().f_lineno)
+            print('\033[1;34m\rLoadData: \033[1;32m100%%\033[0m\nDataLen=%d' % self.Data['DataLen'])
 
         # --------------------------------init Data-------------------------------- #
         #Time
@@ -1139,15 +1145,21 @@ class PA_Class:
         plt.show()
         
     def AddDataInfo(self, *DataInfo, infoName = []):
+        if self.Data['DataLen'] == 0:
+            return None
+        figs = [plt.figure(Num) for Num in range(1, self.FigNum + 1)]
+        axes = [ax for fig in figs for ax in fig.axes]
+        #axes2D = list(filter(lambda ax: type(ax) == matplotlib.axes._subplots.AxesSubplot or type(ax) == matplotlib.axes._subplots.PolarAxesSubplot, axes))
+        #lines2D = [line for ax in axes2D for line in ax.lines]
         if DataInfo.__len__() == 0:
             datacursor(display='multiple')
-            print("\033[1;34m\nAddDataInfo \033[1;32mDone\033[0m")
+            print("\033[1;34m\n\nAddDataInfo: \033[1;32mDone\033[0m")
             return None
         try:
             self.InfoList = []
             for info in DataInfo:
                 if info.__len__() != self.Data['DataLen']:
-                    print('\033[1;31m\nAddDataInfo Warnning: info.__len__() \033[0m')
+                    print('\033[1;34m\n\nAddDataInfo: \033[1;33mWarnning: info.__len__() \033[0m')
                     break
                 self.InfoList.append(info)
             self.InfoText = []
@@ -1162,9 +1174,9 @@ class PA_Class:
                         text += '\n'
                 self.InfoText.append(str(text))
             datacursor(display='multiple', formatter=lambda **param: self.InfoText[param['ind'][0]])
-            print("\033[1;34m\nAddDataInfo Done\033[0m")
+            print("\033[1;34m\n\nAddDataInfo: \033[1;32mDone\033[0m")
         except:
-            print('\033[1;31m\nAddDataInfo Error\033[0m')
+            print('\033[1;34m\n\nAddDataInfo: \033[1;31mError\033[0m')
             return None
 
 ##################################################################################
@@ -1236,7 +1248,7 @@ if __name__ == '__main__':
     
     PA.LoadData()
     PA.PlotData()
-    PA.AddDataInfo(PA.Data['Time'], PA.Data['BlockNo'], infoName=['Time(s)', 'No'])
+    PA.AddDataInfo(PA.Data['Time'], PA.Data['BlockNo'], infoName=['Time(s)', 'BlockNo'])
     PA.ShowFigure()
     
     
