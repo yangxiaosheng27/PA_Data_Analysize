@@ -4,23 +4,31 @@
 from PaDataAnalyze import PA_Class
 
 PA = PA_Class()
+PA.DataFile = r'E:\\CNCVariableTrace.txt'
 PA.DataFile = r'C:\PACnc\CNCVariableTrace.txt'
-PA.Ts = 0.002
+PA.DataFile = r'D:\汇川\采样数据\20210826-久久象限痕\CNCVariableTrace-QEC滤波位置-圆弧补偿.txt'
+
+PA.Ts = 0.001
 PA.BlockRange = [0, 0]
 PA.AxisID_X = 1
 PA.AxisID_Y = 2
 PA.AxisID_Z = 3
 
-PA.PlotFlag.BlockNo         = True
-PA.PlotFlag.PathVel         = True
-PA.PlotFlag.XY_PathAcc      = True
-PA.PlotFlag.XY_PathVel      = True
-PA.PlotFlag.XYZ_PathVel     = True
+
+PA.PlotFlag.Pos_X      = True
+PA.PlotFlag.Vel_X      = True
+PA.PlotFlag.Acc_X      = True
+PA.PlotFlag.Pos_Y      = True
+PA.PlotFlag.Vel_Y      = True
+PA.PlotFlag.XY          = True
 
 
 PA.LoadData()
 PA.PlotData()
 
+PA.ShareAxes.Time = PA.Plot1D(PA.Data['SCcReal[0]'],dataName='accX', shareAxes=PA.ShareAxes.Time)
+PA.ShareAxes.Time = PA.Plot1D(PA.Data['SCcReal[18]'],dataName='CompX', shareAxes=PA.ShareAxes.Time)
+PA.ShareAxes.Time = PA.Plot1D(PA.Data['SCcReal[19]'],dataName='CompY', shareAxes=PA.ShareAxes.Time)
 
 """
 x2 = PA.Data['CmdPos_X']
@@ -31,7 +39,9 @@ PA.ShareAxes.Time = PA.Plot1D(y2, axis1Label='Pos (mm)', dataName='CmdPosU', sha
 
 PA.ShareAxes.Time = PA.Plot1D(x2-y2, axis1Label='PosErr (mm)', dataName='CmdPosX - CmdPosU', shareAxes=PA.ShareAxes.Time, newFig=True, title='X和U轴的指令偏差')
 """
-PA.AddDataInfo()
+
+PA.AddDataInfo(PA.Data['Time'], PA.Data['ActVel_X'], PA.Data['SCcReal[18]'], infoName=['Time(s)', 'ActVel_X(mm/min)', 'CompValue_X'])
+#PA.AddDataInfo()
 PA.ShowFigure()
 
 

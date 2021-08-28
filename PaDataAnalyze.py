@@ -35,6 +35,10 @@ Note            The internal increment defaults to 1um, Ts defaults to 0.001s
 """
 
 ############################### Version History #################################
+# ---------------------------------Version 4.3--------------------------------- #
+# Date: 2021/8/28
+# Author: yangxiaosheng
+# Update: fix some bug in using mpldatacursor
 # ---------------------------------Version 4.2--------------------------------- #
 # Date: 2021/8/22
 # Author: yangxiaosheng
@@ -85,6 +89,7 @@ from mpldatacursor import datacursor
 from matplotlib import pyplot as plt
 import numpy as np
 import matplotlib
+import numpy
 import sys
 import re
 
@@ -188,6 +193,8 @@ class PA_Class:
         
         if self.Data['DataLen'] == 0:
             return None
+        
+        plt.close(fig='all')
         
         # ---------------------------------Plot 1D---------------------------------- #
         # BlockNo
@@ -636,11 +643,8 @@ class PA_Class:
             ax = fig.add_subplot(1, 1, 1, sharex=shareAxes)
         else:
             ax = fig.get_axes()[0]
-        ax.plot(x, mark, label=dataName, alpha=0.7)
-        if self.Ts == 0.001:
-            ax.set_xlabel('Time (ms)')
-        else:
-            ax.set_xlabel('Time (%dms)' % int(self.Ts * 1e3))
+        ax.plot(self.Data['Time'], x, mark, label=dataName, alpha=0.7)
+        ax.set_xlabel('Time (s)')
         ax.set_ylabel(axis1Label)
         if dataName != None:
             ax.legend(loc="upper right")
@@ -980,8 +984,8 @@ class PA_Class:
 
         # --------------------------------init Data-------------------------------- #
         #Time
-        if self.ParamName_BlockNo in self.ParamName:
-            self.Data['Time'] = np.arange(0, self.Data['DataLen'] * self.Ts, self.Ts)
+        if self.Ts > 0:
+            self.Data['Time'] = np.array(range(0, self.Data['DataLen'])) * self.Ts
         #BlockNo
         if self.ParamName_BlockNo in self.ParamName:
             self.Data['BlockNo'] = self.Data[self.ParamName_BlockNo]
@@ -1149,31 +1153,41 @@ class PA_Class:
             return None
         figs = [plt.figure(Num) for Num in range(1, self.FigNum + 1)]
         axes = [ax for fig in figs for ax in fig.axes]
-        #axes2D = list(filter(lambda ax: type(ax) == matplotlib.axes._subplots.AxesSubplot or type(ax) == matplotlib.axes._subplots.PolarAxesSubplot, axes))
-        #lines2D = [line for ax in axes2D for line in ax.lines]
+        lines = [line for ax in axes for line in ax.lines]
+        lines2D = list(filter(lambda line: type(line) == matplotlib.lines.Line2D, lines))
+        scatters = [collection for ax in axes for collection in ax.collections]
+        scatters2D = list(filter(lambda scatter: type(scatter) == matplotlib.collections.PathCollection, scatters))
+        artists = lines2D + scatters2D
         if DataInfo.__len__() == 0:
-            datacursor(display='multiple')
+            datacursor(artists, display='multiple')
             print("\033[1;34m\n\nAddDataInfo: \033[1;32mDone\033[0m")
             return None
         try:
-            self.InfoList = []
+            self.InfoValueList = []
             for info in DataInfo:
                 if info.__len__() != self.Data['DataLen']:
                     print('\033[1;34m\n\nAddDataInfo: \033[1;33mWarnning: info.__len__() \033[0m')
                     break
-                self.InfoList.append(info)
+                self.InfoValueList.append(info)
             self.InfoText = []
             for i in range(self.Data['DataLen']):
                 text = ''
-                for j in range(self.InfoList.__len__()):
-                    if j < infoName.__len__():
-                        text += str(infoName[j]) + ': ' + str(self.InfoList[j][i])
+                for j in range(self.InfoValueList.__len__()):
+                    if type(self.InfoValueList[j][i]) == int           or \
+                       type(self.InfoValueList[j][i]) == float         or \
+                       type(self.InfoValueList[j][i]) == numpy.int32   or \
+                       type(self.InfoValueList[j][i]) == numpy.float64 :
+                        InfoValue = '%.7g' % self.InfoValueList[j][i]
                     else:
-                        text += 'Info[' + str(j+1) + ']: ' + str(self.InfoList[j][i])
-                    if j < self.InfoList.__len__() - 1:
+                        InfoValue = str(self.InfoValueList[j][i])
+                    if j < infoName.__len__():
+                        text += str(infoName[j]) + ': ' + InfoValue
+                    else:
+                        text += 'Info[' + str(j+1) + ']: ' + InfoValue
+                    if j < self.InfoValueList.__len__() - 1:
                         text += '\n'
                 self.InfoText.append(str(text))
-            datacursor(display='multiple', formatter=lambda **param: self.InfoText[param['ind'][0]])
+            datacursor(artists, display='multiple', formatter=lambda **param: self.InfoText[param['ind'][0]])
             print("\033[1;34m\n\nAddDataInfo: \033[1;32mDone\033[0m")
         except:
             print('\033[1;34m\n\nAddDataInfo: \033[1;31mError\033[0m')
