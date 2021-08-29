@@ -35,6 +35,10 @@ Note            The internal increment defaults to 1um, Ts defaults to 0.001s
 """
 
 ############################### Version History #################################
+# ---------------------------------Version 4.4--------------------------------- #
+# Date: 2021/8/30
+# Author: yangxiaosheng
+# Update: fix some bug in TimeRange checking
 # ---------------------------------Version 4.3--------------------------------- #
 # Date: 2021/8/28
 # Author: yangxiaosheng
@@ -70,7 +74,7 @@ Note            The internal increment defaults to 1um, Ts defaults to 0.001s
 # ---------------------------------Version 1.3--------------------------------- #
 # Date: 2021/5/21
 # Author: yangxiaosheng
-# Update: Add TextRange and BlockRange
+# Update: Add TimeRange and BlockRange
 # ---------------------------------Version 1.2--------------------------------- #
 # Date: 2021/5/20
 # Author: yangxiaosheng
@@ -159,8 +163,8 @@ class PA_Class:
         self.Precision_um   = 1; # 1 internal incremental = Precision_um * 1um
         self.Ts             = 0.001  # sample time, unit: s
         self.DataFile       = r'F:\CNCVariableTrace.txt'
-        self.TextRange      = [0, 0]  # select Text from file in range of [minIndex, maxIndex], [0, 0] means select all Text
-        self.BlockRange     = [0, 0] # select NC Block in range of [MinBlockNo, MaxBlockNo], [0, 0] means select all NC Block
+        self.TimeRange      = [0, 0] # select the sample data in Time range of [minTime, maxTime] (unit: s) ([0, 0] means select all Time)
+        self.BlockRange     = [0, 0] # select the sample data in NC Block range of [minBlockNo, maxBlockNo] ([0, 0] means select all NC Block)
         self.PlotFlag       = PlotFlag_Class()
         self.AxisID_X       = 0  # 0 means no axis,1 means the first axis
         self.AxisID_Y       = 0  # 0 means no axis,1 means the first axis
@@ -878,91 +882,102 @@ class PA_Class:
         # -----------------------open file and get textLen------------------------- #
         with open(self.DataFile, 'r') as f:
             txt = f.readlines()
-        textLen = txt.__len__() - 1  # Remove end line
+        textLen = txt.__len__() - 2  # Remove last two lines
         if textLen <= 1:
-            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): textLen <= 1 \033[0m' % sys._getframe().f_lineno)
+            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): textLen =%d <= 1 \033[0m' % (sys._getframe().f_lineno, textLen))
             self.Data = dict()
             return None
+        minText = 1
+        maxText = textLen
         # -----------------------------get ParamName-------------------------------- #
         self.ParamName = self.ReadParamName(txt[0])
         varNum = self.ParamName.__len__()
         if varNum <= 0:
-            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): varNum <= 0 \033[0m' % sys._getframe().f_lineno)
+            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): varNum = %d  <= 0 \033[0m' % (sys._getframe().f_lineno, varNum))
             self.Data = dict()
             return None
-        # -----------------------------get TextRange-------------------------------- #
-        if self.TextRange.__len__() != 2:
-            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): TextRange.__len__() != 2 \033[0m' % sys._getframe().f_lineno)
+        # -----------------------------get TimeRange-------------------------------- #
+        if self.TimeRange.__len__() != 2:
+            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): TimeRange.__len__() = %d != 2 \033[0m' % (sys._getframe().f_lineno, self.TimeRange.__len__()))
             self.Data = dict()
             return None
         else:
-            self.TextRange[0] = int(self.TextRange[0])
-            self.TextRange[1] = int(self.TextRange[1])
-        if self.TextRange[1] <= 0:
-            self.TextRange[1] += textLen - 1
-        if self.TextRange[0] > self.TextRange[1]:
-            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): TextRange[0] > TextRange[1] \033[0m' % sys._getframe().f_lineno)
-            self.Data = dict()
-            return None
-        # ---------------------get minDataIndex and maxDataIndex--------------------- #
-        minTextIndex = max(1, self.TextRange[0])  # Remove first lines
-        maxTextIndex = min(textLen - 1, self.TextRange[1])
-        if minTextIndex > maxTextIndex:
-            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): minTextIndex > maxTextIndex \033[0m' % sys._getframe().f_lineno)
-            self.Data = dict()
-            return None
+            self.TimeRange[0] = float(self.TimeRange[0])
+            self.TimeRange[1] = float(self.TimeRange[1])
+        self.TimeRange[0] = max(0, self.TimeRange[0])
+        self.TimeRange[1] = max(0, self.TimeRange[1])
+        if self.TimeRange[1] < self.TimeRange[0]:
+            self.TimeRange[1] = 0
         # -----------------------------get BlockRange--------------------------------- #
         if self.BlockRange.__len__() != 2:
-            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): BlockRange.__len__() != 2 \033[0m' % sys._getframe().f_lineno)
+            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): BlockRange.__len__() = %d != 2 \033[0m' % (sys._getframe().f_lineno, self.BlockRange.__len__()))
             self.Data = dict()
             return None
         else:
             self.BlockRange[0] = int(self.BlockRange[0])
             self.BlockRange[1] = int(self.BlockRange[1])
-        if self.BlockRange[0] > self.BlockRange[1] and self.BlockRange[1] != 0:
-            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): BlockRange[0] > BlockRange[1] \033[0m' % sys._getframe().f_lineno)
-            self.Data = dict()
-            return None
+        if  self.BlockRange[1] < self.BlockRange[0]:
+            self.BlockRange[1] = 0
+            
         # ---------------------------------init Data--------------------------------- #
         for i in range(varNum):
             self.Data[self.ParamName[i]] = []
-        blockVarExistFlag = self.ParamName_BlockNo in self.ParamName
-        if blockVarExistFlag:
-            BlockNoActive = self.ParamName.index(self.ParamName_BlockNo)
-            firstBlockFlag = True
-        # ---load Data by minTextIndex, maxTextIndex, self.ParamName, varNum and BlockRange--- #
+        BlockNoExistFlag = self.ParamName_BlockNo in self.ParamName
+        if BlockNoExistFlag:
+            BlockNoIndex = self.ParamName.index(self.ParamName_BlockNo)
+        self.Data['Time'] = []
+        self.Data['BlockNo'] = []
+        # ----------load Data ParamName, varNum, BlockRange and TimeRange------------ #
         self.RemainingLineData = []
         LastBlockNo = 0
-        for i in range(minTextIndex, maxTextIndex + 1):
-            self.LoadDataProgressPercentage = (i - minTextIndex) / (maxTextIndex - minTextIndex) * 100
+        dataStartFlag = False
+        dataEndFlag = False
+        firstDataFlag = True
+        Time = 0.0 # unit: s
+        for i in range(minText, maxText):
+            self.LoadDataProgressPercentage = (i - minText) / (maxText - minText) * 100
             sys.stdout.write("\033[1;34m\rLoadData: \033[0m%3d%%" % (self.LoadDataProgressPercentage))
             self.LineData = self.SplitDataStr(txt[i])
             while True:
                 self.LineData = self.RemainingLineData + self.LineData
                 if self.LineData.__len__() < varNum:
                     print('\033[1;34m\nLoadData: \033[1;31mError (File Line %d): LineData.__len__ < varNum (%d < %d) \033[0m' % ( i+1, self.LineData.__len__(), varNum))
-                    self.Data = dict()
                     return None
-                if blockVarExistFlag and float(self.LineData[BlockNoActive]) >= 1.23456789e308:
-                    self.LineData[BlockNoActive] = LastBlockNo
-                if blockVarExistFlag and float(self.LineData[BlockNoActive]) >= self.BlockRange[0] and \
-                                         (float(self.LineData[BlockNoActive]) <= self.BlockRange[1] or self.BlockRange[1] == 0):
-                    for j in range(varNum):
-                        if j == BlockNoActive:
-                            self.Data[self.ParamName[BlockNoActive]].append(float(self.LineData[BlockNoActive]))
-                            if firstBlockFlag:
-                                firstBlockFlag = False
-                                maxBlockNo = minBlockNo = float(self.LineData[BlockNoActive])
-                            else:
-                                minBlockNo = min(minBlockNo, float(self.LineData[BlockNoActive]))
-                                maxBlockNo = max(maxBlockNo, float(self.LineData[BlockNoActive]))
-                        else:
+                if BlockNoExistFlag:
+                    if float(self.LineData[BlockNoIndex]) >= 1.23456789e308:
+                        self.LineData[BlockNoIndex] = LastBlockNo
+                    if dataStartFlag == False and (Time + 1e-10) >= self.TimeRange[0] and float(self.LineData[BlockNoIndex]) >= self.BlockRange[0]:
+                        dataStartFlag = True
+                    if dataEndFlag == False and (((Time + 1e-10) > self.TimeRange[1] and self.TimeRange[1] > 0) or (float(self.LineData[BlockNoIndex]) > self.BlockRange[1] and self.BlockRange[1] > 0)):
+                        dataEndFlag = True
+                    if dataStartFlag == True and dataEndFlag == False:
+                        for j in range(varNum):
                             self.Data[self.ParamName[j]].append(float(self.LineData[j]))
-                elif not blockVarExistFlag:
-                    for j in range(varNum):
-                        self.Data[self.ParamName[j]].append(float(self.LineData[j]))
-                if blockVarExistFlag:
-                    LastBlockNo = self.LineData[BlockNoActive]
+                        if firstDataFlag:
+                            firstDataFlag = False
+                            maxBlockNo = minBlockNo = float(self.LineData[BlockNoIndex])
+                            minTime = maxTime = float(Time)
+                        else:
+                            minBlockNo = min(minBlockNo, float(self.LineData[BlockNoIndex]))
+                            maxBlockNo = max(maxBlockNo, float(self.LineData[BlockNoIndex]))
+                            minTime = min(minTime, Time)
+                            maxTime = max(maxTime, Time)
+                    LastBlockNo = self.LineData[BlockNoIndex]
+                else:
+                    if dataStartFlag == False and Time >= self.TimeRange[0]:
+                        dataStartFlag = True
+                    if dataEndFlag == False and Time > self.TimeRange[1] and self.TimeRange[1] > 0:
+                        dataEndFlag = True
+                    if dataStartFlag == True and dataEndFlag == False:
+                        for j in range(varNum):
+                            self.Data[self.ParamName[j]].append(float(self.LineData[j]))
+                        if firstDataFlag:
+                            firstDataFlag = False
+                            minTime = maxTime = float(Time)
+                        else:
+                            minTime = min(minTime, float(Time))
+                            maxTime = min(maxTime, float(Time))
+                Time += self.Ts
                 self.RemainingLineData = self.LineData[varNum:]
                 self.LineData = []
                 if self.RemainingLineData.__len__() < varNum:
@@ -971,21 +986,21 @@ class PA_Class:
         for i in range(varNum):
             self.Data[self.ParamName[i]] = np.array(self.Data[self.ParamName[i]])
         self.Data['DataLen'] = self.Data[self.ParamName[0]].__len__()
-        if blockVarExistFlag and self.Data['DataLen'] > 0:
-            self.Data['TextRange']  = [int(minTextIndex), int(maxTextIndex)]
-            self.Data['BlockRange'] = [int(minBlockNo),   int(maxBlockNo)]
-            print('\033[1;34m\rLoadData: \033[1;32m100%%\033[0m\nDataLen=%d, TextRange=[%d, %d], BlockRange=[%d, %d] \033[0m' % (
-            self.Data['DataLen'], minTextIndex, maxTextIndex, minBlockNo, maxBlockNo))
-        elif self.Data.__len__() <= 0 or self.Data['DataLen'] <= 0:
+        if self.Data.__len__() <= 0 or self.Data['DataLen'] <= 0:
             print('\033[1;34m\nLoadData: \033[1;31mError: Data Len = %d! (CodeLine %d) \033[0m' % (self.Data['DataLen'], sys._getframe().f_lineno))
             return None
+        if BlockNoExistFlag:
+            self.Data['TimeRange']  = [float(minTime), float(maxTime)]
+            self.Data['BlockRange'] = [int(minBlockNo), int(maxBlockNo)]
+            print('\033[1;34m\rLoadData: \033[1;32m100%%\033[0m\nDataLen=%d, TimeRange=[%.3f, %.3f], BlockRange=[%d, %d] \033[0m' % (self.Data['DataLen'], minTime, maxTime, minBlockNo, maxBlockNo))
         else:
-            print('\033[1;34m\rLoadData: \033[1;32m100%%\033[0m\nDataLen=%d' % self.Data['DataLen'])
+            self.Data['TimeRange']  = [float(minTime), float(maxTime)]
+            print('\033[1;34m\rLoadData: \033[1;32m100%%\033[0m\nDataLen=%d, TimeRange=[%.3f, %.3f] \033[0m' % (self.Data['DataLen'], minTime, maxTime))
 
         # --------------------------------init Data-------------------------------- #
         #Time
         if self.Ts > 0:
-            self.Data['Time'] = np.array(range(0, self.Data['DataLen'])) * self.Ts
+            self.Data['Time'] = np.array(range(0, self.Data['DataLen'])) * self.Ts + minTime
         #BlockNo
         if self.ParamName_BlockNo in self.ParamName:
             self.Data['BlockNo'] = self.Data[self.ParamName_BlockNo]
@@ -1159,7 +1174,7 @@ class PA_Class:
         scatters2D = list(filter(lambda scatter: type(scatter) == matplotlib.collections.PathCollection, scatters))
         artists = lines2D + scatters2D
         if DataInfo.__len__() == 0:
-            datacursor(artists, display='multiple')
+            datacursor(artists, display='multiple', draggable=True)
             print("\033[1;34m\n\nAddDataInfo: \033[1;32mDone\033[0m")
             return None
         try:
@@ -1187,7 +1202,7 @@ class PA_Class:
                     if j < self.InfoValueList.__len__() - 1:
                         text += '\n'
                 self.InfoText.append(str(text))
-            datacursor(artists, display='multiple', formatter=lambda **param: self.InfoText[param['ind'][0]])
+            datacursor(artists, display='multiple', draggable=True, formatter=lambda **param: self.InfoText[param['ind'][0]])
             print("\033[1;34m\n\nAddDataInfo: \033[1;32mDone\033[0m")
         except:
             print('\033[1;34m\n\nAddDataInfo: \033[1;31mError\033[0m')
@@ -1202,6 +1217,7 @@ if __name__ == '__main__':
     PA.DataFile = r'D:\汇川\采样数据\20210717_迈盛达\象限痕数据集\F2000D55N620.txt'
     PA.Ts = 0.001
     PA.BlockRange = [620, 630]
+    PA.TimeRange = [12.447, 0]
     PA.AxisID_X = 7
     PA.AxisID_Y = 1
     PA.AxisID_Z = 5
@@ -1255,6 +1271,7 @@ if __name__ == '__main__':
     """
     
     PA.PlotFlag.Pos_X           = True
+    PA.PlotFlag.XY              = True
     PA.PlotFlag.XY_Time         = True
     PA.PlotFlag.CircleErr_XY    = True
     PA.PlotFlag.XYZ             = True
