@@ -3,7 +3,6 @@
 
 """
 @File           PaDataAnalyze.py
-@Version        4.1
 @Brief          PA data analysis
 @Unit of File   
                 SSetPos                         Unit: internal increment
@@ -97,65 +96,12 @@ import numpy
 import sys
 import re
 
-class ShareAxes_Class:
-    Time = None
-    XY = None
-    YZ = None
-    XZ = None
-
-class PlotFlag_Class:
-    BlockNo         = False
-    PathVel         = False
-    PathAcc         = False
-    PathJerk        = False
-    Pos_X           = False
-    Vel_X           = False
-    Acc_X           = False
-    Jerk_X          = False
-    Pos_Y           = False
-    Vel_Y           = False
-    Acc_Y           = False
-    Jerk_Y          = False
-    Pos_Z           = False
-    Vel_Z           = False
-    Acc_Z           = False
-    Jerk_Z          = False
-    Pos_A           = False
-    Vel_A           = False
-    Acc_A           = False
-    Jerk_A          = False
-    XY              = False
-    XY_Time         = False
-    XY_BlockNo      = False
-    XY_PathVel      = False
-    XY_PathAcc      = False
-    XY_PathJerk     = False
-    XY_FollowPosErr = False
-    YZ              = False
-    YZ_Time         = False
-    YZ_BlockNo      = False
-    YZ_PathVel      = False
-    YZ_PathAcc      = False
-    YZ_PathJerk     = False
-    YZ_FollowPosErr = False
-    XZ              = False
-    XZ_Time         = False
-    XZ_BlockNo      = False
-    XZ_PathVel      = False
-    XZ_PathAcc      = False
-    XZ_PathJerk     = False
-    XZ_FollowPosErr = False
-    XYZ             = False
-    XYZ_Time        = False
-    XYZ_Z           = False
-    XYZ_PathVel     = False
-    XYZ_PathAcc     = False
-    XYZ_PathJerk    = False
-    CircleErr_XY    = False
-    CircleErr_YZ    = False
-    CircleErr_XZ    = False
 
 class PA_Class:
+    
+    def __init__(self):
+        self.initParam()
+    
     def initParam(self):
         ##################################################################################
         # ----------------------------------User Define--------------------------------- #
@@ -165,7 +111,7 @@ class PA_Class:
         self.DataFile       = r'F:\CNCVariableTrace.txt'
         self.TimeRange      = [0, 0] # select the sample data in Time range of [minTime, maxTime] (unit: s) ([0, 0] means select all Time)
         self.BlockRange     = [0, 0] # select the sample data in NC Block range of [minBlockNo, maxBlockNo] ([0, 0] means select all NC Block)
-        self.PlotFlag       = PlotFlag_Class()
+        self.Plot           = self.PlotFlag_Class()
         self.AxisID_X       = 0  # 0 means no axis,1 means the first axis
         self.AxisID_Y       = 0  # 0 means no axis,1 means the first axis
         self.AxisID_Z       = 0  # 0 means no axis,1 means the first axis
@@ -177,7 +123,7 @@ class PA_Class:
         self.FigNum                 = 0
         self.HMI_Title              = 'PA Data Analysis'
         self.Data                   = dict()
-        self.ShareAxes              = ShareAxes_Class()
+        self.ShareAxes              = self.ShareAxes_Class()
         self.reSplit                = re.compile("[\t\n ]")
         self.reMatch                = re.compile("[-+0-9\\.]*")
         self.ParamName_SetPos       = 'SSetPos[%d]'
@@ -186,9 +132,64 @@ class PA_Class:
         self.ParamName_SetPathVel   = 'PathVelocity[0]'
         self.ParamName_CmdPathVel   = 'CommandedPathVelocity[0]'
         self.ParamName_BlockNo      = 'BlockNoActive[0]'
+    
+    class ShareAxes_Class:
+        Time = None
+        XY = None
+        YZ = None
+        XZ = None
 
-    def __init__(self):
-        self.initParam()
+    class PlotFlag_Class:
+        BlockNo         = False
+        PathVel         = False
+        PathAcc         = False
+        PathJerk        = False
+        Pos_X           = False
+        Vel_X           = False
+        Acc_X           = False
+        Jerk_X          = False
+        Pos_Y           = False
+        Vel_Y           = False
+        Acc_Y           = False
+        Jerk_Y          = False
+        Pos_Z           = False
+        Vel_Z           = False
+        Acc_Z           = False
+        Jerk_Z          = False
+        Pos_A           = False
+        Vel_A           = False
+        Acc_A           = False
+        Jerk_A          = False
+        XY              = False
+        XY_Time         = False
+        XY_BlockNo      = False
+        XY_PathVel      = False
+        XY_PathAcc      = False
+        XY_PathJerk     = False
+        XY_PosErr       = False
+        YZ              = False
+        YZ_Time         = False
+        YZ_BlockNo      = False
+        YZ_PathVel      = False
+        YZ_PathAcc      = False
+        YZ_PathJerk     = False
+        YZ_PosErr       = False
+        XZ              = False
+        XZ_Time         = False
+        XZ_BlockNo      = False
+        XZ_PathVel      = False
+        XZ_PathAcc      = False
+        XZ_PathJerk     = False
+        XZ_PosErr       = False
+        XYZ             = False
+        XYZ_Time        = False
+        XYZ_Z           = False
+        XYZ_PathVel     = False
+        XYZ_PathAcc     = False
+        XYZ_PathJerk    = False
+        CircleErr_XY    = False
+        CircleErr_YZ    = False
+        CircleErr_XZ    = False
 
     ##################################################################################
     # -----------------------------------Plot Data---------------------------------- #
@@ -202,429 +203,417 @@ class PA_Class:
         
         # ---------------------------------Plot 1D---------------------------------- #
         # BlockNo
-        if self.PlotFlag.BlockNo == True:
+        if self.Plot.BlockNo == True:
             try:
                 block = self.Data['BlockNo']
-                self.ShareAxes.Time = self.Plot1D(block, dataName='BlockNo', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(block, dataName='BlockNo', figureName='BlockNo', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError BlockNo\033[0m')
 
         # PathVel
-        if self.PlotFlag.PathVel == True:
+        if self.Plot.PathVel == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetPathVel'], axis1Label='Vel (mm/min)', dataName='SetPathVel', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdPathVel'], axis1Label='Vel (mm/min)', dataName='CmdPathVel', shareAxes=self.ShareAxes.Time, newFig=False)
-                self.Data['ActPathVel'] = np.sqrt(self.Data['ActVel_X'] ** 2 + self.Data['ActVel_Y'] ** 2 + self.Data['ActVel_Z'] ** 2) # mm/min
-                self.ShareAxes.Time = self.Plot1D(self.Data['ActPathVel'], axis1Label='Vel (mm/min)', dataName='ActPathVel', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetPathVel'], axisName_1='Vel (mm/min)', dataName='SetPathVel', shareAxes=self.ShareAxes.Time, figureName='PathVel', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdPathVel'], axisName_1='Vel (mm/min)', dataName='CmdPathVel', shareAxes=self.ShareAxes.Time, figureName='PathVel', newFig=False)
+                if self.Data['ActPathVel'].__len__() != 0:
+                    self.ShareAxes.Time = self.Plot1D(self.Data['ActPathVel'], axisName_1='Vel (mm/min)', dataName='ActPathVel', shareAxes=self.ShareAxes.Time, figureName='PathVel', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError PathVel\033[0m')
 
         # PathAcc
-        if self.PlotFlag.PathAcc == True:
+        if self.Plot.PathAcc == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetPathAcc'], axis1Label='Acc (m/s^2)', dataName='SetPathAcc', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdPathAcc'], axis1Label='Acc (m/s^2)', dataName='CmdPathAcc', shareAxes=self.ShareAxes.Time, newFig=False)
-                self.Data['ActPathVel'] = np.sqrt(self.Data['ActVel_X'] ** 2 + self.Data['ActVel_Y'] ** 2 + self.Data['ActVel_Z'] ** 2) # mm/min
-                self.Data['ActPathAcc'] = np.diff(self.Data['ActPathVel']) / 1e3 / 60 / self.Ts # m/s^2
-                self.ShareAxes.Time = self.Plot1D(self.Data['ActPathAcc'], axis1Label='Acc (m/s^2)', dataName='ActPathAcc', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetPathAcc'], axisName_1='Acc (m/s^2)', dataName='SetPathAcc', shareAxes=self.ShareAxes.Time, figureName='PathAcc', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdPathAcc'], axisName_1='Acc (m/s^2)', dataName='CmdPathAcc', shareAxes=self.ShareAxes.Time, figureName='PathAcc', newFig=False)
+                #if self.Data['ActPathAcc'].__len__() != 0:
+                    #self.ShareAxes.Time = self.Plot1D(self.Data['ActPathAcc'], axisName_1='Acc (m/s^2)', dataName='ActPathAcc', shareAxes=self.ShareAxes.Time, figureName='PathAcc', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError PathAcc\033[0m')
 
         # PathJerk
-        if self.PlotFlag.PathJerk == True:
+        if self.Plot.PathJerk == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetPathJerk'], axis1Label='Jerk (m/s^3)', dataName='SetPathJerk', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdPathJerk'], axis1Label='Jerk (m/s^3)', dataName='CmdPathJerk', shareAxes=self.ShareAxes.Time, newFig=False)
-                self.Data['ActPathVel'] = np.sqrt(self.Data['ActVel_X'] ** 2 + self.Data['ActVel_Y'] ** 2 + self.Data['ActVel_Z'] ** 2) # mm/min
-                self.Data['ActPathAcc'] = np.diff(self.Data['ActPathVel']) / 1e3 / 60 / self.Ts # m/s^2
-                self.Data['ActPathJerk'] = np.diff(self.Data['ActPathAcc']) / self.Ts # m/s^3
-                self.ShareAxes.Time = self.Plot1D(self.Data['ActPathJerk'], axis1Label='Jerk (m/s^3)', dataName='ActPathJerk', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetPathJerk'], axisName_1='Jerk (m/s^3)', dataName='SetPathJerk', shareAxes=self.ShareAxes.Time, figureName='PathJerk', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdPathJerk'], axisName_1='Jerk (m/s^3)', dataName='CmdPathJerk', shareAxes=self.ShareAxes.Time, figureName='PathJerk', newFig=False)
+                #if self.Data['ActPathJerk'].__len__() != 0:
+                    #self.ShareAxes.Time = self.Plot1D(self.Data['ActPathJerk'], axisName_1='Jerk (m/s^3)', dataName='ActPathJerk', shareAxes=self.ShareAxes.Time, figureName='PathJerk', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError PathJerk\033[0m')
 
         # X
         # Pos_X
-        if self.PlotFlag.Pos_X == True:
+        if self.Plot.Pos_X == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetPos_X'], axis1Label='Pos (mm)', dataName='SetPos_X', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdPos_X'], axis1Label='Pos (mm)', dataName='CmdPos_X', shareAxes=self.ShareAxes.Time, newFig=False)
-                self.ShareAxes.Time = self.Plot1D(self.Data['ActPos_X'], axis1Label='Pos (mm)', dataName='ActPos_X', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetPos_X'], axisName_1='Pos (mm)', dataName='SetPos_X', shareAxes=self.ShareAxes.Time, figureName='Pos_X', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdPos_X'], axisName_1='Pos (mm)', dataName='CmdPos_X', shareAxes=self.ShareAxes.Time, figureName='Pos_X', newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['ActPos_X'], axisName_1='Pos (mm)', dataName='ActPos_X', shareAxes=self.ShareAxes.Time, figureName='Pos_X', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Pos_X\033[0m')
         # Vel_X
-        if self.PlotFlag.Vel_X == True:
+        if self.Plot.Vel_X == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetVel_X'], axis1Label='Vel (mm/min)', dataName='SetVel_X', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdVel_X'], axis1Label='Vel (mm/min)', dataName='CmdVel_X', shareAxes=self.ShareAxes.Time, newFig=False)
-                self.ShareAxes.Time = self.Plot1D(self.Data['ActVel_X'], axis1Label='Vel (mm/min)', dataName='ActVel_X', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetVel_X'], axisName_1='Vel (mm/min)', dataName='SetVel_X', shareAxes=self.ShareAxes.Time, figureName='Vel_X', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdVel_X'], axisName_1='Vel (mm/min)', dataName='CmdVel_X', shareAxes=self.ShareAxes.Time, figureName='Vel_X', newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['ActVel_X'], axisName_1='Vel (mm/min)', dataName='ActVel_X', shareAxes=self.ShareAxes.Time, figureName='Vel_X', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Vel_X\033[0m')
         # Acc_X
-        if self.PlotFlag.Acc_X == True:
+        if self.Plot.Acc_X == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetAcc_X'], axis1Label='Acc (m/s^2)', dataName='SetAcc_X', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdAcc_X'], axis1Label='Acc (m/s^2)', dataName='CmdAcc_X', shareAxes=self.ShareAxes.Time, newFig=False)
-                self.ShareAxes.Time = self.Plot1D(self.Data['ActAcc_X'], axis1Label='Acc (m/s^2)', dataName='ActAcc_X', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetAcc_X'], axisName_1='Acc (m/s^2)', dataName='SetAcc_X', shareAxes=self.ShareAxes.Time, figureName='Acc_X', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdAcc_X'], axisName_1='Acc (m/s^2)', dataName='CmdAcc_X', shareAxes=self.ShareAxes.Time, figureName='Acc_X', newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['ActAcc_X'], axisName_1='Acc (m/s^2)', dataName='ActAcc_X', shareAxes=self.ShareAxes.Time, figureName='Acc_X', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Acc_X\033[0m')
         # Jerk_X
-        if self.PlotFlag.Jerk_X == True:
+        if self.Plot.Jerk_X == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetJerk_X'], axis1Label='Jerk (m/s^3)', dataName='SetJerk_X', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdJerk_X'], axis1Label='Jerk (m/s^3)', dataName='CmdJerk_X', shareAxes=self.ShareAxes.Time, newFig=False)
-                # self.ShareAxes.Time = self.Plot1D(self.Data['ActJerk_X'], axis1Label='Jerk (m/s^3)', dataName='ActJerk_X', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetJerk_X'], axisName_1='Jerk (m/s^3)', dataName='SetJerk_X', shareAxes=self.ShareAxes.Time, figureName='Jerk_X', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdJerk_X'], axisName_1='Jerk (m/s^3)', dataName='CmdJerk_X', shareAxes=self.ShareAxes.Time, figureName='Jerk_X', newFig=False)
+                # self.ShareAxes.Time = self.Plot1D(self.Data['ActJerk_X'], axisName_1='Jerk (m/s^3)', dataName='ActJerk_X', shareAxes=self.ShareAxes.Time, figureName='Jerk_X', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Jerk_X\033[0m')
 
         # Y
         # Pos_Y
-        if self.PlotFlag.Pos_Y == True:
+        if self.Plot.Pos_Y == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetPos_Y'], axis1Label='Pos (mm)', dataName='SetPos_Y', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdPos_Y'], axis1Label='Pos (mm)', dataName='CmdPos_Y', shareAxes=self.ShareAxes.Time, newFig=False)
-                self.ShareAxes.Time = self.Plot1D(self.Data['ActPos_Y'], axis1Label='Pos (mm)', dataName='ActPos_Y', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetPos_Y'], axisName_1='Pos (mm)', dataName='SetPos_Y', shareAxes=self.ShareAxes.Time, figureName='Pos_Y', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdPos_Y'], axisName_1='Pos (mm)', dataName='CmdPos_Y', shareAxes=self.ShareAxes.Time, figureName='Pos_Y', newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['ActPos_Y'], axisName_1='Pos (mm)', dataName='ActPos_Y', shareAxes=self.ShareAxes.Time, figureName='Pos_Y', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Pos_Y\033[0m')
         # Vel_Y
-        if self.PlotFlag.Vel_Y == True:
+        if self.Plot.Vel_Y == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetVel_Y'], axis1Label='Vel (mm/min)', dataName='SetVel_Y', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdVel_Y'], axis1Label='Vel (mm/min)', dataName='CmdVel_Y', shareAxes=self.ShareAxes.Time, newFig=False)
-                self.ShareAxes.Time = self.Plot1D(self.Data['ActVel_Y'], axis1Label='Vel (mm/min)', dataName='ActVel_Y', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetVel_Y'], axisName_1='Vel (mm/min)', dataName='SetVel_Y', shareAxes=self.ShareAxes.Time, figureName='Vel_Y', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdVel_Y'], axisName_1='Vel (mm/min)', dataName='CmdVel_Y', shareAxes=self.ShareAxes.Time, figureName='Vel_Y', newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['ActVel_Y'], axisName_1='Vel (mm/min)', dataName='ActVel_Y', shareAxes=self.ShareAxes.Time, figureName='Vel_Y', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Vel_Y\033[0m')
         # Acc_Y
-        if self.PlotFlag.Acc_Y == True:
+        if self.Plot.Acc_Y == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetAcc_Y'], axis1Label='Acc (m/s^2)', dataName='SetAcc_Y', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdAcc_Y'], axis1Label='Acc (m/s^2)', dataName='CmdAcc_Y', shareAxes=self.ShareAxes.Time, newFig=False)
-                self.ShareAxes.Time = self.Plot1D(self.Data['ActAcc_Y'], axis1Label='Acc (m/s^2)', dataName='ActAcc_Y', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetAcc_Y'], axisName_1='Acc (m/s^2)', dataName='SetAcc_Y', shareAxes=self.ShareAxes.Time, figureName='Acc_Y', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdAcc_Y'], axisName_1='Acc (m/s^2)', dataName='CmdAcc_Y', shareAxes=self.ShareAxes.Time, figureName='Acc_Y', newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['ActAcc_Y'], axisName_1='Acc (m/s^2)', dataName='ActAcc_Y', shareAxes=self.ShareAxes.Time, figureName='Acc_Y', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Acc_Y\033[0m')
         # Jerk_Y
-        if self.PlotFlag.Jerk_Y == True:
+        if self.Plot.Jerk_Y == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetJerk_Y'], axis1Label='Jerk (m/s^3)', dataName='SetJerk_Y', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdJerk_Y'], axis1Label='Jerk (m/s^3)', dataName='CmdJerk_Y', shareAxes=self.ShareAxes.Time, newFig=False)
-                # self.ShareAxes.Time = self.Plot1D(self.Data['ActJerk_Y'], axis1Label='Jerk (m/s^3)', dataName='ActJerk_Y', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetJerk_Y'], axisName_1='Jerk (m/s^3)', dataName='SetJerk_Y', shareAxes=self.ShareAxes.Time, figureName='Jerk_Y', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdJerk_Y'], axisName_1='Jerk (m/s^3)', dataName='CmdJerk_Y', shareAxes=self.ShareAxes.Time, figureName='Jerk_Y', newFig=False)
+                # self.ShareAxes.Time = self.Plot1D(self.Data['ActJerk_Y'], axisName_1='Jerk (m/s^3)', dataName='ActJerk_Y', shareAxes=self.ShareAxes.Time, figureName='Jerk_Y', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Jerk_Y\033[0m')
 
         # Z
         #Pos_Z
-        if self.PlotFlag.Pos_Z == True:
+        if self.Plot.Pos_Z == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetPos_Z'], axis1Label='Pos (mm)', dataName='SetPos_Z', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdPos_Z'], axis1Label='Pos (mm)', dataName='CmdPos_Z', shareAxes=self.ShareAxes.Time, newFig=False)
-                self.ShareAxes.Time = self.Plot1D(self.Data['ActPos_Z'], axis1Label='Pos (mm)', dataName='ActPos_Z', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetPos_Z'], axisName_1='Pos (mm)', dataName='SetPos_Z', shareAxes=self.ShareAxes.Time, figureName='Pos_Z', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdPos_Z'], axisName_1='Pos (mm)', dataName='CmdPos_Z', shareAxes=self.ShareAxes.Time, figureName='Pos_Z', newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['ActPos_Z'], axisName_1='Pos (mm)', dataName='ActPos_Z', shareAxes=self.ShareAxes.Time, figureName='Pos_Z', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Pos_Z\033[0m')
         #Vel_Z
-        if self.PlotFlag.Vel_Z == True:
+        if self.Plot.Vel_Z == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetVel_Z'], axis1Label='Vel (mm/min)', dataName='SetVel_Z', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdVel_Z'], axis1Label='Vel (mm/min)', dataName='CmdVel_Z', shareAxes=self.ShareAxes.Time, newFig=False)
-                self.ShareAxes.Time = self.Plot1D(self.Data['ActVel_Z'], axis1Label='Vel (mm/min)', dataName='ActVel_Z', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetVel_Z'], axisName_1='Vel (mm/min)', dataName='SetVel_Z', shareAxes=self.ShareAxes.Time, figureName='Vel_Z', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdVel_Z'], axisName_1='Vel (mm/min)', dataName='CmdVel_Z', shareAxes=self.ShareAxes.Time, figureName='Vel_Z', newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['ActVel_Z'], axisName_1='Vel (mm/min)', dataName='ActVel_Z', shareAxes=self.ShareAxes.Time, figureName='Vel_Z', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Vel_Z\033[0m')
         #Acc_Z
-        if self.PlotFlag.Acc_Z == True:
+        if self.Plot.Acc_Z == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetAcc_Z'], axis1Label='Acc (m/s^2)', dataName='SetAcc_Z', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdAcc_Z'], axis1Label='Acc (m/s^2)', dataName='CmdAcc_Z', shareAxes=self.ShareAxes.Time, newFig=False)
-                self.ShareAxes.Time = self.Plot1D(self.Data['ActAcc_Z'], axis1Label='Acc (m/s^2)', dataName='ActAcc_Z', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetAcc_Z'], axisName_1='Acc (m/s^2)', dataName='SetAcc_Z', shareAxes=self.ShareAxes.Time, figureName='Acc_Z', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdAcc_Z'], axisName_1='Acc (m/s^2)', dataName='CmdAcc_Z', shareAxes=self.ShareAxes.Time, figureName='Acc_Z', newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['ActAcc_Z'], axisName_1='Acc (m/s^2)', dataName='ActAcc_Z', shareAxes=self.ShareAxes.Time, figureName='Acc_Z', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Acc_Z\033[0m')
         # Jerk_Z
-        if self.PlotFlag.Jerk_Z == True:
+        if self.Plot.Jerk_Z == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetJerk_Z'], axis1Label='Jerk (m/s^3)', dataName='SetJerk_Z', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdJerk_Z'], axis1Label='Jerk (m/s^3)', dataName='CmdJerk_Z', shareAxes=self.ShareAxes.Time, newFig=False)
-                # self.ShareAxes.Time = self.Plot1D(self.Data['ActJerk_Z'], axis1Label='Jerk (m/s^3)', dataName='ActJerk_Z', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetJerk_Z'], axisName_1='Jerk (m/s^3)', dataName='SetJerk_Z', shareAxes=self.ShareAxes.Time, figureName='Jerk_Z', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdJerk_Z'], axisName_1='Jerk (m/s^3)', dataName='CmdJerk_Z', shareAxes=self.ShareAxes.Time, figureName='Jerk_Z', newFig=False)
+                # self.ShareAxes.Time = self.Plot1D(self.Data['ActJerk_Z'], axisName_1='Jerk (m/s^3)', dataName='ActJerk_Z', shareAxes=self.ShareAxes.Time, figureName='Jerk_Z', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Jerk_Z\033[0m')
 
         # A
         #Pos_A
-        if self.PlotFlag.Pos_A == True:
+        if self.Plot.Pos_A == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetPos_A'], axis1Label='Pos (mm)', dataName='SetPos_A', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdPos_A'], axis1Label='Pos (mm)', dataName='CmdPos_A', shareAxes=self.ShareAxes.Time, newFig=False)
-                self.ShareAxes.Time = self.Plot1D(self.Data['ActPos_A'], axis1Label='Pos (mm)', dataName='ActPos_A', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetPos_A'], axisName_1='Pos (mm)', dataName='SetPos_A', shareAxes=self.ShareAxes.Time, figureName='Pos_A', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdPos_A'], axisName_1='Pos (mm)', dataName='CmdPos_A', shareAxes=self.ShareAxes.Time, figureName='Pos_A', newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['ActPos_A'], axisName_1='Pos (mm)', dataName='ActPos_A', shareAxes=self.ShareAxes.Time, figureName='Pos_A', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Pos_A\033[0m')
         #Vel_A
-        if self.PlotFlag.Vel_A == True:
+        if self.Plot.Vel_A == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetVel_A'], axis1Label='Vel (mm/min)', dataName='SetVel_A', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdVel_A'], axis1Label='Vel (mm/min)', dataName='CmdVel_A', shareAxes=self.ShareAxes.Time, newFig=False)
-                self.ShareAxes.Time = self.Plot1D(self.Data['ActVel_A'], axis1Label='Vel (mm/min)', dataName='ActVel_A', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetVel_A'], axisName_1='Vel (mm/min)', dataName='SetVel_A', shareAxes=self.ShareAxes.Time, figureName='Vel_A', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdVel_A'], axisName_1='Vel (mm/min)', dataName='CmdVel_A', shareAxes=self.ShareAxes.Time, figureName='Vel_A', newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['ActVel_A'], axisName_1='Vel (mm/min)', dataName='ActVel_A', shareAxes=self.ShareAxes.Time, figureName='Vel_A', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Vel_A\033[0m')
         #Acc_A
-        if self.PlotFlag.Acc_A == True:
+        if self.Plot.Acc_A == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetAcc_A'], axis1Label='Acc (m/s^2)', dataName='SetAcc_A', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdAcc_A'], axis1Label='Acc (m/s^2)', dataName='CmdAcc_A', shareAxes=self.ShareAxes.Time, newFig=False)
-                self.ShareAxes.Time = self.Plot1D(self.Data['ActAcc_A'], axis1Label='Acc (m/s^2)', dataName='ActAcc_A', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetAcc_A'], axisName_1='Acc (m/s^2)', dataName='SetAcc_A', shareAxes=self.ShareAxes.Time, figureName='Acc_A', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdAcc_A'], axisName_1='Acc (m/s^2)', dataName='CmdAcc_A', shareAxes=self.ShareAxes.Time, figureName='Acc_A', newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['ActAcc_A'], axisName_1='Acc (m/s^2)', dataName='ActAcc_A', shareAxes=self.ShareAxes.Time, figureName='Acc_A', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Acc_A\033[0m')
         # Jerk_A
-        if self.PlotFlag.Jerk_A == True:
+        if self.Plot.Jerk_A == True:
             try:
-                self.ShareAxes.Time = self.Plot1D(self.Data['SetJerk_A'], axis1Label='Jerk (m/s^3)', dataName='SetJerk_A', shareAxes=self.ShareAxes.Time, newFig=True)
-                self.ShareAxes.Time = self.Plot1D(self.Data['CmdJerk_A'], axis1Label='Jerk (m/s^3)', dataName='CmdJerk_A', shareAxes=self.ShareAxes.Time, newFig=False)
-                # self.ShareAxes.Time = self.Plot1D(self.Data['ActJerk_A'], axis1Label='Jerk (m/s^3)', dataName='ActJerk_A', shareAxes=self.ShareAxes.Time, newFig=False)
+                self.ShareAxes.Time = self.Plot1D(self.Data['SetJerk_A'], axisName_1='Jerk (m/s^3)', dataName='SetJerk_A', shareAxes=self.ShareAxes.Time, figureName='Jerk_A', newFig=True)
+                self.ShareAxes.Time = self.Plot1D(self.Data['CmdJerk_A'], axisName_1='Jerk (m/s^3)', dataName='CmdJerk_A', shareAxes=self.ShareAxes.Time, figureName='Jerk_A', newFig=False)
+                # self.ShareAxes.Time = self.Plot1D(self.Data['ActJerk_A'], axisName_1='Jerk (m/s^3)', dataName='ActJerk_A', shareAxes=self.ShareAxes.Time, figureName='Jerk_A', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Jerk_A\033[0m')
 
         # ---------------------------------Plot 2D---------------------------------- #
         # XY
-        if self.PlotFlag.XY == True:
+        if self.Plot.XY == True:
             try:
-                self.ShareAxes.XY = self.Plot2D(self.Data['SetPos_X'], self.Data['SetPos_Y'], axis1Label='X (mm)', axis2Label='Y (mm)', dataName='SetPos', shareAxes=self.ShareAxes.XY, newFig=True)
-                self.ShareAxes.XY = self.Plot2D(self.Data['CmdPos_X'], self.Data['CmdPos_Y'], axis1Label='X (mm)', axis2Label='Y (mm)', dataName='CmdPos', shareAxes=self.ShareAxes.XY, newFig=False)
-                self.ShareAxes.XY = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Y'], axis1Label='X (mm)', axis2Label='Y (mm)', dataName='ActPos', shareAxes=self.ShareAxes.XY, newFig=False)
+                self.ShareAxes.XY = self.Plot2D(self.Data['SetPos_X'], self.Data['SetPos_Y'], axisName_1='X (mm)', axisName_2='Y (mm)', dataName='SetPos', shareAxes=self.ShareAxes.XY, figureName='XY', newFig=True)
+                self.ShareAxes.XY = self.Plot2D(self.Data['CmdPos_X'], self.Data['CmdPos_Y'], axisName_1='X (mm)', axisName_2='Y (mm)', dataName='CmdPos', shareAxes=self.ShareAxes.XY, figureName='XY', newFig=False)
+                self.ShareAxes.XY = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Y'], axisName_1='X (mm)', axisName_2='Y (mm)', dataName='ActPos', shareAxes=self.ShareAxes.XY, figureName='XY', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XY\033[0m')
         # XY with BlockNo
-        if self.PlotFlag.XY_BlockNo == True:
+        if self.Plot.XY_BlockNo == True:
             try:
                 color = self.Data['BlockNo']
-                self.ShareAxes.XY = self.Plot2D(self.Data['SetPos_X'], self.Data['SetPos_Y'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', colorLabel='BlockNo', shareAxes=self.ShareAxes.XY, newFig=True)
+                self.ShareAxes.XY = self.Plot2D(self.Data['SetPos_X'], self.Data['SetPos_Y'], color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='BlockNo', shareAxes=self.ShareAxes.XY, figureName='XY_BlockNo', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError BlockNo\033[0m')
         # XY with Time
-        if self.PlotFlag.XY_Time == True:
+        if self.Plot.XY_Time == True:
             try:
                 color = self.Data['Time']
-                self.ShareAxes.XY = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Y'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', colorLabel='Time (s)', shareAxes=self.ShareAxes.XY, newFig=True)
+                self.ShareAxes.XY = self.Plot2D(self.Data['CmdPos_X'], self.Data['CmdPos_Y'], color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='Time (s)', shareAxes=self.ShareAxes.XY, figureName='XY_Time', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XY_Time\033[0m')
         #XY with PathVel
-        if self.PlotFlag.XY_PathVel == True:
+        if self.Plot.XY_PathVel == True:
             try:
                 color = self.Data['CmdPathVel']
-                self.ShareAxes.XY = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Y'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', colorLabel='PathVel (mm/min)', shareAxes=self.ShareAxes.XY, newFig=True)
+                self.ShareAxes.XY = self.Plot2D(self.Data['CmdPos_X'], self.Data['CmdPos_Y'], color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='PathVel (mm/min)', shareAxes=self.ShareAxes.XY, figureName='XY_PathVel', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XY_PathVel\033[0m')
         #XY with PathAcc
-        if self.PlotFlag.XY_PathAcc == True:
+        if self.Plot.XY_PathAcc == True:
             try:
                 color = self.Data['CmdPathAcc']
-                self.ShareAxes.XY = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Y'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', colorLabel='PathAcc (m/s^2)', shareAxes=self.ShareAxes.XY, newFig=True)
+                self.ShareAxes.XY = self.Plot2D(self.Data['CmdPos_X'], self.Data['CmdPos_Y'], color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='PathAcc (m/s^2)', shareAxes=self.ShareAxes.XY, figureName='XY_PathAcc', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XY_PathAcc\033[0m')
         #XY with PathJerk
-        if self.PlotFlag.XY_PathJerk == True:
+        if self.Plot.XY_PathJerk == True:
             try:
                 color = self.Data['CmdPathJerk']
-                self.ShareAxes.XY = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Y'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', colorLabel='PathJerk (m/s^3)', shareAxes=self.ShareAxes.XY, newFig=True)
+                self.ShareAxes.XY = self.Plot2D(self.Data['CmdPos_X'], self.Data['CmdPos_Y'], color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='PathJerk (m/s^3)', shareAxes=self.ShareAxes.XY, figureName='XY_PathJerk', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XY_PathJerk\033[0m')
-        #XY with FollowPosErr
-        if self.PlotFlag.XY_FollowPosErr == True:
+        #XY with PosErr
+        if self.Plot.XY_PosErr == True:
             try:
-                PosErrX = self.Data['CmdPos_X'] - self.Data['ActPos_X']
-                PosErrY = self.Data['CmdPos_Y'] - self.Data['ActPos_Y']
-                PosErrZ = self.Data['CmdPos_Z'] - self.Data['ActPos_Z']
-                PosErr = np.sqrt(PosErrX ** 2 + PosErrY ** 2 + PosErrZ ** 2)
-                color = PosErr
-                self.ShareAxes.XY = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Y'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', colorLabel='FollowPosErr (mm)', shareAxes=self.ShareAxes.XY, newFig=True)
+                if self.Data['PosErr'].__len__() != 0:
+                    color = self.Data['PosErr']
+                    self.ShareAxes.XY = self.Plot2D(self.Data['CmdPos_X'], self.Data['CmdPos_Y'], color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='PosErr (mm)', shareAxes=self.ShareAxes.XY, figureName='XY_PosErr', newFig=True)
             except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XY_FollowPosErr\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XY_PosErr\033[0m')
         
         # YZ
-        if self.PlotFlag.YZ == True:
+        if self.Plot.YZ == True:
             try:
-                self.ShareAxes.YZ = self.Plot2D(self.Data['SetPos_Y'], self.Data['SetPos_Z'], axis1Label='Y (mm)', axis2Label='Z (mm)', dataName='SetPos', shareAxes=self.ShareAxes.YZ, newFig=True)
-                self.ShareAxes.YZ = self.Plot2D(self.Data['CmdPos_Y'], self.Data['CmdPos_Z'], axis1Label='Y (mm)', axis2Label='Z (mm)', dataName='CmdPos', shareAxes=self.ShareAxes.YZ, newFig=False)
-                self.ShareAxes.YZ = self.Plot2D(self.Data['ActPos_Y'], self.Data['ActPos_Z'], axis1Label='Y (mm)', axis2Label='Z (mm)', dataName='ActPos', shareAxes=self.ShareAxes.YZ, newFig=False)
+                self.ShareAxes.YZ = self.Plot2D(self.Data['SetPos_Y'], self.Data['SetPos_Z'], axisName_1='Y (mm)', axisName_2='Z (mm)', dataName='SetPos', shareAxes=self.ShareAxes.YZ, figureName='YZ', newFig=True)
+                self.ShareAxes.YZ = self.Plot2D(self.Data['CmdPos_Y'], self.Data['CmdPos_Z'], axisName_1='Y (mm)', axisName_2='Z (mm)', dataName='CmdPos', shareAxes=self.ShareAxes.YZ, figureName='YZ', newFig=False)
+                self.ShareAxes.YZ = self.Plot2D(self.Data['ActPos_Y'], self.Data['ActPos_Z'], axisName_1='Y (mm)', axisName_2='Z (mm)', dataName='ActPos', shareAxes=self.ShareAxes.YZ, figureName='YZ', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ\033[0m')
         # YZ with BlockNo
-        if self.PlotFlag.YZ_BlockNo == True:
+        if self.Plot.YZ_BlockNo == True:
             try:
                 color = self.Data['BlockNo']
-                self.ShareAxes.YZ = self.Plot2D(self.Data['SetPos_Y'], self.Data['SetPos_Z'], color=color, axis1Label='Y (mm)', axis2Label='Z (mm)', colorLabel='BlockNo', shareAxes=self.ShareAxes.YZ, newFig=True)
+                self.ShareAxes.YZ = self.Plot2D(self.Data['SetPos_Y'], self.Data['SetPos_Z'], color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='BlockNo', shareAxes=self.ShareAxes.YZ, figureName='YZ_BlockNo', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_BlockNo\033[0m')
         # YZ with Time
-        if self.PlotFlag.YZ_Time == True:
+        if self.Plot.YZ_Time == True:
             try:
                 color = self.Data['Time']
-                self.ShareAxes.YZ = self.Plot2D(self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='Y (mm)', axis2Label='Z (mm)', colorLabel='Time (s)', shareAxes=self.ShareAxes.YZ, newFig=True)
+                self.ShareAxes.YZ = self.Plot2D(self.Data['CmdPos_Y'], self.Data['CmdPos_Z'], color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='Time (s)', shareAxes=self.ShareAxes.YZ, figureName='YZ_Time', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_Time\033[0m')
         #YZ with PathVel
-        if self.PlotFlag.YZ_PathVel == True:
+        if self.Plot.YZ_PathVel == True:
             try:
                 color = self.Data['CmdPathVel']
-                self.ShareAxes.YZ = self.Plot2D(self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='Y (mm)', axis2Label='Z (mm)', colorLabel='PathVel (mm/min)', shareAxes=self.ShareAxes.YZ, newFig=True)
+                self.ShareAxes.YZ = self.Plot2D(self.Data['CmdPos_Y'], self.Data['CmdPos_Z'], color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='PathVel (mm/min)', shareAxes=self.ShareAxes.YZ, figureName='YZ_PathVel', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathVel\033[0m')
         #YZ with PathAcc
-        if self.PlotFlag.YZ_PathAcc == True:
+        if self.Plot.YZ_PathAcc == True:
             try:
                 color = self.Data['CmdPathAcc']
-                self.ShareAxes.YZ = self.Plot2D(self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='Y (mm)', axis2Label='Z (mm)', colorLabel='PathAcc (m/s^2)', shareAxes=self.ShareAxes.YZ, newFig=True)
+                self.ShareAxes.YZ = self.Plot2D(self.Data['CmdPos_Y'], self.Data['CmdPos_Z'], color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='PathAcc (m/s^2)', shareAxes=self.ShareAxes.YZ, figureName='YZ_PathAcc', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathAcc\033[0m')
         #YZ with PathJerk
-        if self.PlotFlag.YZ_PathJerk == True:
+        if self.Plot.YZ_PathJerk == True:
             try:
                 color = self.Data['CmdPathJerk']
-                self.ShareAxes.YZ = self.Plot2D(self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='Y (mm)', axis2Label='Z (mm)', colorLabel='PathJerk (m/s^3)', shareAxes=self.ShareAxes.YZ, newFig=True)
+                self.ShareAxes.YZ = self.Plot2D(self.Data['CmdPos_Y'], self.Data['CmdPos_Z'], color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='PathJerk (m/s^3)', shareAxes=self.ShareAxes.YZ, figureName='YZ_PathJerk', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathJerk\033[0m')
-        #YZ with FollowPosErr
-        if self.PlotFlag.YZ_FollowPosErr == True:
+        #YZ with PosErr
+        if self.Plot.YZ_PosErr == True:
             try:
-                PosErrY = self.Data['CmdPos_X'] - self.Data['ActPos_X']
-                PosErrY = self.Data['CmdPos_Y'] - self.Data['ActPos_Y']
-                PosErrZ = self.Data['CmdPos_Z'] - self.Data['ActPos_Z']
-                PosErr = np.sqrt(PosErrX ** 2 + PosErrY ** 2 + PosErrZ ** 2)
-                color = PosErr
-                self.ShareAxes.YZ = self.Plot2D(self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='Y (mm)', axis2Label='Z (mm)', colorLabel='FollowPosErr (mm)', shareAxes=self.ShareAxes.YZ, newFig=True)
+                if self.Data['PosErr'].__len__() != 0:
+                    color = self.Data['PosErr']
+                    self.ShareAxes.YZ = self.Plot2D(self.Data['CmdPos_Y'], self.Data['CmdPos_Z'], color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='PosErr (mm)', shareAxes=self.ShareAxes.YZ, figureName='YZ_PosErr', newFig=True)
             except:
-                print('\033[1;34m\nPlotData: \033[1;31mError YZ_FollowPosErr\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ_PosErr\033[0m')
 
         # XZ
-        if self.PlotFlag.XZ == True:
+        if self.Plot.XZ == True:
             try:
-                self.ShareAxes.XZ = self.Plot2D(self.Data['SetPos_X'], self.Data['SetPos_Z'], axis1Label='X (mm)', axis2Label='Z (mm)', dataName='SetPos', shareAxes=self.ShareAxes.XZ, newFig=True)
-                self.ShareAxes.XZ = self.Plot2D(self.Data['CmdPos_X'], self.Data['CmdPos_Z'], axis1Label='X (mm)', axis2Label='Z (mm)', dataName='CmdPos', shareAxes=self.ShareAxes.XZ, newFig=False)
-                self.ShareAxes.XZ = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Z'], axis1Label='X (mm)', axis2Label='Z (mm)', dataName='ActPos', shareAxes=self.ShareAxes.XZ, newFig=False)
+                self.ShareAxes.XZ = self.Plot2D(self.Data['SetPos_X'], self.Data['SetPos_Z'], axisName_1='X (mm)', axisName_2='Z (mm)', dataName='SetPos', shareAxes=self.ShareAxes.XZ, figureName='XZ', newFig=True)
+                self.ShareAxes.XZ = self.Plot2D(self.Data['CmdPos_X'], self.Data['CmdPos_Z'], axisName_1='X (mm)', axisName_2='Z (mm)', dataName='CmdPos', shareAxes=self.ShareAxes.XZ, figureName='XZ', newFig=False)
+                self.ShareAxes.XZ = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Z'], axisName_1='X (mm)', axisName_2='Z (mm)', dataName='ActPos', shareAxes=self.ShareAxes.XZ, figureName='XZ', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ\033[0m')
         # XZ with BlockNo
-        if self.PlotFlag.XZ_BlockNo == True:
+        if self.Plot.XZ_BlockNo == True:
             try:
                 color = self.Data['BlockNo']
-                self.ShareAxes.XZ = self.Plot2D(self.Data['SetPos_X'], self.Data['SetPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Z (mm)', colorLabel='BlockNo', shareAxes=self.ShareAxes.XZ, newFig=True)
+                self.ShareAxes.XZ = self.Plot2D(self.Data['SetPos_X'], self.Data['SetPos_Z'], color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='BlockNo', shareAxes=self.ShareAxes.XZ, figureName='XZ_BlockNo', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ_BlockNo\033[0m')
         # XZ with Time
-        if self.PlotFlag.XZ_Time == True:
+        if self.Plot.XZ_Time == True:
             try:
                 color = self.Data['Time']
-                self.ShareAxes.XZ = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Z (mm)', colorLabel='Time (s)', shareAxes=self.ShareAxes.XZ, newFig=True)
+                self.ShareAxes.XZ = self.Plot2D(self.Data['CmdPos_X'], self.Data['CmdPos_Z'], color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='Time (s)', shareAxes=self.ShareAxes.XZ, figureName='XZ_Time', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ_Time\033[0m')
         #XZ with PathVel
-        if self.PlotFlag.XZ_PathVel == True:
+        if self.Plot.XZ_PathVel == True:
             try:
                 color = self.Data['CmdPathVel']
-                self.ShareAxes.XZ = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Z (mm)', colorLabel='PathVel (mm/min)', shareAxes=self.ShareAxes.XZ, newFig=True)
+                self.ShareAxes.XZ = self.Plot2D(self.Data['CmdPos_X'], self.Data['CmdPos_Z'], color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='PathVel (mm/min)', shareAxes=self.ShareAxes.XZ, figureName='XZ_PathVel', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathVel\033[0m')
         #XZ with PathAcc
-        if self.PlotFlag.XZ_PathAcc == True:
+        if self.Plot.XZ_PathAcc == True:
             try:
                 color = self.Data['CmdPathAcc']
-                self.ShareAxes.XZ = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Z (mm)', colorLabel='PathAcc (m/s^2)', shareAxes=self.ShareAxes.XZ, newFig=True)
+                self.ShareAxes.XZ = self.Plot2D(self.Data['CmdPos_X'], self.Data['CmdPos_Z'], color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='PathAcc (m/s^2)', shareAxes=self.ShareAxes.XZ, figureName='XZ_PathAcc', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathAcc\033[0m')
         #XZ with PathJerk
-        if self.PlotFlag.XZ_PathJerk == True:
+        if self.Plot.XZ_PathJerk == True:
             try:
                 color = self.Data['CmdPathJerk']
-                self.ShareAxes.XZ = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Z (mm)', colorLabel='PathJerk (m/s^3)', shareAxes=self.ShareAxes.XZ, newFig=True)
+                self.ShareAxes.XZ = self.Plot2D(self.Data['CmdPos_X'], self.Data['CmdPos_Z'], color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='PathJerk (m/s^3)', shareAxes=self.ShareAxes.XZ, figureName='XZ_PathJerk', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathJerk\033[0m')
-        #XZ with FollowPosErr
-        if self.PlotFlag.XZ_FollowPosErr == True:
+        #XZ with PosErr
+        if self.Plot.XZ_PosErr == True:
             try:
-                PosErrX = self.Data['CmdPos_X'] - self.Data['ActPos_X']
-                PosErrY = self.Data['CmdPos_Y'] - self.Data['ActPos_Y']
-                PosErrZ = self.Data['CmdPos_Z'] - self.Data['ActPos_Z']
-                PosErr = np.sqrt(PosErrX ** 2 + PosErrY ** 2 + PosErrZ ** 2)
-                color = PosErr
-                self.ShareAxes.XZ = self.Plot2D(self.Data['ActPos_X'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Z (mm)', colorLabel='FollowPosErr (mm)', shareAxes=self.ShareAxes.XZ, newFig=True)
+                if self.Data['PosErr'].__len__() != 0:
+                    color = self.Data['PosErr']
+                    self.ShareAxes.XZ = self.Plot2D(self.Data['CmdPos_X'], self.Data['CmdPos_Z'], color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='PosErr (mm)', shareAxes=self.ShareAxes.XZ, figureName='XZ_PosErr', newFig=True)
             except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XZ_FollowPosErr\033[0m')
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ_PosErr\033[0m')
 
         # ---------------------------------Plot 3D---------------------------------- #
         #XYZ
-        if self.PlotFlag.XYZ == True:
+        if self.Plot.XYZ == True:
             try:
-                self.Plot3D(self.Data['SetPos_X'], self.Data['SetPos_Y'], self.Data['SetPos_Z'], axis1Label='X (mm)', axis2Label='Y (mm)', axis3Label='Z (mm)', dataName='SetPos', newFig=True)
-                self.Plot3D(self.Data['CmdPos_X'], self.Data['CmdPos_Y'], self.Data['CmdPos_Z'], axis1Label='X (mm)', axis2Label='Y (mm)', axis3Label='Z (mm)', dataName='CmdPos', newFig=False)
-                self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], axis1Label='X (mm)', axis2Label='Y (mm)', axis3Label='Z (mm)', dataName='ActPos', newFig=False)
+                self.Plot3D(self.Data['SetPos_X'], self.Data['SetPos_Y'], self.Data['SetPos_Z'], axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', dataName='SetPos', figureName='XYZ', newFig=True)
+                self.Plot3D(self.Data['CmdPos_X'], self.Data['CmdPos_Y'], self.Data['CmdPos_Z'], axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', dataName='CmdPos', figureName='XYZ', newFig=False)
+                self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', dataName='ActPos', figureName='XYZ', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XYZ\033[0m')
 
         #XYZ with Time
-        if self.PlotFlag.XYZ_Time == True:
+        if self.Plot.XYZ_Time == True:
             try:
                 color = self.Data['Time']
-                self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', axis3Label='Z (mm)', colorLabel='Time (s)', newFig=True)
+                self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='Time (s)', figureName='XYZ_Time', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XYZ_Time\033[0m')
 
         #XYZ with Z
-        if self.PlotFlag.XYZ_Z == True:
+        if self.Plot.XYZ_Z == True:
             try:
                 color = self.Data['ActPos_Z']
-                self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', axis3Label='Z (mm)', colorLabel='Z (mm)', newFig=True)
+                self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='Z (mm)', figureName='XYZ_Z', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XYZ_Z\033[0m')
 
         #XYZ with CmdPathVel
-        if self.PlotFlag.XYZ_PathVel == True:
+        if self.Plot.XYZ_PathVel == True:
             try:
                 color = self.Data['CmdPathVel']
-                self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', axis3Label='Z (mm)', colorLabel='PathVel (mm/min)', newFig=True)
+                self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='PathVel (mm/min)', figureName='XYZ_PathVel', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XYZ_PathVel\033[0m')
 
         #XYZ with CmdPathAcc
-        if self.PlotFlag.XYZ_PathAcc == True:
+        if self.Plot.XYZ_PathAcc == True:
             try:
                 color = self.Data['CmdPathAcc']
-                self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', axis3Label='Z (mm)', colorLabel='PathAcc (m/s^2)', newFig=True)
+                self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='PathAcc (m/s^2)', figureName='XYZ_PathAcc', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XYZ_PathAcc\033[0m')
 
         #XYZ with CmdPathJerk
-        if self.PlotFlag.XYZ_PathJerk == True:
+        if self.Plot.XYZ_PathJerk == True:
             try:
                 color = self.Data['CmdPathJerk']
-                self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axis1Label='X (mm)', axis2Label='Y (mm)', axis3Label='Z (mm)', colorLabel='PathJerk (m/s^3)', newFig=True)
+                self.Plot3D(self.Data['ActPos_X'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='PathJerk (m/s^3)', figureName='XYZ_PathJerk', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XYZ_PathJerk\033[0m')
 
         # ----------------------------Plot Circle Error----------------------------- #
         # circular error of XY
-        if self.PlotFlag.CircleErr_XY == True:
+        if self.Plot.CircleErr_XY == True:
             try:
                 Center1 = (max(self.Data['SetPos_X']) + min(self.Data['SetPos_X'])) / 2
                 Center2 = (max(self.Data['SetPos_Y']) + min(self.Data['SetPos_Y'])) / 2
                 R_MaxErr = 0.05
                 R = (max(self.Data['SetPos_X']) - min(self.Data['SetPos_X'])) / 2
-                self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data['CmdPos_X'], self.Data['CmdPos_Y'], self.Data['ActPos_X'], self.Data['ActPos_Y'], F=None)
+                self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data['CmdPos_X'], self.Data['CmdPos_Y'], self.Data['ActPos_X'], self.Data['ActPos_Y'], F=None, figureName='CircleErr_XY')
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_XY\033[0m')
 
         # circular error of YZ
-        if self.PlotFlag.CircleErr_YZ == True:
+        if self.Plot.CircleErr_YZ == True:
             try:
                 Center1 = (max(self.Data['SetPos_Y']) + min(self.Data['SetPos_Y'])) / 2
                 Center2 = (max(self.Data['SetPos_Z']) + min(self.Data['SetPos_Z'])) / 2
                 R_MaxErr = 0.05
                 R = (max(self.Data['SetPos_Y']) - min(self.Data['SetPos_Y'])) / 2
-                self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data['CmdPos_Y'], self.Data['CmdPos_Z'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], F=None)
+                self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data['CmdPos_Y'], self.Data['CmdPos_Z'], self.Data['ActPos_Y'], self.Data['ActPos_Z'], F=None, figureName='CircleErr_YZ')
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_YZ\033[0m')
 
         # circular error of XZ
-        if self.PlotFlag.CircleErr_XZ == True:
+        if self.Plot.CircleErr_XZ == True:
             try:
                 Center1 = (max(self.Data['SetPos_X']) + min(self.Data['SetPos_X'])) / 2
                 Center2 = (max(self.Data['SetPos_Z']) + min(self.Data['SetPos_Z'])) / 2
                 R_MaxErr = 0.05
                 R = (max(self.Data['SetPos_X']) - min(self.Data['SetPos_X'])) / 2
-                self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data['CmdPos_X'], self.Data['CmdPos_Z'], self.Data['ActPos_X'], self.Data['ActPos_Z'], F=None)
+                self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data['CmdPos_X'], self.Data['CmdPos_Z'], self.Data['ActPos_X'], self.Data['ActPos_Z'], F=None, figureName='CircleErr_XZ')
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_XZ\033[0m')
 
@@ -633,13 +622,13 @@ class PA_Class:
     ##################################################################################
     # ----------------------------------Plot 1D Data-------------------------------- #
     ##################################################################################
-    def Plot1D(self, x, axis1Label=None, dataName=None, shareAxes=None, newFig=True, title=None, mark='.-', tLimit=None, xLimit=None):
+    def Plot1D(self, x, axisName_1=None, dataName=None, shareAxes=None, newFig=True, title=None, mark='.-', tLimit=None, xLimit=None, figureName=''):
         plt.rcParams['font.family'] = 'Microsoft YaHei'
         x = np.array(x)
         if newFig:
             self.FigNum += 1
             print('')
-        sys.stdout.write("\033[1;34m\rPlotData: \033[0mFigure %2d Drawning\033[0m" % self.FigNum)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDrawning Figure %2d  %s\033[0m" % (self.FigNum, figureName))
         fig = plt.figure(self.FigNum)
         if newFig:
             fig.clf()
@@ -649,7 +638,7 @@ class PA_Class:
             ax = fig.get_axes()[0]
         ax.plot(self.Data['Time'], x, mark, label=dataName, alpha=0.7)
         ax.set_xlabel('Time (s)')
-        ax.set_ylabel(axis1Label)
+        ax.set_ylabel(axisName_1)
         if dataName != None:
             ax.legend(loc="upper right")
         if title != None:
@@ -664,14 +653,14 @@ class PA_Class:
         plt.ion()
         plt.draw()
         plt.pause(0.001)
-        sys.stdout.write("\033[1;34m\rPlotData: \033[0mFigure %2d \033[1;32mDone      \033[0m" % self.FigNum)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
         plt.ioff()
         return ax
 
     ##################################################################################
     # ----------------------------------Plot 2D Data-------------------------------- #
     ##################################################################################
-    def Plot2D(self, x, y, color=None, axis1Label=None, axis2Label=None, colorLabel=None, dataName=None, shareAxes=None, newFig=True, title=None, mark='.-', xLimit=None, yLimit=None):
+    def Plot2D(self, x, y, color=None, axisName_1=None, axisName_2=None, colorName=None, dataName=None, shareAxes=None, newFig=True, title=None, mark='.-', xLimit=None, yLimit=None, figureName=''):
         plt.rcParams['font.family'] = 'Microsoft YaHei'
         try:
             len = min(color.__len__(), x.__len__(), y.__len__())
@@ -685,7 +674,7 @@ class PA_Class:
         if newFig:
             self.FigNum += 1
             print('')
-        sys.stdout.write("\033[1;34m\rPlotData: \033[0mFigure %2d Drawning\033[0m" % self.FigNum)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDrawning Figure %2d  %s\033[0m" % (self.FigNum, figureName))
         fig = plt.figure(self.FigNum)
         if newFig:
             fig.clf()
@@ -695,13 +684,13 @@ class PA_Class:
             ax = fig.get_axes()[0]
         if colorFlag:
             scatter = ax.scatter(x, y, c=color, label=dataName, alpha=0.7, cmap='coolwarm')
-            if colorLabel != None:
+            if colorName != None:
                 cbar = plt.colorbar(scatter)
-                cbar.set_label(colorLabel)
+                cbar.set_label(colorName)
         else:
             ax.plot(x, y, mark, label=dataName, alpha=0.7)
-        ax.set_xlabel(axis1Label)
-        ax.set_ylabel(axis2Label)
+        ax.set_xlabel(axisName_1)
+        ax.set_ylabel(axisName_2)
         if dataName != None:
             ax.legend(loc="upper right")
         if title != None:
@@ -716,14 +705,14 @@ class PA_Class:
         plt.ion()
         plt.draw()
         plt.pause(0.001)
-        sys.stdout.write("\033[1;34m\rPlotData: \033[0mFigure %2d \033[1;32mDone      \033[0m" % self.FigNum)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
         plt.ioff()
         return ax
 
     ##################################################################################
     # ----------------------------------Plot 3D Data-------------------------------- #
     ##################################################################################
-    def Plot3D(self, x, y, z, color=None, axis1Label=None, axis2Label=None, axis3Label=None, colorLabel=None, dataName=None, newFig=True, title=None, mark='-', xLimit=None, yLimit=None, zLimit=None):
+    def Plot3D(self, x, y, z, color=None, axisName_1=None, axisName_2=None, axisName_3=None, colorName=None, dataName=None, newFig=True, title=None, mark='-', xLimit=None, yLimit=None, zLimit=None, figureName=''):
         plt.rcParams['font.family'] = 'Microsoft YaHei'
         try:
             len = min(color.__len__(), x.__len__(), y.__len__(), z.__len__())
@@ -738,7 +727,7 @@ class PA_Class:
         if newFig:
             self.FigNum += 1
             print('')
-        sys.stdout.write("\033[1;34m\rPlotData: \033[0mFigure %2d Drawning\033[0m" % self.FigNum)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDrawning Figure %2d  %s\033[0m" % (self.FigNum, figureName))
         fig = plt.figure(self.FigNum)
         if newFig:
             fig.clf()
@@ -747,14 +736,14 @@ class PA_Class:
         #ax = fig.gca(projection='3d')
         if colorFlag:
             scatter = ax.scatter3D(x, y, z, c=color, label=dataName, alpha=0.7, cmap='coolwarm')
-            if colorLabel != None:
+            if colorName != None:
                 cbar = plt.colorbar(scatter)
-                cbar.set_label(colorLabel)
+                cbar.set_label(colorName)
         else:
             ax.plot3D(x, y, z, mark, label=dataName, alpha=0.7)
-        ax.set_xlabel(axis1Label)
-        ax.set_ylabel(axis2Label)
-        ax.set_zlabel(axis3Label)
+        ax.set_xlabel(axisName_1)
+        ax.set_ylabel(axisName_2)
+        ax.set_zlabel(axisName_3)
         if dataName != None:
             ax.legend(loc="upper right")
         if title != None:
@@ -771,14 +760,14 @@ class PA_Class:
         plt.ion()
         plt.draw()
         plt.pause(0.001)
-        sys.stdout.write("\033[1;34m\rPlotData: \033[0mFigure %2d \033[1;32mDone      \033[0m" % self.FigNum)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
         plt.ioff()
         return None
 
     ##################################################################################
     # -------------------------------Plot Circle Error------------------------------ #
     ##################################################################################
-    def PlotCircleError(self, R, R_MaxErr, Center1, Center2, CmdPos1_mm, CmdPos2_mm, ActPos1_mm, ActPos2_mm, F=None, title=None):
+    def PlotCircleError(self, R, R_MaxErr, Center1, Center2, CmdPos1_mm, CmdPos2_mm, ActPos1_mm, ActPos2_mm, F=None, title=None, figureName=''):
         R_Display = 2 * R_MaxErr
         R_DisplayStep = R_MaxErr / 3
         Len = CmdPos1_mm.__len__()
@@ -812,7 +801,7 @@ class PA_Class:
         dataName3 = 'ActPos(R=%.3fmm,Err=%.3fum)' % (np.mean(R_Act), np.mean(R_ActErr) * 1e3)
         dataName = [dataNmae1, dataName2, dataName3]
         
-        self.PlotPolar(Thtea, Radius, title=title, dataName=dataName, newFig=True)
+        self.PlotPolar(Thtea, Radius, title=title, dataName=dataName, newFig=True, figureName=figureName)
         plt.yticks(np.array(range(int((R_Display - R_MaxErr) * 1000), int((R_Display + R_MaxErr) * 1000), int(R_DisplayStep * 1000))) / 1000, np.array(range(int(-R_MaxErr * 1000), int(R_MaxErr * 1000), int(R_DisplayStep * 1000))))
         
         return None
@@ -820,7 +809,7 @@ class PA_Class:
     ##################################################################################
     # --------------------------------Plot Polar Data------------------------------- #
     ##################################################################################
-    def PlotPolar(self, Theta, Radius, title=None, dataName=None, mark='-', newFig=True):
+    def PlotPolar(self, Theta, Radius, title=None, dataName=None, mark='-', newFig=True, figureName=''):
         plt.rcParams['font.family'] = 'Microsoft YaHei'
         #len = min(Theta.__len__(), Radius.__len__())
         #Theta = np.array(Theta[:len])
@@ -828,7 +817,7 @@ class PA_Class:
         if newFig:
             self.FigNum += 1
             print('')
-        sys.stdout.write("\033[1;34m\rPlotData: \033[0mFigure %2d Drawning\033[0m" % self.FigNum)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDrawning Figure %2d  %s\033[0m" % (self.FigNum, figureName))
         fig = plt.figure(self.FigNum)
         if newFig:
             fig.clf()
@@ -842,7 +831,7 @@ class PA_Class:
         plt.ion()
         plt.draw()
         plt.pause(0.001)
-        sys.stdout.write("\033[1;34m\rPlotData: \033[0mFigure %2d \033[1;32mDone      \033[0m" % self.FigNum)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
         plt.ioff()
         return None
 
@@ -1001,26 +990,11 @@ class PA_Class:
         #Time
         if self.Ts > 0:
             self.Data['Time'] = np.array(range(0, self.Data['DataLen'])) * self.Ts + minTime
+            
         #BlockNo
         if self.ParamName_BlockNo in self.ParamName:
             self.Data['BlockNo'] = self.Data[self.ParamName_BlockNo]
-        #PathVel
-        if self.ParamName_SetPathVel in self.ParamName:
-            self.Data['SetPathVel'] = np.array(self.Data[self.ParamName_SetPathVel]) * self.Precision_um /1e3 / self.Ts * 60 # mm/min
-            self.Data['SetPathAcc'] = np.diff(self.Data['SetPathVel'] / 1e3 / 60) / self.Ts # m/s^2
-            self.Data['SetPathJerk'] = np.diff(self.Data['SetPathAcc']) / self.Ts # m/s^3
-            data = self.Data['SetPathAcc']; data = np.append(data, data[-1])
-            self.Data['SetPathAcc'] = data
-            data = self.Data['SetPathJerk']; data = np.append(data, data[-1]); data = np.append(data, data[-1])
-            self.Data['SetPathJerk'] = data
-        if self.ParamName_CmdPathVel in self.ParamName:
-            self.Data['CmdPathVel'] = np.array(self.Data[self.ParamName_CmdPathVel]) * self.Precision_um /1e3 / self.Ts * 60 # mm/min
-            self.Data['CmdPathAcc'] = np.diff(self.Data['CmdPathVel'] / 1e3 / 60) / self.Ts # m/s^2
-            self.Data['CmdPathJerk'] = np.diff(self.Data['CmdPathAcc']) / self.Ts # m/s^3
-            data = self.Data['CmdPathAcc']; data = np.append(data, data[-1])
-            self.Data['CmdPathAcc'] = data
-            data = self.Data['CmdPathJerk']; data = np.append(data, data[-1]); data = np.append(data, data[-1])
-            self.Data['CmdPathJerk'] = data
+            
         # X
         if self.ParamName_SetPos % (self.AxisID_X - 1) in self.ParamName:
             self.Data['SetPos_X'] = np.array(self.Data[self.ParamName_SetPos % (self.AxisID_X - 1)]) * self.Precision_um / 1e3 # mm
@@ -1055,6 +1029,7 @@ class PA_Class:
             self.Data['ActJerk_X'] = np.diff(np.diff(np.diff(self.Data['ActPos_X']))) / 1e3 / self.Ts / self.Ts / self.Ts # m/s^3
             data = self.Data['ActJerk_X']; data = np.append(data, data[-1]); data = np.append(data, data[-1]); data = np.append(data, data[-1])
             self.Data['ActJerk_X'] = data
+            
         # Y
         if self.ParamName_SetPos % (self.AxisID_Y - 1) in self.ParamName:
             self.Data['SetPos_Y'] = np.array(self.Data[self.ParamName_SetPos % (self.AxisID_Y - 1)]) * self.Precision_um / 1e3 # mm
@@ -1089,6 +1064,7 @@ class PA_Class:
             self.Data['ActJerk_Y'] = np.diff(np.diff(np.diff(self.Data['ActPos_Y']))) / 1e3 / self.Ts / self.Ts / self.Ts # m/s^3
             data = self.Data['ActJerk_Y']; data = np.append(data, data[-1]); data = np.append(data, data[-1]); data = np.append(data, data[-1])
             self.Data['ActJerk_Y'] = data
+            
         # Z
         if self.ParamName_SetPos % (self.AxisID_Z - 1) in self.ParamName:
             self.Data['SetPos_Z'] = np.array(self.Data[self.ParamName_SetPos % (self.AxisID_Z - 1)]) * self.Precision_um / 1e3 # mm
@@ -1123,6 +1099,7 @@ class PA_Class:
             self.Data['ActJerk_Z'] = np.diff(np.diff(np.diff(self.Data['ActPos_Z']))) / 1e3 / self.Ts / self.Ts / self.Ts # m/s^3
             data = self.Data['ActJerk_Z']; data = np.append(data, data[-1]); data = np.append(data, data[-1]); data = np.append(data, data[-1])
             self.Data['ActJerk_Z'] = data
+            
         # A
         if self.ParamName_SetPos % (self.AxisID_A - 1) in self.ParamName:
             self.Data['SetPos_A'] = np.array(self.Data[self.ParamName_SetPos % (self.AxisID_A - 1)]) * self.Precision_um / 1e3 # mm
@@ -1158,12 +1135,64 @@ class PA_Class:
             data = self.Data['ActJerk_A']; data = np.append(data, data[-1]); data = np.append(data, data[-1]); data = np.append(data, data[-1])
             self.Data['ActJerk_A'] = data
             
+        #PathVel
+        if self.ParamName_SetPathVel in self.ParamName:
+            self.Data['SetPathVel'] = np.array(self.Data[self.ParamName_SetPathVel]) * self.Precision_um /1e3 / self.Ts * 60 # mm/min
+            self.Data['SetPathAcc'] = np.diff(self.Data['SetPathVel'] / 1e3 / 60) / self.Ts # m/s^2
+            self.Data['SetPathJerk'] = np.diff(self.Data['SetPathAcc']) / self.Ts # m/s^3
+            data = self.Data['SetPathAcc']; data = np.append(data, data[-1])
+            self.Data['SetPathAcc'] = data
+            data = self.Data['SetPathJerk']; data = np.append(data, data[-1]); data = np.append(data, data[-1])
+            self.Data['SetPathJerk'] = data
+        if self.ParamName_CmdPathVel in self.ParamName:
+            self.Data['CmdPathVel'] = np.array(self.Data[self.ParamName_CmdPathVel]) * self.Precision_um /1e3 / self.Ts * 60 # mm/min
+            self.Data['CmdPathAcc'] = np.diff(self.Data['CmdPathVel'] / 1e3 / 60) / self.Ts # m/s^2
+            self.Data['CmdPathJerk'] = np.diff(self.Data['CmdPathAcc']) / self.Ts # m/s^3
+            data = self.Data['CmdPathAcc']; data = np.append(data, data[-1])
+            self.Data['CmdPathAcc'] = data
+            data = self.Data['CmdPathJerk']; data = np.append(data, data[-1]); data = np.append(data, data[-1])
+            self.Data['CmdPathJerk'] = data
+        data = 0;
+        if self.ParamName_SetPos % (self.AxisID_X - 1) in self.ParamName:
+            data += self.Data['ActVel_X'] ** 2
+        if self.ParamName_SetPos % (self.AxisID_Y - 1) in self.ParamName:
+            data += self.Data['ActVel_Y'] ** 2
+        if self.ParamName_SetPos % (self.AxisID_Z - 1) in self.ParamName:
+            data += self.Data['ActVel_Z'] ** 2
+        try:
+            self.Data['ActPathVel'] = np.sqrt(data) # mm/min
+        except:
+            self.Data['ActPathVel'] = []
+        if self.Data['ActPathVel'].__len__() != 0:
+            self.Data['ActPathAcc'] = np.diff(self.Data['ActPathVel']) / 1e3 / 60 / self.Ts # m/s^2
+            self.Data['ActPathJerk'] = np.diff(self.Data['ActPathAcc']) / self.Ts # m/s^3
+            data = self.Data['ActPathAcc']; data = np.append(data, data[-1])
+            self.Data['ActPathAcc'] = data
+            data = self.Data['ActPathJerk']; data = np.append(data, data[-1]); data = np.append(data, data[-1])
+            self.Data['ActPathJerk'] = data
+        else:
+            self.Data['ActPathAcc'] = []
+            self.Data['ActPathJerk'] = []
+            
+        #PosErr
+        data = 0
+        if self.ParamName_CmdPos % (self.AxisID_X - 1) in self.ParamName and self.ParamName_ActPos % (self.AxisID_X - 1) in self.ParamName:
+                data += (self.Data['CmdPos_X'] - self.Data['ActPos_X']) ** 2
+        if self.ParamName_CmdPos % (self.AxisID_Y - 1) in self.ParamName and self.ParamName_ActPos % (self.AxisID_Y - 1) in self.ParamName:
+                data += (self.Data['CmdPos_Y'] - self.Data['ActPos_Y']) ** 2
+        if self.ParamName_CmdPos % (self.AxisID_Z - 1) in self.ParamName and self.ParamName_ActPos % (self.AxisID_Z - 1) in self.ParamName:
+                data += (self.Data['CmdPos_Z'] - self.Data['ActPos_Z']) ** 2
+        try:
+            self.Data['PosErr'] = np.sqrt(data) # mm/min
+        except:
+            self.Data['PosErr'] = []
+        
         return None
     
     def ShowFigure(self):
         plt.show()
         
-    def AddDataInfo(self, *DataInfo, infoName = []):
+    def DataInfo(self, *DataInfo, infoName = []):
         if self.Data['DataLen'] == 0:
             return None
         figs = [plt.figure(Num) for Num in range(1, self.FigNum + 1)]
@@ -1214,6 +1243,7 @@ class PA_Class:
 print(__name__)
 if __name__ == '__main__':
     PA = PA_Class()
+    
     PA.DataFile = r'D:\汇川\采样数据\20210717_迈盛达\象限痕数据集\F2000D55N620.txt'
     PA.Ts = 0.001
     PA.BlockRange = [620, 630]
@@ -1221,65 +1251,70 @@ if __name__ == '__main__':
     PA.AxisID_X = 7
     PA.AxisID_Y = 1
     PA.AxisID_Z = 5
-
-    """
-    PA.PlotFlag.BlockNo         = True
-    PA.PlotFlag.PathVel         = True
-    PA.PlotFlag.PathAcc         = True
-    PA.PlotFlag.Pos_X           = True
-    PA.PlotFlag.Vel_X           = True
-    PA.PlotFlag.Acc_X           = True
-    PA.PlotFlag.Jerk_X          = True
-    PA.PlotFlag.Pos_Y           = True
-    PA.PlotFlag.Vel_Y           = True
-    PA.PlotFlag.Acc_Y           = True
-    PA.PlotFlag.Jerk_Y          = True
-    PA.PlotFlag.Pos_Z           = True
-    PA.PlotFlag.Vel_Z           = True
-    PA.PlotFlag.Acc_Z           = True
-    PA.PlotFlag.Jerk_Z          = True
-    PA.PlotFlag.XY              = True
-    PA.PlotFlag.XY_Time         = True
-    PA.PlotFlag.XY_BlockNo      = True
-    PA.PlotFlag.XY_PathVel      = True
-    PA.PlotFlag.XY_PathAcc      = True
-    PA.PlotFlag.XY_PathJerk     = True
-    PA.PlotFlag.XY_FollowPosErr = True
-    PA.PlotFlag.YZ              = True
-    PA.PlotFlag.YZ_Time         = True
-    PA.PlotFlag.YZ_BlockNo      = True
-    PA.PlotFlag.YZ_PathVel      = True
-    PA.PlotFlag.YZ_PathAcc      = True
-    PA.PlotFlag.YZ_PathJerk     = True
-    PA.PlotFlag.YZ_FollowPosErr = True
-    PA.PlotFlag.XZ              = True
-    PA.PlotFlag.XZ_Time         = True
-    PA.PlotFlag.XZ_BlockNo      = True
-    PA.PlotFlag.XZ_PathVel      = True
-    PA.PlotFlag.XZ_PathAcc      = True
-    PA.PlotFlag.XZ_PathJerk     = True
-    PA.PlotFlag.XZ_FollowPosErr = True
-    PA.PlotFlag.XYZ             = True
-    PA.PlotFlag.XYZ_Time        = True
-    PA.PlotFlag.XYZ_Z           = True
-    PA.PlotFlag.XYZ_PathVel     = True
-    PA.PlotFlag.XYZ_PathAcc     = True
-    PA.PlotFlag.XYZ_PathJerk    = True
-    PA.PlotFlag.CircleErr_XY    = True
-    PA.PlotFlag.CircleErr_YZ    = True
-    PA.PlotFlag.CircleErr_XZ    = True
-    """
-    
-    PA.PlotFlag.Pos_X           = True
-    PA.PlotFlag.XY              = True
-    PA.PlotFlag.XY_Time         = True
-    PA.PlotFlag.CircleErr_XY    = True
-    PA.PlotFlag.XYZ             = True
-    PA.PlotFlag.XYZ_Time        = True
     
     PA.LoadData()
+
+    """
+    PA.Plot.BlockNo         = True
+    PA.Plot.PathVel         = True
+    PA.Plot.PathAcc         = True
+    PA.Plot.Pos_X           = True
+    PA.Plot.Vel_X           = True
+    PA.Plot.Acc_X           = True
+    PA.Plot.Jerk_X          = True
+    PA.Plot.Pos_Y           = True
+    PA.Plot.Vel_Y           = True
+    PA.Plot.Acc_Y           = True
+    PA.Plot.Jerk_Y          = True
+    PA.Plot.Pos_Z           = True
+    PA.Plot.Vel_Z           = True
+    PA.Plot.Acc_Z           = True
+    PA.Plot.Jerk_Z          = True
+    PA.Plot.XY              = True
+    PA.Plot.XY_Time         = True
+    PA.Plot.XY_BlockNo      = True
+    PA.Plot.XY_PathVel      = True
+    PA.Plot.XY_PathAcc      = True
+    PA.Plot.XY_PathJerk     = True
+    PA.Plot.XY_PosErr       = True
+    PA.Plot.YZ              = True
+    PA.Plot.YZ_Time         = True
+    PA.Plot.YZ_BlockNo      = True
+    PA.Plot.YZ_PathVel      = True
+    PA.Plot.YZ_PathAcc      = True
+    PA.Plot.YZ_PathJerk     = True
+    PA.Plot.YZ_PosErr       = True
+    PA.Plot.XZ              = True
+    PA.Plot.XZ_Time         = True
+    PA.Plot.XZ_BlockNo      = True
+    PA.Plot.XZ_PathVel      = True
+    PA.Plot.XZ_PathAcc      = True
+    PA.Plot.XZ_PathJerk     = True
+    PA.Plot.XZ_PosErr       = True
+    PA.Plot.XYZ             = True
+    PA.Plot.XYZ_Time        = True
+    PA.Plot.XYZ_Z           = True
+    PA.Plot.XYZ_PathVel     = True
+    PA.Plot.XYZ_PathAcc     = True
+    PA.Plot.XYZ_PathJerk    = True
+    PA.Plot.CircleErr_XY    = True
+    PA.Plot.CircleErr_YZ    = True
+    PA.Plot.CircleErr_XZ    = True
+    """
+    
+    PA.Plot.PathVel         = True
+    PA.Plot.PathAcc         = True
+    PA.Plot.Pos_X           = True
+    PA.Plot.Vel_X           = True
+    PA.Plot.Acc_X           = True
+    PA.Plot.XY              = True
+    PA.Plot.XY_Time         = True
+    PA.Plot.CircleErr_XY    = True
+    PA.Plot.XYZ             = True
+    PA.Plot.XYZ_Time        = True
+    
     PA.PlotData()
-    PA.AddDataInfo(PA.Data['Time'], PA.Data['BlockNo'], infoName=['Time(s)', 'BlockNo'])
+    PA.DataInfo(PA.Data['Time'], PA.Data['BlockNo'], infoName=['Time(s)', 'BlockNo'])
     PA.ShowFigure()
     
     
