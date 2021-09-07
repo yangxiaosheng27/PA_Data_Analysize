@@ -174,6 +174,7 @@ class PA_Data_Anlyze:
         self.AxisID_Y       = 0  # 0 means no axis,1 means the first axis
         self.AxisID_Z       = 0  # 0 means no axis,1 means the first axis
         self.AxisID_A       = 0  # 0 means no axis,1 means the first axis
+        self.AxisID_B       = 0  # 0 means no axis,1 means the first axis
 
         ##################################################################################
         # -------------------------------Internal Param--------------------------------- #
@@ -222,6 +223,10 @@ class PA_Data_Anlyze:
         Vel_A           = False
         Acc_A           = False
         Jerk_A          = False
+        Pos_B           = False
+        Vel_B           = False
+        Acc_B           = False
+        Jerk_B          = False
         XY              = False
         XY_Time         = False
         XY_BlockNo      = False
@@ -441,6 +446,40 @@ class PA_Data_Anlyze:
                 # self.Plot1D(self.Data.ActJerk_A, axisName_1='Jerk (m/s^3)', dataName='ActJerk_A', shareAxes=self.ShareAxes.Time, figureName='Jerk_A', newFig=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Jerk_A\033[0m')
+
+        # B
+        #Pos_B
+        if self.Plot.Pos_B == True:
+            try:
+                self.Plot1D(self.Data.SetPos_B, axisName_1='Pos (mm)', dataName='SetPos_B', shareAxes=self.ShareAxes.Time, figureName='Pos_B', newFig=True)
+                self.Plot1D(self.Data.CmdPos_B, axisName_1='Pos (mm)', dataName='CmdPos_B', shareAxes=self.ShareAxes.Time, figureName='Pos_B', newFig=False)
+                self.Plot1D(self.Data.ActPos_B, axisName_1='Pos (mm)', dataName='ActPos_B', shareAxes=self.ShareAxes.Time, figureName='Pos_B', newFig=False)
+            except:
+                print('\033[1;34m\nPlotData: \033[1;31mError Pos_B\033[0m')
+        #Vel_B
+        if self.Plot.Vel_B == True:
+            try:
+                self.Plot1D(self.Data.SetVel_B, axisName_1='Vel (mm/min)', dataName='SetVel_B', shareAxes=self.ShareAxes.Time, figureName='Vel_B', newFig=True)
+                self.Plot1D(self.Data.CmdVel_B, axisName_1='Vel (mm/min)', dataName='CmdVel_B', shareAxes=self.ShareAxes.Time, figureName='Vel_B', newFig=False)
+                self.Plot1D(self.Data.ActVel_B, axisName_1='Vel (mm/min)', dataName='ActVel_B', shareAxes=self.ShareAxes.Time, figureName='Vel_B', newFig=False)
+            except:
+                print('\033[1;34m\nPlotData: \033[1;31mError Vel_B\033[0m')
+        #Acc_B
+        if self.Plot.Acc_B == True:
+            try:
+                self.Plot1D(self.Data.SetAcc_B, axisName_1='Acc (m/s^2)', dataName='SetAcc_B', shareAxes=self.ShareAxes.Time, figureName='Acc_B', newFig=True)
+                self.Plot1D(self.Data.CmdAcc_B, axisName_1='Acc (m/s^2)', dataName='CmdAcc_B', shareAxes=self.ShareAxes.Time, figureName='Acc_B', newFig=False)
+                self.Plot1D(self.Data.ActAcc_B, axisName_1='Acc (m/s^2)', dataName='ActAcc_B', shareAxes=self.ShareAxes.Time, figureName='Acc_B', newFig=False)
+            except:
+                print('\033[1;34m\nPlotData: \033[1;31mError Acc_B\033[0m')
+        # Jerk_B
+        if self.Plot.Jerk_B == True:
+            try:
+                self.Plot1D(self.Data.SetJerk_B, axisName_1='Jerk (m/s^3)', dataName='SetJerk_B', shareAxes=self.ShareAxes.Time, figureName='Jerk_B', newFig=True)
+                self.Plot1D(self.Data.CmdJerk_B, axisName_1='Jerk (m/s^3)', dataName='CmdJerk_B', shareAxes=self.ShareAxes.Time, figureName='Jerk_B', newFig=False)
+                # self.Plot1D(self.Data.ActJerk_B, axisName_1='Jerk (m/s^3)', dataName='ActJerk_B', shareAxes=self.ShareAxes.Time, figureName='Jerk_B', newFig=False)
+            except:
+                print('\033[1;34m\nPlotData: \033[1;31mError Jerk_B\033[0m')
 
         # ---------------------------------Plot 2D---------------------------------- #
         # XY
@@ -1054,9 +1093,9 @@ class PA_Data_Anlyze:
                 if BlockNoExistFlag:
                     if float(self.LineData[BlockNoIndex]) >= 1.23456789e308:
                         self.LineData[BlockNoIndex] = LastBlockNo
-                    if dataStartFlag == False and (Time + 1e-10) >= self.TimeRange[0] and float(self.LineData[BlockNoIndex]) >= self.BlockRange[0]:
+                    if dataStartFlag == False and Time >= self.TimeRange[0] and float(self.LineData[BlockNoIndex]) >= self.BlockRange[0]:
                         dataStartFlag = True
-                    if dataEndFlag == False and (((Time + 1e-10) > self.TimeRange[1] and self.TimeRange[1] > 0) or (float(self.LineData[BlockNoIndex]) > self.BlockRange[1] and self.BlockRange[1] > 0)):
+                    if dataEndFlag == False and ((Time > self.TimeRange[1] and self.TimeRange[1] > 0) or (float(self.LineData[BlockNoIndex]) > self.BlockRange[1] and self.BlockRange[1] > 0)):
                         dataEndFlag = True
                     if dataStartFlag == True and dataEndFlag == False:
                         for j in range(varNum):
@@ -1086,10 +1125,13 @@ class PA_Data_Anlyze:
                             minTime = min(minTime, float(Time))
                             maxTime = min(maxTime, float(Time))
                 Time += self.Ts
+                Time = round(Time, 6)
                 self.RemainingLineData = self.LineData[varNum:]
                 self.LineData = []
                 if self.RemainingLineData.__len__() < varNum:
                     break
+            if dataEndFlag == True:
+                break
         # ---------------------------output Data----------------------------------- #
         for i in range(varNum):
             self.Data.Var[self.DataName[i]] = np.array(self.Data.Var[self.DataName[i]])
@@ -1256,6 +1298,41 @@ class PA_Data_Anlyze:
             data = self.Data.ActJerk_A; data = np.append(data, data[-1]); data = np.append(data, data[-1]); data = np.append(data, data[-1])
             self.Data.ActJerk_A = data
             
+        # B
+        if self.DataName_SetPos % (self.AxisID_B - 1) in self.DataName:
+            self.Data.SetPos_B = np.array(self.Data.Var[self.DataName_SetPos % (self.AxisID_B - 1)]) * self.Precision_um / 1e3 # mm
+            self.Data.SetVel_B = np.diff(self.Data.SetPos_B)/ self.Ts * 60 # mm/min
+            data = self.Data.SetVel_B; data = np.append(data, data[-1])
+            self.Data.SetVel_B = data
+            self.Data.SetAcc_B = np.diff(np.diff(self.Data.SetPos_B)) / 1e3 / self.Ts / self.Ts # m/s^2
+            data = self.Data.SetAcc_B; data = np.append(data, data[-1]); data = np.append(data, data[-1])
+            self.Data.SetAcc_B = data
+            self.Data.SetJerk_B = np.diff(np.diff(np.diff(self.Data.SetPos_B))) / 1e3 / self.Ts / self.Ts / self.Ts # m/s^3
+            data = self.Data.SetJerk_B; data = np.append(data, data[-1]); data = np.append(data, data[-1]); data = np.append(data, data[-1])
+            self.Data.SetJerk_B = data
+        if self.DataName_CmdPos % (self.AxisID_B - 1) in self.DataName:
+            self.Data.CmdPos_B = np.array(self.Data.Var[self.DataName_CmdPos % (self.AxisID_B - 1)]) * self.Precision_um / 1e3 # mm
+            self.Data.CmdVel_B = np.diff(self.Data.CmdPos_B)/ self.Ts * 60 # mm/min
+            data = self.Data.CmdVel_B; data = np.append(data, data[-1])
+            self.Data.CmdVel_B = data
+            self.Data.CmdAcc_B = np.diff(np.diff(self.Data.CmdPos_B)) / 1e3 / self.Ts / self.Ts # m/s^2
+            data = self.Data.CmdAcc_B; data = np.append(data, data[-1]); data = np.append(data, data[-1])
+            self.Data.CmdAcc_B = data
+            self.Data.CmdJerk_B = np.diff(np.diff(np.diff(self.Data.CmdPos_B))) / 1e3 / self.Ts / self.Ts / self.Ts # m/s^3
+            data = self.Data.CmdJerk_B; data = np.append(data, data[-1]); data = np.append(data, data[-1]); data = np.append(data, data[-1])
+            self.Data.CmdJerk_B = data
+        if self.DataName_ActPos % (self.AxisID_B - 1) in self.DataName:
+            self.Data.ActPos_B = np.array(self.Data.Var[self.DataName_ActPos % (self.AxisID_B - 1)]) * self.Precision_um / 1e3 # mm
+            self.Data.ActVel_B = np.diff(self.Data.ActPos_B)/ self.Ts * 60 # mm/min
+            data = self.Data.ActVel_B; data = np.append(data, data[-1])
+            self.Data.ActVel_B = data
+            self.Data.ActAcc_B = np.diff(np.diff(self.Data.ActPos_B)) / 1e3 / self.Ts / self.Ts # m/s^2
+            data = self.Data.ActAcc_B; data = np.append(data, data[-1]); data = np.append(data, data[-1])
+            self.Data.ActAcc_B = data
+            self.Data.ActJerk_B = np.diff(np.diff(np.diff(self.Data.ActPos_B))) / 1e3 / self.Ts / self.Ts / self.Ts # m/s^3
+            data = self.Data.ActJerk_B; data = np.append(data, data[-1]); data = np.append(data, data[-1]); data = np.append(data, data[-1])
+            self.Data.ActJerk_B = data
+            
         #PathVel
         if self.DataName_SetPathVel in self.DataName:
             self.Data.SetPathVel = np.array(self.Data.Var[self.DataName_SetPathVel]) * self.Precision_um /1e3 / self.Ts * 60 # mm/min
@@ -1371,7 +1448,6 @@ class PA_Data_Anlyze:
 if __name__ == '__main__':
 
     PA = PA_Data_Anlyze()
-    PA.DataFileName = r'E:\采样数据\20210826-久久象限痕\CNCVariableTrace-QEC非滤波位置.txt'
     PA.AxisID_X = 1
     PA.AxisID_Y = 2
     PA.AxisID_Z = 3
@@ -1389,7 +1465,12 @@ if __name__ == '__main__':
 
     window = tk.Tk()
     window.title('PA Data Analyze v%s' % Version)
-    window.geometry('960x540')
+    #window.geometry('960x540')
+    window.geometry('1300x800')
+    #弹出窗口
+    window.iconify()
+    window.update()
+    window.deiconify()
 
     def open_file():
         filename = filedialog.askopenfilename(title='打开文件', filetypes=[('txt', '*.txt')])
@@ -1411,6 +1492,7 @@ if __name__ == '__main__':
         PA.AxisID_Y = int(Combobox['AxisID_Y'].get()) if Combobox['AxisID_Y'].get() != '无' else 0
         PA.AxisID_Z = int(Combobox['AxisID_Z'].get()) if Combobox['AxisID_Z'].get() != '无' else 0
         PA.AxisID_A = int(Combobox['AxisID_A'].get()) if Combobox['AxisID_A'].get() != '无' else 0
+        PA.AxisID_B = int(Combobox['AxisID_B'].get()) if Combobox['AxisID_B'].get() != '无' else 0
 
         """
         ScrolledText['输出消息'].insert('end','1\n')
@@ -1452,6 +1534,10 @@ if __name__ == '__main__':
         PA.Plot.Vel_A = int(CheckVar['Vel_A'].get())
         PA.Plot.Acc_A = int(CheckVar['Acc_A'].get())
         PA.Plot.Jerk_A = int(CheckVar['Jerk_A'].get())
+        PA.Plot.Pos_B = int(CheckVar['Pos_B'].get())
+        PA.Plot.Vel_B = int(CheckVar['Vel_B'].get())
+        PA.Plot.Acc_B = int(CheckVar['Acc_B'].get())
+        PA.Plot.Jerk_B = int(CheckVar['Jerk_B'].get())
 
         PA.Plot.XY = int(CheckVar['XY'].get())
         PA.Plot.XY_Time = int(CheckVar['XY_Time'].get())
@@ -1511,61 +1597,87 @@ if __name__ == '__main__':
     y = 0.15
     LabelFrame['采样参数'] = ttk.LabelFrame(window, text='采样参数')
     LabelFrame['采样参数'].place(relx=x - 0.03, rely=y - 0.03, relheight=0.165, relwidth=0.95)
-    Button['加载文件'] = ttk.Button(window, text="加载文件", command=load_file)
-    Button['加载文件'].place(relx=x + 0.8, rely=y, relheight=0.12, relwidth=0.1)
+    
+    x = 0
+    y = 0
+    xBias = 0.875
+    yBias = 0.01
+    Button['加载文件'] = ttk.Button(LabelFrame['采样参数'], text="加载文件", command=load_file)
+    Button['加载文件'].place(relx=x+xBias, rely=y+yBias, relheight=0.88, relwidth=0.105)
+    
     # --------------------------------- 采样参数 1 -----------------------------------#
-    Label['采样时间'] = ttk.Label(window, text='采样时间(s)：', anchor='w', font=('Microsoft YaHei', 9))
-    Label['采样时间'].place(relx=x, rely=y, relheight=0.05, relwidth=0.1)
-    Entry['Ts'] = ttk.Entry(window, font=('Microsoft YaHei', 9))
+    x = 0
+    y = 0
+    xBias = 0.01
+    yBias = 0.01
+    Label['采样时间'] = ttk.Label(LabelFrame['采样参数'], text='采样时间(s)：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['采样时间'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
+    xBias += 0.09
+    Entry['Ts'] = ttk.Entry(LabelFrame['采样参数'], font=('Microsoft YaHei', 9))
     Entry['Ts'].delete(0, tk.END)
     Entry['Ts'].insert('insert', PA.Ts)
-    Entry['Ts'].place(relx=x + 0.09, rely=y, relheight=0.05, relwidth=0.05)
-
-    bais = 0.025
-    Label['NC行号范围'] = ttk.Label(window, text='NC行号范围：', anchor='w', font=('Microsoft YaHei', 9))
-    Label['NC行号范围'].place(relx=x + 0.16 + bais, rely=y, relheight=0.05, relwidth=0.1)
-    Entry['BlockRange_0'] = ttk.Entry(window, font=('Microsoft YaHei', 9))
+    Entry['Ts'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.06)
+    
+    x = 0.182
+    y = 0
+    xBias = 0.01
+    yBias = 0.01
+    Label['NC行号范围'] = ttk.Label(LabelFrame['采样参数'], text='NC行号范围：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['NC行号范围'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
+    xBias += 0.1
+    Entry['BlockRange_0'] = ttk.Entry(LabelFrame['采样参数'], font=('Microsoft YaHei', 9))
     Entry['BlockRange_0'].delete(0, tk.END)
     if PA.BlockRange[0]:
         Entry['BlockRange_0'].insert('insert', PA.BlockRange[0])
     else:
         Entry['BlockRange_0'].insert('insert', '无')
-    Entry['BlockRange_0'].place(relx=x + 0.24 + bais, rely=y, relheight=0.05, relwidth=0.07)
-    Label['NC行号范围波浪线'] = ttk.Label(window, text='~', anchor='w', font=('Microsoft YaHei', 9))
-    Label['NC行号范围波浪线'].place(relx=x + 0.31 + bais, rely=y, relheight=0.05, relwidth=0.1)
-    Entry['BlockRange_1'] = ttk.Entry(window, font=('Microsoft YaHei', 9))
+    Entry['BlockRange_0'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.09)
+    xBias += 0.095
+    Label['NC行号范围波浪线'] = ttk.Label(LabelFrame['采样参数'], text='~', anchor='w', font=('Microsoft YaHei', 9))
+    Label['NC行号范围波浪线'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
+    xBias += 0.02
+    Entry['BlockRange_1'] = ttk.Entry(LabelFrame['采样参数'], font=('Microsoft YaHei', 9))
     Entry['BlockRange_1'].delete(0, tk.END)
     if PA.BlockRange[1]:
         Entry['BlockRange_1'].insert('insert', PA.BlockRange[1])
     else:
         Entry['BlockRange_1'].insert('insert', '无')
-    Entry['BlockRange_1'].place(relx=x + 0.33 + bais, rely=y, relheight=0.05, relwidth=0.07)
-
-    bais = 0.3
-    Label['时间范围'] = ttk.Label(window, text='时间范围(s)：', anchor='w', font=('Microsoft YaHei', 9))
-    Label['时间范围'].place(relx=x + 0.16 + bais, rely=y, relheight=0.05, relwidth=0.1)
-    Entry['TimeRange_0'] = ttk.Entry(window, font=('Microsoft YaHei', 9))
+    Entry['BlockRange_1'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.09)
+        
+    x = 0.52
+    y = 0
+    xBias = 0.01
+    yBias = 0.01
+    Label['时间范围'] = ttk.Label(LabelFrame['采样参数'], text='时间范围(s)：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['时间范围'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
+    xBias += 0.1
+    Entry['TimeRange_0'] = ttk.Entry(LabelFrame['采样参数'], font=('Microsoft YaHei', 9))
     Entry['TimeRange_0'].delete(0, tk.END)
     if PA.TimeRange[0]:
         Entry['TimeRange_0'].insert('insert', PA.TimeRange[0])
     else:
         Entry['TimeRange_0'].insert('insert', '无')
-    Entry['TimeRange_0'].place(relx=x + 0.24 + bais, rely=y, relheight=0.05, relwidth=0.07)
-    Label['时间范围波浪线'] = ttk.Label(window, text='~', anchor='w', font=('Microsoft YaHei', 9))
-    Label['时间范围波浪线'].place(relx=x + 0.31 + bais, rely=y, relheight=0.05, relwidth=0.1)
-    Entry['TimeRange_1'] = ttk.Entry(window, font=('Microsoft YaHei', 9))
+    Entry['TimeRange_0'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.09)
+    xBias += 0.095
+    Label['时间范围波浪线'] = ttk.Label(LabelFrame['采样参数'], text='~', anchor='w', font=('Microsoft YaHei', 9))
+    Label['时间范围波浪线'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
+    xBias += 0.02
+    Entry['TimeRange_1'] = ttk.Entry(LabelFrame['采样参数'], font=('Microsoft YaHei', 9))
     Entry['TimeRange_1'].delete(0, tk.END)
     if PA.TimeRange[1]:
         Entry['TimeRange_1'].insert('insert', PA.TimeRange[1])
     else:
         Entry['TimeRange_1'].insert('insert', '无')
-    Entry['TimeRange_1'].place(relx=x + 0.33 + bais, rely=y, relheight=0.05, relwidth=0.07)
+    Entry['TimeRange_1'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.09)
 
     # --------------------------------- 采样参数 2 -----------------------------------#
-    y += 0.07
-    bias = 0
-    Label['X轴轴号'] = ttk.Label(window, text='X轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
-    Label['X轴轴号'].place(relx=x + bias, rely=y, relheight=0.05, relwidth=0.1)
+    xStep = 0.176
+    x = 0
+    y = 0
+    xBias = 0.01
+    yBias = 0.5
+    Label['X轴轴号'] = ttk.Label(LabelFrame['采样参数'], text='X轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['X轴轴号'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
     StringVar['X轴轴号'] = tk.StringVar()
     if int(PA.AxisID_X) >= 1 and int(PA.AxisID_X) <= 32:
         StringVar['X轴轴号'].set(str(int(PA.AxisID_X)))
@@ -1573,11 +1685,81 @@ if __name__ == '__main__':
         StringVar['X轴轴号'].set(str('无'))
     values = list(map(str, list(range(1, 33))))
     values.insert(0, '无')
-    Combobox['AxisID_X'] = ttk.Combobox(window, textvariable=StringVar['X轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
-    Combobox['AxisID_X'].place(relx=x + bias + 0.06, rely=y, relheight=0.05, relwidth=0.05)
+    xBias += 0.07
+    Combobox['AxisID_X'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['X轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_X'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.05)
 
+    x += xStep
+    y = 0
+    xBias = 0.01
+    yBias = 0.5
+    Label['Y轴轴号'] = ttk.Label(LabelFrame['采样参数'], text='Y轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['Y轴轴号'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
+    StringVar['Y轴轴号'] = tk.StringVar()
+    if int(PA.AxisID_Y) >= 1 and int(PA.AxisID_Y) <= 32:
+        StringVar['Y轴轴号'].set(str(int(PA.AxisID_Y)))
+    else:
+        StringVar['Y轴轴号'].set(str('无'))
+    values = list(map(str, list(range(1, 33))))
+    values.insert(0, '无')
+    xBias += 0.07
+    Combobox['AxisID_Y'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['Y轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_Y'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.05)
+
+    x += xStep
+    y = 0
+    xBias = 0.01
+    yBias = 0.5
+    Label['Z轴轴号'] = ttk.Label(LabelFrame['采样参数'], text='Z轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['Z轴轴号'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
+    StringVar['Z轴轴号'] = tk.StringVar()
+    if int(PA.AxisID_Z) >= 1 and int(PA.AxisID_Z) <= 32:
+        StringVar['Z轴轴号'].set(str(int(PA.AxisID_Z)))
+    else:
+        StringVar['Z轴轴号'].set(str('无'))
+    values = list(map(str, list(range(1, 33))))
+    values.insert(0, '无')
+    xBias += 0.07
+    Combobox['AxisID_Z'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['Z轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_Z'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.05)
+
+    x += xStep
+    y = 0
+    xBias = 0.01
+    yBias = 0.5
+    Label['A轴轴号'] = ttk.Label(LabelFrame['采样参数'], text='A轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['A轴轴号'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
+    StringVar['A轴轴号'] = tk.StringVar()
+    if int(PA.AxisID_A) >= 1 and int(PA.AxisID_A) <= 32:
+        StringVar['A轴轴号'].set(str(int(PA.AxisID_A)))
+    else:
+        StringVar['A轴轴号'].set(str('无'))
+    values = list(map(str, list(range(1, 33))))
+    values.insert(0, '无')
+    xBias += 0.07
+    Combobox['AxisID_A'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['A轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_A'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.05)
+
+    x += xStep
+    y = 0
+    xBias = 0.01
+    yBias = 0.5
+    Label['B轴轴号'] = ttk.Label(LabelFrame['采样参数'], text='B轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['B轴轴号'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
+    StringVar['B轴轴号'] = tk.StringVar()
+    if int(PA.AxisID_B) >= 1 and int(PA.AxisID_B) <= 32:
+        StringVar['B轴轴号'].set(str(int(PA.AxisID_B)))
+    else:
+        StringVar['B轴轴号'].set(str('无'))
+    values = list(map(str, list(range(1, 33))))
+    values.insert(0, '无')
+    xBias += 0.07
+    Combobox['AxisID_B'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['B轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_B'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.05)
+    
+    """
     bias = 0.197
-    Label['Y轴轴号'] = ttk.Label(window, text='Y轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['Y轴轴号'] = ttk.Label(LabelFrame['采样参数'], text='Y轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
     Label['Y轴轴号'].place(relx=x + bias, rely=y, relheight=0.05, relwidth=0.1)
     StringVar['Y轴轴号'] = tk.StringVar()
     if int(PA.AxisID_Y) >= 1 and int(PA.AxisID_Y) <= 32:
@@ -1586,11 +1768,11 @@ if __name__ == '__main__':
         StringVar['Y轴轴号'].set(str('无'))
     values = list(map(str, list(range(1, 33))))
     values.insert(0, '无')
-    Combobox['AxisID_Y'] = ttk.Combobox(window, textvariable=StringVar['Y轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_Y'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['Y轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
     Combobox['AxisID_Y'].place(relx=x + bias + 0.06, rely=y, relheight=0.05, relwidth=0.05)
 
     bias = 0.393
-    Label['Z轴轴号'] = ttk.Label(window, text='Z轴轴号：', anchor='w', font=('Microsoft yaHei', 9))
+    Label['Z轴轴号'] = ttk.Label(LabelFrame['采样参数'], text='Z轴轴号：', anchor='w', font=('Microsoft yaHei', 9))
     Label['Z轴轴号'].place(relx=x + bias, rely=y, relheight=0.05, relwidth=0.1)
     StringVar['Z轴轴号'] = tk.StringVar()
     if int(PA.AxisID_Z) >= 1 and int(PA.AxisID_Z) <= 32:
@@ -1599,11 +1781,11 @@ if __name__ == '__main__':
         StringVar['Z轴轴号'].set(str('无'))
     values = list(map(str, list(range(1, 33))))
     values.insert(0, '无')
-    Combobox['AxisID_Z'] = ttk.Combobox(window, textvariable=StringVar['Z轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_Z'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['Z轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
     Combobox['AxisID_Z'].place(relx=x + bias + 0.06, rely=y, relheight=0.05, relwidth=0.05)
 
     bias = 0.59
-    Label['A轴轴号'] = ttk.Label(window, text='A轴轴号：', anchor='w', font=('Microsoft yaHei', 9))
+    Label['A轴轴号'] = ttk.Label(LabelFrame['采样参数'], text='A轴轴号：', anchor='w', font=('Microsoft yaHei', 9))
     Label['A轴轴号'].place(relx=x + bias, rely=y, relheight=0.05, relwidth=0.1)
     StringVar['A轴轴号'] = tk.StringVar()
     if int(PA.AxisID_A) >= 1 and int(PA.AxisID_A) <= 32:
@@ -1612,8 +1794,9 @@ if __name__ == '__main__':
         StringVar['A轴轴号'].set(str('无'))
     values = list(map(str, list(range(1, 33))))
     values.insert(0, '无')
-    Combobox['AxisID_A'] = ttk.Combobox(window, textvariable=StringVar['A轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_A'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['A轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
     Combobox['AxisID_A'].place(relx=x + bias + 0.06, rely=y, relheight=0.05, relwidth=0.05)
+    """
 
     #################################### 绘图选项 ####################################
     x = 0.05
@@ -1731,6 +1914,26 @@ if __name__ == '__main__':
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'Jerk_A'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Pos_B'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Vel_B'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Acc_B'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Jerk_B'
     CheckVar[Key] = tk.IntVar()
     CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
