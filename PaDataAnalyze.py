@@ -1,61 +1,18 @@
 #!/usr/bin/env python
 # -*-coding:utf-8 -*-
 
+Version = '1.5.0'
+
 """
 @File           PaDataAnalyze.py
-@Brief          PA data analysis
-@Plot Flag
-                PA.Plot.BlockNo         = True
-                PA.Plot.PathVel         = True
-                PA.Plot.PathAcc         = True
-                PA.Plot.Pos_X           = True
-                PA.Plot.Vel_X           = True
-                PA.Plot.Acc_X           = True
-                PA.Plot.Jerk_X          = True
-                PA.Plot.Pos_Y           = True
-                PA.Plot.Vel_Y           = True
-                PA.Plot.Acc_Y           = True
-                PA.Plot.Jerk_Y          = True
-                PA.Plot.Pos_Z           = True
-                PA.Plot.Vel_Z           = True
-                PA.Plot.Acc_Z           = True
-                PA.Plot.Jerk_Z          = True
-                PA.Plot.XY              = True
-                PA.Plot.XY_Time         = True
-                PA.Plot.XY_BlockNo      = True
-                PA.Plot.XY_PathVel      = True
-                PA.Plot.XY_PathAcc      = True
-                PA.Plot.XY_PathJerk     = True
-                PA.Plot.XY_PosErr       = True
-                PA.Plot.YZ              = True
-                PA.Plot.YZ_Time         = True
-                PA.Plot.YZ_BlockNo      = True
-                PA.Plot.YZ_PathVel      = True
-                PA.Plot.YZ_PathAcc      = True
-                PA.Plot.YZ_PathJerk     = True
-                PA.Plot.YZ_PosErr       = True
-                PA.Plot.XZ              = True
-                PA.Plot.XZ_Time         = True
-                PA.Plot.XZ_BlockNo      = True
-                PA.Plot.XZ_PathVel      = True
-                PA.Plot.XZ_PathAcc      = True
-                PA.Plot.XZ_PathJerk     = True
-                PA.Plot.XZ_PosErr       = True
-                PA.Plot.XYZ             = True
-                PA.Plot.XYZ_Time        = True
-                PA.Plot.XYZ_Z           = True
-                PA.Plot.XYZ_PathVel     = True
-                PA.Plot.XYZ_PathAcc     = True
-                PA.Plot.XYZ_PathJerk    = True
-                PA.Plot.CircleErr_XY    = True
-                PA.Plot.CircleErr_YZ    = True
-                PA.Plot.CircleErr_XZ    = True
+@Brief          PA data analyze
 @Unit of File
                 SSetPos                         Unit: internal increment
                 CommandedMachinePosCorr         Unit: internal increment
                 SActMachinePos                  Unit: internal increment
                 PathVelocity                    Unit: internal increment / Ts
                 CommandedPathVelocity           Unit: internal increment / Ts
+                (The internal increment defaults to 1um, Ts defaults to 0.001s)
 @Unit of Data
                 PA.Data.SetPathVel              Unit: mm/min
                 PA.Data.CmdPathVel              Unit: mm/min
@@ -75,64 +32,117 @@
                 PA.Data.SetJerk_X               Unit: m/s^3
                 PA.Data.CmdJerk_X               Unit: m/s^3
                 PA.Data.ActJerk_X               Unit: m/s^3
-Note
-                The internal increment defaults to 1um, Ts defaults to 0.001s
+
+@Plot Flag
+                PA.Plot.BlockNo                 = True
+                PA.Plot.PathVel                 = True
+                PA.Plot.PathAcc                 = True
+                PA.Plot.PathJerk                = True
+                PA.Plot.Pos_X                   = True
+                PA.Plot.Vel_X                   = True
+                PA.Plot.Acc_X                   = True
+                PA.Plot.Jerk_X                  = True
+                PA.Plot.Pos_Y                   = True
+                PA.Plot.Vel_Y                   = True
+                PA.Plot.Acc_Y                   = True
+                PA.Plot.Jerk_Y                  = True
+                PA.Plot.Pos_Z                   = True
+                PA.Plot.Vel_Z                   = True
+                PA.Plot.Acc_Z                   = True
+                PA.Plot.Jerk_Z                  = True
+                PA.Plot.XY                      = True
+                PA.Plot.XY_Time                 = True
+                PA.Plot.XY_BlockNo              = True
+                PA.Plot.XY_PathVel              = True
+                PA.Plot.XY_PathAcc              = True
+                PA.Plot.XY_PathJerk             = True
+                PA.Plot.XY_PosErr               = True
+                PA.Plot.XY_Z                    = True
+                PA.Plot.YZ                      = True
+                PA.Plot.YZ_Time                 = True
+                PA.Plot.YZ_BlockNo              = True
+                PA.Plot.YZ_PathVel              = True
+                PA.Plot.YZ_PathAcc              = True
+                PA.Plot.YZ_PathJerk             = True
+                PA.Plot.YZ_PosErr               = True
+                PA.Plot.YZ_X                    = True
+                PA.Plot.XZ                      = True
+                PA.Plot.XZ_Time                 = True
+                PA.Plot.XZ_BlockNo              = True
+                PA.Plot.XZ_PathVel              = True
+                PA.Plot.XZ_PathAcc              = True
+                PA.Plot.XZ_PathJerk             = True
+                PA.Plot.XZ_PosErr               = True
+                PA.Plot.XZ_Y                    = True
+                PA.Plot.XYZ                     = True
+                PA.Plot.XYZ_Time                = True
+                PA.Plot.XYZ_Z                   = True
+                PA.Plot.XYZ_PathVel             = True
+                PA.Plot.XYZ_PathAcc             = True
+                PA.Plot.XYZ_PathJerk            = True
+                PA.Plot.CircleErr_XY            = True
+                PA.Plot.CircleErr_YZ            = True
+                PA.Plot.CircleErr_XZ            = True
 """
 
-############################### Version History #################################
-# ---------------------------------Version 4.4--------------------------------- #
+################################ Version History ##################################
+# ---------------------------------Version 1.5.0--------------------------------- #
+# Date: 2021/9/7
+# Author: yangxiaosheng
+# Update: make a GUI using Tkinter
+# ---------------------------------Version 1.4.4--------------------------------- #
 # Date: 2021/8/30
 # Author: yangxiaosheng
 # Update: fix some bug in TimeRange checking
-# ---------------------------------Version 4.3--------------------------------- #
+# ---------------------------------Version 1.4.3--------------------------------- #
 # Date: 2021/8/28
 # Author: yangxiaosheng
 # Update: fix some bug in using mpldatacursor
-# ---------------------------------Version 4.2--------------------------------- #
+# ---------------------------------Version 1.4.2--------------------------------- #
 # Date: 2021/8/22
 # Author: yangxiaosheng
 # Update: add mpldatacursor
-# ---------------------------------Version 4.1--------------------------------- #
+# ---------------------------------Version 1.4.1--------------------------------- #
 # Date: 2021/8/17
 # Author: yangxiaosheng
 # Update: fix some bug in plotting figure
-# ---------------------------------Version 4.0--------------------------------- #
+# ---------------------------------Version 1.4.0--------------------------------- #
 # Date: 2021/8/15
 # Author: yangxiaosheng
 # Update: Refactor code to improve portability, and remove GUI (using matplotlib) because of bad smooth running
-# ---------------------------------Version 3.0--------------------------------- #
+# ---------------------------------Version 1.3.0--------------------------------- #
 # Date: 2021/7/20
 # Author: yangxiaosheng
 # Update: make a GUI using matplotlib
-# ---------------------------------Version 2.2--------------------------------- #
+# ---------------------------------Version 1.2.2--------------------------------- #
 # Date: 2021/7/1
 # Author: yangxiaosheng
 # Update: Plot the polar data of a circular trajectory
-# ---------------------------------Version 2.1--------------------------------- #
+# ---------------------------------Version 1.2.1--------------------------------- #
 # Date: 2021/6/30
 # Author: yangxiaosheng
 # Update: Add Axis Idenx
-# ---------------------------------Version 2.0--------------------------------- #
+# ---------------------------------Version 1.2.0--------------------------------- #
 # Date: 2021/5/21
 # Author: yangxiaosheng
 # Update: Add widgets: Select NC Block
-# ---------------------------------Version 1.3--------------------------------- #
+# ---------------------------------Version 1.1.2--------------------------------- #
 # Date: 2021/5/21
 # Author: yangxiaosheng
 # Update: Add TimeRange and BlockRange
-# ---------------------------------Version 1.2--------------------------------- #
+# ---------------------------------Version 1.1.1--------------------------------- #
 # Date: 2021/5/20
 # Author: yangxiaosheng
 # Update: Add shared axes, add color bar, and optimize color drawing
-# ---------------------------------Version 1.1--------------------------------- #
+# ---------------------------------Version 1.1.0--------------------------------- #
 # Date: 2021/5/19
 # Author: yangxiaosheng
 # Update: Optimize loading speed, and increase loading progress and draw progress
-# ---------------------------------Version 1.0--------------------------------- #
+# ---------------------------------Version 1.0.0--------------------------------- #
 # Date: 2021/5/18
 # Author: yangxiaosheng
 # Update: Init Version
-#################################################################################
+##################################################################################
 
 from matplotlib import pyplot as plt
 import numpy as np
@@ -141,7 +151,12 @@ import numpy
 import sys
 import re
 
-class PA_Class:
+import tkinter as tk
+from tkinter import ttk
+from tkinter import filedialog
+from tkinter import scrolledtext
+
+class PA_Data_Anlyze:
     def __init__(self):
         self.initParam()
     
@@ -151,7 +166,7 @@ class PA_Class:
         ##################################################################################
         self.Precision_um   = 1; # 1 internal incremental = Precision_um * 1um
         self.Ts             = 0.001  # sample time, unit: s
-        self.DataFile       = r'F:\CNCVariableTrace.txt'
+        self.DataFileName   = r'C:\PACnc\CNCVariableTrace.txt'
         self.TimeRange      = [0, 0] # select the sample data in Time range of [minTime, maxTime] (unit: s) ([0, 0] means select all Time)
         self.BlockRange     = [0, 0] # select the sample data in NC Block range of [minBlockNo, maxBlockNo] ([0, 0] means select all NC Block)
         self.Plot           = self.PlotFlag_Class()
@@ -164,6 +179,7 @@ class PA_Class:
         # -------------------------------Internal Param--------------------------------- #
         ##################################################################################
         self.FigNum                 = 0
+        self.TkGUI_OutputText       = None
         self.Data                   = self.Data_Class()
         self.ShareAxes              = self.ShareAxes_Class()
         self.reSplit                = re.compile("[\t\n ]")
@@ -175,66 +191,16 @@ class PA_Class:
         self.DataName_CmdPathVel   = 'CommandedPathVelocity[0]'
         self.DataName_BlockNo      = 'BlockNoActive[0]'
 
-    class ShareAxes_Class:
-        Time = None
-        XY = None
-        YZ = None
-        XZ = None
-
     class Data_Class:
-        Var         = dict()
-        Length      = 0
-        Time        = []
-        PosErr      = []
-        
-        SetPathVel  = []    # mm/min
-        SetPathAcc  = []    # m/s^2
-        SetPathJerk = []    # m/s^3
-        SetPos_X    = []    # mm
-        SetVel_X    = []    # mm/min
-        SetAcc_X    = []    # m/s^2
-        SetJerk_X   = []    # m/s^3
-        SetPos_Y    = []    # mm
-        SetVel_Y    = []    # mm/min
-        SetAcc_Y    = []    # m/s^2
-        SetJerk_Y   = []    # m/s^3
-        SetPos_Z    = []    # mm
-        SetVel_Z    = []    # mm/min
-        SetAcc_Z    = []    # m/s^2
-        SetJerk_Z   = []    # m/s^3
-        
-        CmdPathVel  = []    # mm/min
-        CmdPathAcc  = []    # m/s^2
-        CmdPathJerk = []    # m/s^3
-        CmdPos_X    = []    # mm
-        CmdVel_X    = []    # mm/min
-        CmdAcc_X    = []    # m/s^2
-        CmdJerk_X   = []    # m/s^3
-        CmdPos_Y    = []    # mm
-        CmdVel_Y    = []    # mm/min
-        CmdAcc_Y    = []    # m/s^2
-        CmdJerk_Y   = []    # m/s^3
-        CmdPos_Z    = []    # mm
-        CmdVel_Z    = []    # mm/min
-        CmdAcc_Z    = []    # m/s^2
-        CmdJerk_Z   = []    # m/s^3
-        
-        ActPathVel  = []    # mm/min
-        ActPathAcc  = []    # m/s^2
-        ActPathJerk = []    # m/s^3
-        ActPos_X    = []    # mm
-        ActVel_X    = []    # mm/min
-        ActAcc_X    = []    # m/s^2
-        ActJerk_X   = []    # m/s^3
-        ActPos_Y    = []    # mm
-        ActVel_Y    = []    # mm/min
-        ActAcc_Y    = []    # m/s^2
-        ActJerk_Y   = []    # m/s^3
-        ActPos_Z    = []    # mm
-        ActVel_Z    = []    # mm/min
-        ActAcc_Z    = []    # m/s^2
-        ActJerk_Z   = []    # m/s^3
-        
+        Var     = dict()
+        Length  = 0
+
+    class ShareAxes_Class:
+        Time    = None
+        XY      = None
+        YZ      = None
+        XZ      = None
+
     class PlotFlag_Class:
         BlockNo         = False
         PathVel         = False
@@ -263,6 +229,7 @@ class PA_Class:
         XY_PathAcc      = False
         XY_PathJerk     = False
         XY_PosErr       = False
+        XY_Z            = False
         YZ              = False
         YZ_Time         = False
         YZ_BlockNo      = False
@@ -270,6 +237,7 @@ class PA_Class:
         YZ_PathAcc      = False
         YZ_PathJerk     = False
         YZ_PosErr       = False
+        YZ_X            = False
         XZ              = False
         XZ_Time         = False
         XZ_BlockNo      = False
@@ -277,6 +245,7 @@ class PA_Class:
         XZ_PathAcc      = False
         XZ_PathJerk     = False
         XZ_PosErr       = False
+        XZ_Y            = False
         XYZ             = False
         XYZ_Time        = False
         XYZ_Z           = False
@@ -292,9 +261,11 @@ class PA_Class:
     ##################################################################################
     def PlotData(self):
         if self.Data.Length == 0:
+            print('\033[1;34m\nPlotData: \033[1;31mError No Data\033[0m')
             return None
-        
+
         plt.close(fig='all')
+        self.FigNum = 0
         
         # ---------------------------------Plot 1D---------------------------------- #
         # BlockNo
@@ -523,6 +494,13 @@ class PA_Class:
                     self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='PosErr (mm)', shareAxes=self.ShareAxes.XY, figureName='XY_PosErr', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XY_PosErr\033[0m')
+        #XY with Z
+        if self.Plot.XY_Z == True:
+            try:
+                color = self.Data.CmdPos_Z
+                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='Z (mm)', shareAxes=self.ShareAxes.XY, figureName='XY_Z', newFig=True)
+            except:
+                print('\033[1;34m\nPlotData: \033[1;31mError XY_Z\033[0m')
         
         # YZ
         if self.Plot.YZ == True:
@@ -575,6 +553,13 @@ class PA_Class:
                     self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='PosErr (mm)', shareAxes=self.ShareAxes.YZ, figureName='YZ_PosErr', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_PosErr\033[0m')
+        #YZ with X
+        if self.Plot.YZ_X == True:
+            try:
+                color = self.Data.CmdPos_X
+                self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='X (mm)', shareAxes=self.ShareAxes.YZ, figureName='YZ_X', newFig=True)
+            except:
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ_X\033[0m')
 
         # XZ
         if self.Plot.XZ == True:
@@ -627,6 +612,13 @@ class PA_Class:
                     self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='PosErr (mm)', shareAxes=self.ShareAxes.XZ, figureName='XZ_PosErr', newFig=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ_PosErr\033[0m')
+        #XZ with Y
+        if self.Plot.XZ_Y == True:
+            try:
+                color = self.Data.CmdPos_Y
+                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='Y (mm)', shareAxes=self.ShareAxes.XZ, figureName='XZ_Y', newFig=True)
+            except:
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ_Y\033[0m')
 
         # ---------------------------------Plot 3D---------------------------------- #
         #XYZ
@@ -739,6 +731,8 @@ class PA_Class:
             ax.legend(loc="upper right")
         if title != None:
             ax.set_title(title)
+        elif figureName != '':
+            ax.set_title(figureName)
         else:
             ax.set_title('1D')
         if tLimit != None:
@@ -783,8 +777,8 @@ class PA_Class:
             ax = fig.get_axes()[0]
         if colorFlag:
             scatter = ax.scatter(x, y, c=color, label=dataName, alpha=0.7, cmap='coolwarm')
+            cbar = plt.colorbar(scatter)
             if colorName != None:
-                cbar = plt.colorbar(scatter)
                 cbar.set_label(colorName)
         else:
             ax.plot(x, y, mark, label=dataName, alpha=0.7)
@@ -794,6 +788,8 @@ class PA_Class:
             ax.legend(loc="upper right")
         if title != None:
             ax.set_title(title)
+        elif figureName != '':
+            ax.set_title(figureName)
         else:
             ax.set_title('2D')
         if xLimit != None:
@@ -842,8 +838,8 @@ class PA_Class:
         #ax = fig.gca(projection='3d')
         if colorFlag:
             scatter = ax.scatter3D(x, y, z, c=color, label=dataName, alpha=0.7, cmap='coolwarm')
+            cbar = plt.colorbar(scatter)
             if colorName != None:
-                cbar = plt.colorbar(scatter)
                 cbar.set_label(colorName)
         else:
             ax.plot3D(x, y, z, mark, label=dataName, alpha=0.7)
@@ -854,6 +850,8 @@ class PA_Class:
             ax.legend(loc="upper right")
         if title != None:
             ax.set_title(title)
+        elif figureName != '':
+            ax.set_title(figureName)
         else:
             ax.set_title('3D')
         if xLimit != None:
@@ -932,6 +930,8 @@ class PA_Class:
         plt.polar(Theta, Radius, mark, alpha=0.5)
         if title != None:
             plt.title(title)
+        elif figureName != '':
+            plt.title(figureName)
         if dataName != None:
             plt.legend(dataName, loc="upper right")
         plt.grid('on')
@@ -976,12 +976,20 @@ class PA_Class:
     def LoadData(self):
 
         # -----------------------open file and get textLen------------------------- #
-        with open(self.DataFile, 'r') as f:
-            txt = f.readlines()
+        self.Data.Length = 0
+        try:
+            with open(self.DataFileName, 'r') as f:
+                txt = f.readlines()
+        except:
+            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): DataFileName %s\033[0m' % (sys._getframe().f_lineno, self.DataFileName))
+            self.Data.Var = dict()
+            self.Data.Length = 0
+            return None
         textLen = txt.__len__() - 2  # Remove last two lines
         if textLen <= 1:
             print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): textLen =%d <= 1 \033[0m' % (sys._getframe().f_lineno, textLen))
             self.Data.Var = dict()
+            self.Data.Length = 0
             return None
         minText = 1
         maxText = textLen
@@ -991,11 +999,13 @@ class PA_Class:
         if varNum <= 0:
             print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): varNum = %d  <= 0 \033[0m' % (sys._getframe().f_lineno, varNum))
             self.Data.Var = dict()
+            self.Data.Length = 0
             return None
         # -----------------------------get TimeRange-------------------------------- #
         if self.TimeRange.__len__() != 2:
             print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): TimeRange.__len__() = %d != 2 \033[0m' % (sys._getframe().f_lineno, self.TimeRange.__len__()))
             self.Data.Var = dict()
+            self.Data.Length = 0
             return None
         else:
             self.TimeRange[0] = float(self.TimeRange[0])
@@ -1008,6 +1018,7 @@ class PA_Class:
         if self.BlockRange.__len__() != 2:
             print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): BlockRange.__len__() = %d != 2 \033[0m' % (sys._getframe().f_lineno, self.BlockRange.__len__()))
             self.Data.Var = dict()
+            self.Data.Length = 0
             return None
         else:
             self.BlockRange[0] = int(self.BlockRange[0])
@@ -1038,6 +1049,7 @@ class PA_Class:
                 self.LineData = self.RemainingLineData + self.LineData
                 if self.LineData.__len__() < varNum:
                     print('\033[1;34m\nLoadData: \033[1;31mError (File Line %d): LineData.__len__ < varNum (%d < %d) \033[0m' % ( i+1, self.LineData.__len__(), varNum))
+                    self.Data.Length = 0
                     return None
                 if BlockNoExistFlag:
                     if float(self.LineData[BlockNoIndex]) >= 1.23456789e308:
@@ -1085,6 +1097,7 @@ class PA_Class:
         self.Data.Length = self.Data.Var[self.DataName[0]].__len__()
         if self.Data.Var.__len__() <= 0 or self.Data.Length <= 0:
             print('\033[1;34m\nLoadData: \033[1;31mError: Data Len = %d! (CodeLine %d) \033[0m' % (self.Data.Length, sys._getframe().f_lineno))
+            self.Data.Length = 0
             return None
         if BlockNoExistFlag:
             self.Data.TimeRange  = [float(minTime), float(maxTime)]
@@ -1305,7 +1318,7 @@ class PA_Class:
             import mpldatacursor
         except:
             return None
-        if self.Data.Length == 0:
+        if self.Data.Length == 0 or self.FigNum == 0:
             return None
         figs = [plt.figure(Num) for Num in range(1, self.FigNum + 1)]
         axes = [ax for fig in figs for ax in fig.axes]
@@ -1353,33 +1366,616 @@ class PA_Class:
         return None
 
 ##################################################################################
-# --------------------------------Main Function--------------------------------- #
+# -------------------------------------GUI-------------------------------------- #
 ##################################################################################
-print(__name__)
 if __name__ == '__main__':
-    PA = PA_Class()
+
+    PA = PA_Data_Anlyze()
+    PA.DataFileName = r'E:\采样数据\20210826-久久象限痕\CNCVariableTrace-QEC非滤波位置.txt'
+    PA.AxisID_X = 1
+    PA.AxisID_Y = 2
+    PA.AxisID_Z = 3
+
+    TextBox         = dict()
+    Button          = dict()
+    Entry           = dict()
+    Label           = dict()
+    StringVar       = dict()
+    Combobox        = dict()
+    ScrolledText    = dict()
+    LabelFrame      = dict()
+    CheckButton     = dict()
+    CheckVar        = dict()
+
+    window = tk.Tk()
+    window.title('PA Data Analyze v%s' % Version)
+    window.geometry('960x540')
+
+    def open_file():
+        filename = filedialog.askopenfilename(title='打开文件', filetypes=[('txt', '*.txt')])
+        if filename != '':
+            Entry['文件路径'].delete(0, tk.END)
+            Entry['文件路径'].insert('insert', filename)
+
+    def load_file():
+        PA.DataFileName = Entry['文件路径'].get()
+        PA.Ts = float(Entry['Ts'].get())
+
+        PA.BlockRange[0] = int(Entry['BlockRange_0'].get()) if Entry['BlockRange_0'].get() != '无' else 0
+        PA.BlockRange[1] = int(Entry['BlockRange_1'].get()) if Entry['BlockRange_1'].get() != '无' else 0
+
+        PA.TimeRange[0] = float(Entry['TimeRange_0'].get()) if Entry['TimeRange_0'].get() != '无' else 0
+        PA.TimeRange[1] = float(Entry['TimeRange_1'].get()) if Entry['TimeRange_1'].get() != '无' else 0
+
+        PA.AxisID_X = int(Combobox['AxisID_X'].get()) if Combobox['AxisID_X'].get() != '无' else 0
+        PA.AxisID_Y = int(Combobox['AxisID_Y'].get()) if Combobox['AxisID_Y'].get() != '无' else 0
+        PA.AxisID_Z = int(Combobox['AxisID_Z'].get()) if Combobox['AxisID_Z'].get() != '无' else 0
+        PA.AxisID_A = int(Combobox['AxisID_A'].get()) if Combobox['AxisID_A'].get() != '无' else 0
+
+        """
+        ScrolledText['输出消息'].insert('end','1\n')
+        lineIndex = '%d'%float(ScrolledText['输出消息'].index('insert'))
+        ScrolledText['输出消息'].insert('end','a\n')
+        ScrolledText['输出消息'].tag_add('yxs', lineIndex+'.0', lineIndex+'.5')
+        ScrolledText['输出消息'].tag_config('yxs', foreground='red')
+        ScrolledText['输出消息'].insert('end','\rb\n')
+        print('%d'%float(ScrolledText['输出消息'].index('insert')))
+        lineIndex = '%d'%float(ScrolledText['输出消息'].index('insert'))
+        ScrolledText['输出消息'].insert('end','1111111\n')
+        ScrolledText['输出消息'].tag_add('yxs', lineIndex+'.0', lineIndex+'.5')
+        ScrolledText['输出消息'].tag_config('yxs', foreground='red')
+        ScrolledText['输出消息'].see('end')
+        """
+        if PA.AxisID_X == 0 and PA.AxisID_Y == 0 and PA.AxisID_Z == 0 and PA.AxisID_A == 0:
+            return None
+        PA.TkGUI_OutputText = ScrolledText['输出消息']
+        PA.LoadData()
+
+    def plot_data():
+        PA.Plot.BlockNo = int(CheckVar['BlockNo'].get())
+        PA.Plot.PathVel = int(CheckVar['PathVel'].get())
+        PA.Plot.PathAcc = int(CheckVar['PathAcc'].get())
+        PA.Plot.PathJerk = int(CheckVar['PathJerk'].get())
+        PA.Plot.Pos_X = int(CheckVar['Pos_X'].get())
+        PA.Plot.Vel_X = int(CheckVar['Vel_X'].get())
+        PA.Plot.Acc_X = int(CheckVar['Acc_X'].get())
+        PA.Plot.Jerk_X = int(CheckVar['Jerk_X'].get())
+        PA.Plot.Pos_Y = int(CheckVar['Pos_Y'].get())
+        PA.Plot.Vel_Y = int(CheckVar['Vel_Y'].get())
+        PA.Plot.Acc_Y = int(CheckVar['Acc_Y'].get())
+        PA.Plot.Jerk_Y = int(CheckVar['Jerk_Y'].get())
+        PA.Plot.Pos_Z = int(CheckVar['Pos_Z'].get())
+        PA.Plot.Vel_Z = int(CheckVar['Vel_Z'].get())
+        PA.Plot.Acc_Z = int(CheckVar['Acc_Z'].get())
+        PA.Plot.Jerk_Z = int(CheckVar['Jerk_Z'].get())
+        PA.Plot.Pos_A = int(CheckVar['Pos_A'].get())
+        PA.Plot.Vel_A = int(CheckVar['Vel_A'].get())
+        PA.Plot.Acc_A = int(CheckVar['Acc_A'].get())
+        PA.Plot.Jerk_A = int(CheckVar['Jerk_A'].get())
+
+        PA.Plot.XY = int(CheckVar['XY'].get())
+        PA.Plot.XY_Time = int(CheckVar['XY_Time'].get())
+        PA.Plot.XY_BlockNo = int(CheckVar['XY_BlockNo'].get())
+        PA.Plot.XY_PathVel = int(CheckVar['XY_PathVel'].get())
+        PA.Plot.XY_PathAcc = int(CheckVar['XY_PathAcc'].get())
+        PA.Plot.XY_PathJerk = int(CheckVar['XY_PathJerk'].get())
+        PA.Plot.XY_PosErr = int(CheckVar['XY_PosErr'].get())
+        PA.Plot.XY_Z = int(CheckVar['XY_Z'].get())
+        PA.Plot.YZ = int(CheckVar['YZ'].get())
+        PA.Plot.YZ_Time = int(CheckVar['YZ_Time'].get())
+        PA.Plot.YZ_BlockNo = int(CheckVar['YZ_BlockNo'].get())
+        PA.Plot.YZ_PathVel = int(CheckVar['YZ_PathVel'].get())
+        PA.Plot.YZ_PathAcc = int(CheckVar['YZ_PathAcc'].get())
+        PA.Plot.YZ_PathJerk = int(CheckVar['YZ_PathJerk'].get())
+        PA.Plot.YZ_PosErr = int(CheckVar['YZ_PosErr'].get())
+        PA.Plot.YZ_X = int(CheckVar['YZ_X'].get())
+        PA.Plot.XZ = int(CheckVar['XZ'].get())
+        PA.Plot.XZ_Time = int(CheckVar['XZ_Time'].get())
+        PA.Plot.XZ_BlockNo = int(CheckVar['XZ_BlockNo'].get())
+        PA.Plot.XZ_PathVel = int(CheckVar['XZ_PathVel'].get())
+        PA.Plot.XZ_PathAcc = int(CheckVar['XZ_PathAcc'].get())
+        PA.Plot.XZ_PathJerk = int(CheckVar['XZ_PathJerk'].get())
+        PA.Plot.XZ_PosErr = int(CheckVar['XZ_PosErr'].get())
+        PA.Plot.XZ_Y = int(CheckVar['XZ_Y'].get())
+
+        PA.Plot.XYZ = int(CheckVar['XYZ'].get())
+        PA.Plot.XYZ_Time = int(CheckVar['XYZ_Time'].get())
+        PA.Plot.XYZ_Z = int(CheckVar['XYZ_Z'].get())
+        PA.Plot.XYZ_PathVel = int(CheckVar['XYZ_PathVel'].get())
+        PA.Plot.XYZ_PathAcc = int(CheckVar['XYZ_PathAcc'].get())
+        PA.Plot.XYZ_PathJerk = int(CheckVar['XYZ_PathJerk'].get())
+
+        PA.Plot.CircleErr_XY = int(CheckVar['CircleErr_XY'].get())
+        PA.Plot.CircleErr_YZ = int(CheckVar['CircleErr_YZ'].get())
+        PA.Plot.CircleErr_XZ = int(CheckVar['CircleErr_XZ'].get())
+
+        PA.TkGUI_OutputText = ScrolledText['输出消息']
+        PA.PlotData()
+        PA.DataInfo()
+
+    #################################### 文件路径 ####################################
+    x = 0.05
+    y = 0.05
+    LabelFrame['文件路径'] = ttk.LabelFrame(window, text='文件路径')
+    LabelFrame['文件路径'].place(relx=x - 0.03, rely=y - 0.03, relheight=0.093, relwidth=0.95)
+
+    Entry['文件路径'] = ttk.Entry(window, font=('Microsoft YaHei', 10))
+    Entry['文件路径'].delete(0, tk.END)
+    Entry['文件路径'].insert('insert', PA.DataFileName)
+    Entry['文件路径'].place(relx=x, rely=y, relheight=0.05, relwidth=0.7)
+    Button['选择文件'] = ttk.Button(window, text="选择文件", command=open_file)
+    Button['选择文件'].place(relx=x + 0.8, rely=y, relheight=0.05, relwidth=0.1)
+
+    #################################### 采样参数 ####################################
+    x = 0.05
+    y = 0.15
+    LabelFrame['采样参数'] = ttk.LabelFrame(window, text='采样参数')
+    LabelFrame['采样参数'].place(relx=x - 0.03, rely=y - 0.03, relheight=0.165, relwidth=0.95)
+    Button['加载文件'] = ttk.Button(window, text="加载文件", command=load_file)
+    Button['加载文件'].place(relx=x + 0.8, rely=y, relheight=0.12, relwidth=0.1)
+    # --------------------------------- 采样参数 1 -----------------------------------#
+    Label['采样时间'] = ttk.Label(window, text='采样时间(s)：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['采样时间'].place(relx=x, rely=y, relheight=0.05, relwidth=0.1)
+    Entry['Ts'] = ttk.Entry(window, font=('Microsoft YaHei', 9))
+    Entry['Ts'].delete(0, tk.END)
+    Entry['Ts'].insert('insert', PA.Ts)
+    Entry['Ts'].place(relx=x + 0.09, rely=y, relheight=0.05, relwidth=0.05)
+
+    bais = 0.025
+    Label['NC行号范围'] = ttk.Label(window, text='NC行号范围：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['NC行号范围'].place(relx=x + 0.16 + bais, rely=y, relheight=0.05, relwidth=0.1)
+    Entry['BlockRange_0'] = ttk.Entry(window, font=('Microsoft YaHei', 9))
+    Entry['BlockRange_0'].delete(0, tk.END)
+    if PA.BlockRange[0]:
+        Entry['BlockRange_0'].insert('insert', PA.BlockRange[0])
+    else:
+        Entry['BlockRange_0'].insert('insert', '无')
+    Entry['BlockRange_0'].place(relx=x + 0.24 + bais, rely=y, relheight=0.05, relwidth=0.07)
+    Label['NC行号范围波浪线'] = ttk.Label(window, text='~', anchor='w', font=('Microsoft YaHei', 9))
+    Label['NC行号范围波浪线'].place(relx=x + 0.31 + bais, rely=y, relheight=0.05, relwidth=0.1)
+    Entry['BlockRange_1'] = ttk.Entry(window, font=('Microsoft YaHei', 9))
+    Entry['BlockRange_1'].delete(0, tk.END)
+    if PA.BlockRange[1]:
+        Entry['BlockRange_1'].insert('insert', PA.BlockRange[1])
+    else:
+        Entry['BlockRange_1'].insert('insert', '无')
+    Entry['BlockRange_1'].place(relx=x + 0.33 + bais, rely=y, relheight=0.05, relwidth=0.07)
+
+    bais = 0.3
+    Label['时间范围'] = ttk.Label(window, text='时间范围(s)：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['时间范围'].place(relx=x + 0.16 + bais, rely=y, relheight=0.05, relwidth=0.1)
+    Entry['TimeRange_0'] = ttk.Entry(window, font=('Microsoft YaHei', 9))
+    Entry['TimeRange_0'].delete(0, tk.END)
+    if PA.TimeRange[0]:
+        Entry['TimeRange_0'].insert('insert', PA.TimeRange[0])
+    else:
+        Entry['TimeRange_0'].insert('insert', '无')
+    Entry['TimeRange_0'].place(relx=x + 0.24 + bais, rely=y, relheight=0.05, relwidth=0.07)
+    Label['时间范围波浪线'] = ttk.Label(window, text='~', anchor='w', font=('Microsoft YaHei', 9))
+    Label['时间范围波浪线'].place(relx=x + 0.31 + bais, rely=y, relheight=0.05, relwidth=0.1)
+    Entry['TimeRange_1'] = ttk.Entry(window, font=('Microsoft YaHei', 9))
+    Entry['TimeRange_1'].delete(0, tk.END)
+    if PA.TimeRange[1]:
+        Entry['TimeRange_1'].insert('insert', PA.TimeRange[1])
+    else:
+        Entry['TimeRange_1'].insert('insert', '无')
+    Entry['TimeRange_1'].place(relx=x + 0.33 + bais, rely=y, relheight=0.05, relwidth=0.07)
+
+    # --------------------------------- 采样参数 2 -----------------------------------#
+    y += 0.07
+    bias = 0
+    Label['X轴轴号'] = ttk.Label(window, text='X轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['X轴轴号'].place(relx=x + bias, rely=y, relheight=0.05, relwidth=0.1)
+    StringVar['X轴轴号'] = tk.StringVar()
+    if int(PA.AxisID_X) >= 1 and int(PA.AxisID_X) <= 32:
+        StringVar['X轴轴号'].set(str(int(PA.AxisID_X)))
+    else:
+        StringVar['X轴轴号'].set(str('无'))
+    values = list(map(str, list(range(1, 33))))
+    values.insert(0, '无')
+    Combobox['AxisID_X'] = ttk.Combobox(window, textvariable=StringVar['X轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_X'].place(relx=x + bias + 0.06, rely=y, relheight=0.05, relwidth=0.05)
+
+    bias = 0.197
+    Label['Y轴轴号'] = ttk.Label(window, text='Y轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['Y轴轴号'].place(relx=x + bias, rely=y, relheight=0.05, relwidth=0.1)
+    StringVar['Y轴轴号'] = tk.StringVar()
+    if int(PA.AxisID_Y) >= 1 and int(PA.AxisID_Y) <= 32:
+        StringVar['Y轴轴号'].set(str(int(PA.AxisID_Y)))
+    else:
+        StringVar['Y轴轴号'].set(str('无'))
+    values = list(map(str, list(range(1, 33))))
+    values.insert(0, '无')
+    Combobox['AxisID_Y'] = ttk.Combobox(window, textvariable=StringVar['Y轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_Y'].place(relx=x + bias + 0.06, rely=y, relheight=0.05, relwidth=0.05)
+
+    bias = 0.393
+    Label['Z轴轴号'] = ttk.Label(window, text='Z轴轴号：', anchor='w', font=('Microsoft yaHei', 9))
+    Label['Z轴轴号'].place(relx=x + bias, rely=y, relheight=0.05, relwidth=0.1)
+    StringVar['Z轴轴号'] = tk.StringVar()
+    if int(PA.AxisID_Z) >= 1 and int(PA.AxisID_Z) <= 32:
+        StringVar['Z轴轴号'].set(str(int(PA.AxisID_Z)))
+    else:
+        StringVar['Z轴轴号'].set(str('无'))
+    values = list(map(str, list(range(1, 33))))
+    values.insert(0, '无')
+    Combobox['AxisID_Z'] = ttk.Combobox(window, textvariable=StringVar['Z轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_Z'].place(relx=x + bias + 0.06, rely=y, relheight=0.05, relwidth=0.05)
+
+    bias = 0.59
+    Label['A轴轴号'] = ttk.Label(window, text='A轴轴号：', anchor='w', font=('Microsoft yaHei', 9))
+    Label['A轴轴号'].place(relx=x + bias, rely=y, relheight=0.05, relwidth=0.1)
+    StringVar['A轴轴号'] = tk.StringVar()
+    if int(PA.AxisID_A) >= 1 and int(PA.AxisID_A) <= 32:
+        StringVar['A轴轴号'].set(str(int(PA.AxisID_A)))
+    else:
+        StringVar['A轴轴号'].set(str('无'))
+    values = list(map(str, list(range(1, 33))))
+    values.insert(0, '无')
+    Combobox['AxisID_A'] = ttk.Combobox(window, textvariable=StringVar['A轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_A'].place(relx=x + bias + 0.06, rely=y, relheight=0.05, relwidth=0.05)
+
+    #################################### 绘图选项 ####################################
+    x = 0.05
+    y = 0.32
+    LabelFrame['绘图选项'] = ttk.LabelFrame(window, text='绘图选项')
+    LabelFrame['绘图选项'].place(relx=x - 0.03, rely=y - 0.03, relheight=0.41, relwidth=0.95)
+
+    # ---------------------------------- 绘图选项1D ----------------------------------#
+    x = 0
+    y = 0
+    LabelFrame['1D'] = ttk.LabelFrame(LabelFrame['绘图选项'], text='1D')
+    LabelFrame['1D'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.345)
+
+    xBias = 0.02
+    yBias = 0.11
+    xStep = 0.11
+    yStep = 0.1
+    Key = 'BlockNo'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'PathVel'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'PathAcc'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'PathJerk'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Pos_X'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Vel_X'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Acc_X'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Jerk_X'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+
+    xBias += xStep
+    yBias = 0.11
+    Key = 'Pos_Y'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Vel_Y'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Acc_Y'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Jerk_Y'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Pos_Z'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Vel_Z'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Acc_Z'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Jerk_Z'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+
+    xBias += xStep
+    yBias = 0.11
+    Key = 'Pos_A'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Vel_A'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Acc_A'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'Jerk_A'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+
+    # ---------------------------------- 绘图选项2D ----------------------------------#
+    x = 0.356
+    y = 0
+    LabelFrame['2D'] = ttk.LabelFrame(LabelFrame['绘图选项'], text='2D')
+    LabelFrame['2D'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.345)
+
+    xBias = 0.02
+    yBias = 0.11
+    xStep = 0.11
+    yStep = 0.1
+    Key = 'XY'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XY_Time'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XY_BlockNo'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XY_PathVel'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XY_PathAcc'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XY_PathJerk'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XY_PosErr'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XY_Z'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+
+    xBias += xStep
+    yBias = 0.11
+    Key = 'YZ'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'YZ_Time'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'YZ_BlockNo'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'YZ_PathVel'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'YZ_PathAcc'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'YZ_PathJerk'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'YZ_PosErr'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'YZ_X'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+
+    xBias += xStep
+    yBias = 0.11
+    Key = 'XZ'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XZ_Time'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XZ_BlockNo'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XZ_PathVel'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XZ_PathAcc'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XZ_PathJerk'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XZ_PosErr'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XZ_Y'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+
+    # ---------------------------------- 绘图选项3D ----------------------------------#
+    x = 0.714
+    y = 0
+    LabelFrame['3D'] = ttk.LabelFrame(LabelFrame['绘图选项'], text='3D')
+    LabelFrame['3D'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.127)
+
+    xBias = 0.02
+    yBias = 0.11
+    xStep = 0.11
+    yStep = 0.1
+    Key = 'XYZ'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XYZ_Time'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XYZ_Z'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XYZ_PathVel'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XYZ_PathAcc'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'XYZ_PathJerk'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+
+    # ---------------------------------- 绘图选项Circle --------------------------------#
+    x = 0.852
+    y = 0
+    LabelFrame['Circle'] = ttk.LabelFrame(LabelFrame['绘图选项'], text='Circle')
+    LabelFrame['Circle'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.127)
+
+    xBias = 0.02
+    yBias = 0.11
+    xStep = 0.11
+    yStep = 0.1
+    Key = 'CircleErr_XY'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'CircleErr_YZ'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    yBias += yStep
+    Key = 'CircleErr_XZ'
+    CheckVar[Key] = tk.IntVar()
+    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+
+    #################################### 输出消息 ####################################
+    x = 0.05
+    y = 0.75
+    Button['绘制图形'] = ttk.Button(window, text="绘制图形", command=plot_data)
+    Button['绘制图形'].place(relx=x + 0.8, rely=y, relheight=0.22, relwidth=0.1)
+    LabelFrame['输出消息'] = ttk.LabelFrame(window, text='输出消息')
+    LabelFrame['输出消息'].place(relx=x - 0.03, rely=y - 0.04, relheight=0.28, relwidth=0.808)
+    ScrolledText['输出消息'] = scrolledtext.ScrolledText(window, font=('Microsoft YaHei', 8), relief='groove')
+    ScrolledText['输出消息'].place(relx=x, rely=y, relheight=0.22, relwidth=0.76)
+
+    window.mainloop()
+
+##################################################################################
+# -------------------------Example of external file use------------------------- #
+##################################################################################
+"""
+PA = PA_Data_Anlyze()
+
+PA.DataFileName = r'D:\汇川\采样数据\20210717_迈盛达\象限痕数据集\F2000D55N620.txt'
+PA.Ts = 0.001
+PA.BlockRange = [620, 630]
+PA.TimeRange = [12.447, 0]
+PA.AxisID_X = 7
+PA.AxisID_Y = 1
+PA.AxisID_Z = 5
+
+PA.LoadData()
+
+PA.Plot.PathVel         = True
+PA.Plot.PathAcc         = True
+PA.Plot.Pos_X           = True
+PA.Plot.Vel_X           = True
+PA.Plot.Acc_X           = True
+PA.Plot.XY              = True
+PA.Plot.XY_Time         = True
+PA.Plot.CircleErr_XY    = True
+PA.Plot.XYZ             = True
+PA.Plot.XYZ_Time        = True
+
+PA.PlotData()
+PA.DataInfo()
+#PA.DataInfo(PA.Data.Time, PA.Data.CmdPathVel, infoName=['Time(s)', 'F(mm/min)']) # You can also use it this way
+PA.ShowFigure()
+"""
     
-    PA.DataFile = r'D:\汇川\采样数据\20210717_迈盛达\象限痕数据集\F2000D55N620.txt'
-    PA.Ts = 0.001
-    PA.BlockRange = [620, 630]
-    PA.TimeRange = [12.447, 0]
-    PA.AxisID_X = 7
-    PA.AxisID_Y = 1
-    PA.AxisID_Z = 5
-    
-    PA.LoadData()
-    
-    PA.Plot.PathVel         = True
-    PA.Plot.PathAcc         = True
-    PA.Plot.Pos_X           = True
-    PA.Plot.Vel_X           = True
-    PA.Plot.Acc_X           = True
-    PA.Plot.XY              = True
-    PA.Plot.XY_Time         = True
-    PA.Plot.CircleErr_XY    = True
-    PA.Plot.XYZ             = True
-    PA.Plot.XYZ_Time        = True
-    
-    PA.PlotData()
-    PA.DataInfo()
-    PA.ShowFigure()

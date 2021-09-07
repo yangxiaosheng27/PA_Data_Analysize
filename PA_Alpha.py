@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*-coding:utf-8 -*-
 
-from PaDataAnalyze import PA_Class
+from PaDataAnalyze import PA_Data_Analyze
 
-PA = PA_Class()
+PA = PA_Data_Analyze()
 PA.DataFile = r'E:\\CNCVariableTrace.txt'
 PA.DataFile = r'C:\PACnc\CNCVariableTrace.txt'
 PA.DataFile = r'D:\汇川\采样数据\20210826-久久象限痕\CNCVariableTrace-QEC滤波位置-圆弧补偿.txt'
