@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*-coding:utf-8 -*-
 
-Version = '1.5.0'
-
 """
 @File           PaDataAnalyze.py
 @Brief          PA data analyze
@@ -85,7 +83,13 @@ Version = '1.5.0'
                 PA.Plot.CircleErr_XZ            = True
 """
 
+Version = '1.5.1'
+
 ################################ Version History ##################################
+# ---------------------------------Version 1.5.1--------------------------------- #
+# Date: 2021/9/7
+# Author: yangxiaosheng
+# Update: fix some bug in using Tkinter
 # ---------------------------------Version 1.5.0--------------------------------- #
 # Date: 2021/9/7
 # Author: yangxiaosheng
@@ -156,7 +160,7 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import scrolledtext
 
-class PA_Data_Anlyze:
+class PA_Data_Analyze:
     def __init__(self):
         self.initParam()
     
@@ -271,7 +275,11 @@ class PA_Data_Anlyze:
 
         plt.close(fig='all')
         self.FigNum = 0
-        
+        self.ShareAxes.Time = None
+        self.ShareAxes.XY = None
+        self.ShareAxes.YZ = None
+        self.ShareAxes.XZ = None
+            
         # ---------------------------------Plot 1D---------------------------------- #
         # BlockNo
         if self.Plot.BlockNo == True:
@@ -1447,7 +1455,7 @@ class PA_Data_Anlyze:
 ##################################################################################
 if __name__ == '__main__':
 
-    PA = PA_Data_Anlyze()
+    PA = PA_Data_Analyze()
     PA.AxisID_X = 1
     PA.AxisID_Y = 2
     PA.AxisID_Z = 3
@@ -1465,7 +1473,7 @@ if __name__ == '__main__':
 
     window = tk.Tk()
     window.title('PA Data Analyze v%s' % Version)
-    #window.geometry('960x540')
+    #window.geometry('1000x615')
     window.geometry('1300x800')
     #弹出窗口
     window.iconify()
@@ -1756,47 +1764,6 @@ if __name__ == '__main__':
     xBias += 0.07
     Combobox['AxisID_B'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['B轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
     Combobox['AxisID_B'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.05)
-    
-    """
-    bias = 0.197
-    Label['Y轴轴号'] = ttk.Label(LabelFrame['采样参数'], text='Y轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
-    Label['Y轴轴号'].place(relx=x + bias, rely=y, relheight=0.05, relwidth=0.1)
-    StringVar['Y轴轴号'] = tk.StringVar()
-    if int(PA.AxisID_Y) >= 1 and int(PA.AxisID_Y) <= 32:
-        StringVar['Y轴轴号'].set(str(int(PA.AxisID_Y)))
-    else:
-        StringVar['Y轴轴号'].set(str('无'))
-    values = list(map(str, list(range(1, 33))))
-    values.insert(0, '无')
-    Combobox['AxisID_Y'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['Y轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
-    Combobox['AxisID_Y'].place(relx=x + bias + 0.06, rely=y, relheight=0.05, relwidth=0.05)
-
-    bias = 0.393
-    Label['Z轴轴号'] = ttk.Label(LabelFrame['采样参数'], text='Z轴轴号：', anchor='w', font=('Microsoft yaHei', 9))
-    Label['Z轴轴号'].place(relx=x + bias, rely=y, relheight=0.05, relwidth=0.1)
-    StringVar['Z轴轴号'] = tk.StringVar()
-    if int(PA.AxisID_Z) >= 1 and int(PA.AxisID_Z) <= 32:
-        StringVar['Z轴轴号'].set(str(int(PA.AxisID_Z)))
-    else:
-        StringVar['Z轴轴号'].set(str('无'))
-    values = list(map(str, list(range(1, 33))))
-    values.insert(0, '无')
-    Combobox['AxisID_Z'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['Z轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
-    Combobox['AxisID_Z'].place(relx=x + bias + 0.06, rely=y, relheight=0.05, relwidth=0.05)
-
-    bias = 0.59
-    Label['A轴轴号'] = ttk.Label(LabelFrame['采样参数'], text='A轴轴号：', anchor='w', font=('Microsoft yaHei', 9))
-    Label['A轴轴号'].place(relx=x + bias, rely=y, relheight=0.05, relwidth=0.1)
-    StringVar['A轴轴号'] = tk.StringVar()
-    if int(PA.AxisID_A) >= 1 and int(PA.AxisID_A) <= 32:
-        StringVar['A轴轴号'].set(str(int(PA.AxisID_A)))
-    else:
-        StringVar['A轴轴号'].set(str('无'))
-    values = list(map(str, list(range(1, 33))))
-    values.insert(0, '无')
-    Combobox['AxisID_A'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['A轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
-    Combobox['AxisID_A'].place(relx=x + bias + 0.06, rely=y, relheight=0.05, relwidth=0.05)
-    """
 
     #################################### 绘图选项 ####################################
     x = 0.05
@@ -2153,7 +2120,7 @@ if __name__ == '__main__':
 # -------------------------Example of external file use------------------------- #
 ##################################################################################
 """
-PA = PA_Data_Anlyze()
+PA = PA_Data_Analyze()
 
 PA.DataFileName = r'D:\汇川\采样数据\20210717_迈盛达\象限痕数据集\F2000D55N620.txt'
 PA.Ts = 0.001
