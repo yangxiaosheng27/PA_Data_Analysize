@@ -83,11 +83,15 @@
                 PA.Plot.CircleErr_XZ            = True
 """
 
-Version = '1.5.1'
+Version = '1.5.2'
 
 ################################ Version History ##################################
+# ---------------------------------Version 1.5.2--------------------------------- #
+# Date: 2021/9/11
+# Author: yangxiaosheng
+# Update: print message to GUI
 # ---------------------------------Version 1.5.1--------------------------------- #
-# Date: 2021/9/7
+# Date: 2021/9/9
 # Author: yangxiaosheng
 # Update: fix some bug in using Tkinter
 # ---------------------------------Version 1.5.0--------------------------------- #
@@ -152,6 +156,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 import matplotlib
 import numpy
+import time
 import sys
 import re
 
@@ -269,8 +274,13 @@ class PA_Data_Analyze:
     # -----------------------------------Plot Data---------------------------------- #
     ##################################################################################
     def PlotData(self):
+        
+        print('\033[1;34m\n\nPlotData: \033[0mStarting...... (Time: %s)' % time.strftime('%H:%M:%S'))
+        self.OutputMessageToGUI('\n\nPlotData: Starting...... (Time: %s)' % time.strftime('%H:%M:%S'))
+        
         if self.Data.Length == 0:
             print('\033[1;34m\nPlotData: \033[1;31mError No Data\033[0m')
+            self.OutputMessageToGUI('\nPlotData: Error No Data')
             return None
 
         plt.close(fig='all')
@@ -288,6 +298,7 @@ class PA_Data_Analyze:
                 self.Plot1D(block, dataName='BlockNo', figureName='BlockNo', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError BlockNo\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error BlockNo')
 
         # PathVel
         if self.Plot.PathVel == True:
@@ -298,6 +309,7 @@ class PA_Data_Analyze:
                     self.Plot1D(self.Data.ActPathVel, axisName_1='Vel (mm/min)', dataName='ActPathVel', shareAxes=self.ShareAxes.Time, figureName='PathVel', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError PathVel\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error PathVel')
 
         # PathAcc
         if self.Plot.PathAcc == True:
@@ -308,6 +320,7 @@ class PA_Data_Analyze:
                     #self.Plot1D(self.Data.ActPathAcc, axisName_1='Acc (m/s^2)', dataName='ActPathAcc', shareAxes=self.ShareAxes.Time, figureName='PathAcc', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError PathAcc\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error PathAcc')
 
         # PathJerk
         if self.Plot.PathJerk == True:
@@ -318,6 +331,7 @@ class PA_Data_Analyze:
                     #self.Plot1D(self.Data.ActPathJerk, axisName_1='Jerk (m/s^3)', dataName='ActPathJerk', shareAxes=self.ShareAxes.Time, figureName='PathJerk', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError PathJerk\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error PathJerk')
 
         # X
         # Pos_X
@@ -328,6 +342,7 @@ class PA_Data_Analyze:
                 self.Plot1D(self.Data.ActPos_X, axisName_1='Pos (mm)', dataName='ActPos_X', shareAxes=self.ShareAxes.Time, figureName='Pos_X', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Pos_X\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Pos_X')
         # Vel_X
         if self.Plot.Vel_X == True:
             try:
@@ -336,6 +351,7 @@ class PA_Data_Analyze:
                 self.Plot1D(self.Data.ActVel_X, axisName_1='Vel (mm/min)', dataName='ActVel_X', shareAxes=self.ShareAxes.Time, figureName='Vel_X', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Vel_X\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Vel_X')
         # Acc_X
         if self.Plot.Acc_X == True:
             try:
@@ -344,6 +360,7 @@ class PA_Data_Analyze:
                 self.Plot1D(self.Data.ActAcc_X, axisName_1='Acc (m/s^2)', dataName='ActAcc_X', shareAxes=self.ShareAxes.Time, figureName='Acc_X', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Acc_X\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Acc_X')
         # Jerk_X
         if self.Plot.Jerk_X == True:
             try:
@@ -352,6 +369,7 @@ class PA_Data_Analyze:
                 # self.Plot1D(self.Data.ActJerk_X, axisName_1='Jerk (m/s^3)', dataName='ActJerk_X', shareAxes=self.ShareAxes.Time, figureName='Jerk_X', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Jerk_X\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Jerk_X')
 
         # Y
         # Pos_Y
@@ -362,6 +380,7 @@ class PA_Data_Analyze:
                 self.Plot1D(self.Data.ActPos_Y, axisName_1='Pos (mm)', dataName='ActPos_Y', shareAxes=self.ShareAxes.Time, figureName='Pos_Y', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Pos_Y\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Pos_Y')
         # Vel_Y
         if self.Plot.Vel_Y == True:
             try:
@@ -370,6 +389,7 @@ class PA_Data_Analyze:
                 self.Plot1D(self.Data.ActVel_Y, axisName_1='Vel (mm/min)', dataName='ActVel_Y', shareAxes=self.ShareAxes.Time, figureName='Vel_Y', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Vel_Y\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Vel_Y')
         # Acc_Y
         if self.Plot.Acc_Y == True:
             try:
@@ -378,6 +398,7 @@ class PA_Data_Analyze:
                 self.Plot1D(self.Data.ActAcc_Y, axisName_1='Acc (m/s^2)', dataName='ActAcc_Y', shareAxes=self.ShareAxes.Time, figureName='Acc_Y', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Acc_Y\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Acc_Y')
         # Jerk_Y
         if self.Plot.Jerk_Y == True:
             try:
@@ -386,6 +407,7 @@ class PA_Data_Analyze:
                 # self.Plot1D(self.Data.ActJerk_Y, axisName_1='Jerk (m/s^3)', dataName='ActJerk_Y', shareAxes=self.ShareAxes.Time, figureName='Jerk_Y', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Jerk_Y\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Jerk_Y')
 
         # Z
         #Pos_Z
@@ -396,6 +418,7 @@ class PA_Data_Analyze:
                 self.Plot1D(self.Data.ActPos_Z, axisName_1='Pos (mm)', dataName='ActPos_Z', shareAxes=self.ShareAxes.Time, figureName='Pos_Z', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Pos_Z\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Pos_Z')
         #Vel_Z
         if self.Plot.Vel_Z == True:
             try:
@@ -404,6 +427,7 @@ class PA_Data_Analyze:
                 self.Plot1D(self.Data.ActVel_Z, axisName_1='Vel (mm/min)', dataName='ActVel_Z', shareAxes=self.ShareAxes.Time, figureName='Vel_Z', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Vel_Z\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Vel_Z')
         #Acc_Z
         if self.Plot.Acc_Z == True:
             try:
@@ -412,6 +436,7 @@ class PA_Data_Analyze:
                 self.Plot1D(self.Data.ActAcc_Z, axisName_1='Acc (m/s^2)', dataName='ActAcc_Z', shareAxes=self.ShareAxes.Time, figureName='Acc_Z', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Acc_Z\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Acc_Z')
         # Jerk_Z
         if self.Plot.Jerk_Z == True:
             try:
@@ -420,6 +445,7 @@ class PA_Data_Analyze:
                 # self.Plot1D(self.Data.ActJerk_Z, axisName_1='Jerk (m/s^3)', dataName='ActJerk_Z', shareAxes=self.ShareAxes.Time, figureName='Jerk_Z', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Jerk_Z\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Jerk_Z')
 
         # A
         #Pos_A
@@ -430,6 +456,7 @@ class PA_Data_Analyze:
                 self.Plot1D(self.Data.ActPos_A, axisName_1='Pos (mm)', dataName='ActPos_A', shareAxes=self.ShareAxes.Time, figureName='Pos_A', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Pos_A\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Pos_A')
         #Vel_A
         if self.Plot.Vel_A == True:
             try:
@@ -438,6 +465,7 @@ class PA_Data_Analyze:
                 self.Plot1D(self.Data.ActVel_A, axisName_1='Vel (mm/min)', dataName='ActVel_A', shareAxes=self.ShareAxes.Time, figureName='Vel_A', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Vel_A\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Vel_A')
         #Acc_A
         if self.Plot.Acc_A == True:
             try:
@@ -446,6 +474,7 @@ class PA_Data_Analyze:
                 self.Plot1D(self.Data.ActAcc_A, axisName_1='Acc (m/s^2)', dataName='ActAcc_A', shareAxes=self.ShareAxes.Time, figureName='Acc_A', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Acc_A\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Acc_A')
         # Jerk_A
         if self.Plot.Jerk_A == True:
             try:
@@ -454,6 +483,7 @@ class PA_Data_Analyze:
                 # self.Plot1D(self.Data.ActJerk_A, axisName_1='Jerk (m/s^3)', dataName='ActJerk_A', shareAxes=self.ShareAxes.Time, figureName='Jerk_A', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Jerk_A\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Jerk_A')
 
         # B
         #Pos_B
@@ -464,6 +494,7 @@ class PA_Data_Analyze:
                 self.Plot1D(self.Data.ActPos_B, axisName_1='Pos (mm)', dataName='ActPos_B', shareAxes=self.ShareAxes.Time, figureName='Pos_B', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Pos_B\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Pos_B')
         #Vel_B
         if self.Plot.Vel_B == True:
             try:
@@ -472,6 +503,7 @@ class PA_Data_Analyze:
                 self.Plot1D(self.Data.ActVel_B, axisName_1='Vel (mm/min)', dataName='ActVel_B', shareAxes=self.ShareAxes.Time, figureName='Vel_B', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Vel_B\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Vel_B')
         #Acc_B
         if self.Plot.Acc_B == True:
             try:
@@ -480,6 +512,7 @@ class PA_Data_Analyze:
                 self.Plot1D(self.Data.ActAcc_B, axisName_1='Acc (m/s^2)', dataName='ActAcc_B', shareAxes=self.ShareAxes.Time, figureName='Acc_B', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Acc_B\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Acc_B')
         # Jerk_B
         if self.Plot.Jerk_B == True:
             try:
@@ -488,6 +521,7 @@ class PA_Data_Analyze:
                 # self.Plot1D(self.Data.ActJerk_B, axisName_1='Jerk (m/s^3)', dataName='ActJerk_B', shareAxes=self.ShareAxes.Time, figureName='Jerk_B', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError Jerk_B\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error Jerk_B')
 
         # ---------------------------------Plot 2D---------------------------------- #
         # XY
@@ -498,6 +532,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.ActPos_X, self.Data.ActPos_Y, axisName_1='X (mm)', axisName_2='Y (mm)', dataName='ActPos', shareAxes=self.ShareAxes.XY, figureName='XY', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XY\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XY')
         # XY with BlockNo
         if self.Plot.XY_BlockNo == True:
             try:
@@ -505,6 +540,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='BlockNo', shareAxes=self.ShareAxes.XY, figureName='XY_BlockNo', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError BlockNo\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error BlockNo')
         # XY with Time
         if self.Plot.XY_Time == True:
             try:
@@ -512,6 +548,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='Time (s)', shareAxes=self.ShareAxes.XY, figureName='XY_Time', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XY_Time\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XY_Time')
         #XY with PathVel
         if self.Plot.XY_PathVel == True:
             try:
@@ -519,6 +556,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='PathVel (mm/min)', shareAxes=self.ShareAxes.XY, figureName='XY_PathVel', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XY_PathVel\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XY_PathVel')
         #XY with PathAcc
         if self.Plot.XY_PathAcc == True:
             try:
@@ -526,6 +564,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='PathAcc (m/s^2)', shareAxes=self.ShareAxes.XY, figureName='XY_PathAcc', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XY_PathAcc\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XY_PathAcc')
         #XY with PathJerk
         if self.Plot.XY_PathJerk == True:
             try:
@@ -533,6 +572,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='PathJerk (m/s^3)', shareAxes=self.ShareAxes.XY, figureName='XY_PathJerk', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XY_PathJerk\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XY_PathJerk')
         #XY with PosErr
         if self.Plot.XY_PosErr == True:
             try:
@@ -541,6 +581,7 @@ class PA_Data_Analyze:
                     self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='PosErr (mm)', shareAxes=self.ShareAxes.XY, figureName='XY_PosErr', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XY_PosErr\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XY_PosErr')
         #XY with Z
         if self.Plot.XY_Z == True:
             try:
@@ -548,6 +589,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='Z (mm)', shareAxes=self.ShareAxes.XY, figureName='XY_Z', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XY_Z\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XY_Z')
         
         # YZ
         if self.Plot.YZ == True:
@@ -557,6 +599,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.ActPos_Y, self.Data.ActPos_Z, axisName_1='Y (mm)', axisName_2='Z (mm)', dataName='ActPos', shareAxes=self.ShareAxes.YZ, figureName='YZ', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error YZ')
         # YZ with BlockNo
         if self.Plot.YZ_BlockNo == True:
             try:
@@ -564,6 +607,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='BlockNo', shareAxes=self.ShareAxes.YZ, figureName='YZ_BlockNo', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_BlockNo\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error YZ_BlockNo')
         # YZ with Time
         if self.Plot.YZ_Time == True:
             try:
@@ -571,6 +615,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='Time (s)', shareAxes=self.ShareAxes.YZ, figureName='YZ_Time', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_Time\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error YZ_Time')
         #YZ with PathVel
         if self.Plot.YZ_PathVel == True:
             try:
@@ -578,6 +623,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='PathVel (mm/min)', shareAxes=self.ShareAxes.YZ, figureName='YZ_PathVel', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathVel\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error YZ_PathVel')
         #YZ with PathAcc
         if self.Plot.YZ_PathAcc == True:
             try:
@@ -585,6 +631,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='PathAcc (m/s^2)', shareAxes=self.ShareAxes.YZ, figureName='YZ_PathAcc', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathAcc\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error YZ_PathAcc')
         #YZ with PathJerk
         if self.Plot.YZ_PathJerk == True:
             try:
@@ -592,6 +639,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='PathJerk (m/s^3)', shareAxes=self.ShareAxes.YZ, figureName='YZ_PathJerk', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathJerk\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error YZ_PathJerk')
         #YZ with PosErr
         if self.Plot.YZ_PosErr == True:
             try:
@@ -600,6 +648,7 @@ class PA_Data_Analyze:
                     self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='PosErr (mm)', shareAxes=self.ShareAxes.YZ, figureName='YZ_PosErr', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_PosErr\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error YZ_PosErr')
         #YZ with X
         if self.Plot.YZ_X == True:
             try:
@@ -607,6 +656,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='X (mm)', shareAxes=self.ShareAxes.YZ, figureName='YZ_X', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_X\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error YZ_X')
 
         # XZ
         if self.Plot.XZ == True:
@@ -616,6 +666,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.ActPos_X, self.Data.ActPos_Z, axisName_1='X (mm)', axisName_2='Z (mm)', dataName='ActPos', shareAxes=self.ShareAxes.XZ, figureName='XZ', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XZ')
         # XZ with BlockNo
         if self.Plot.XZ_BlockNo == True:
             try:
@@ -623,6 +674,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='BlockNo', shareAxes=self.ShareAxes.XZ, figureName='XZ_BlockNo', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ_BlockNo\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XZ_BlockNo')
         # XZ with Time
         if self.Plot.XZ_Time == True:
             try:
@@ -630,6 +682,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='Time (s)', shareAxes=self.ShareAxes.XZ, figureName='XZ_Time', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ_Time\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XZ_Time')
         #XZ with PathVel
         if self.Plot.XZ_PathVel == True:
             try:
@@ -637,6 +690,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='PathVel (mm/min)', shareAxes=self.ShareAxes.XZ, figureName='XZ_PathVel', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathVel\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XZ_PathVel')
         #XZ with PathAcc
         if self.Plot.XZ_PathAcc == True:
             try:
@@ -644,6 +698,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='PathAcc (m/s^2)', shareAxes=self.ShareAxes.XZ, figureName='XZ_PathAcc', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathAcc\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XZ_PathAcc')
         #XZ with PathJerk
         if self.Plot.XZ_PathJerk == True:
             try:
@@ -651,6 +706,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='PathJerk (m/s^3)', shareAxes=self.ShareAxes.XZ, figureName='XZ_PathJerk', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathJerk\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XZ_PathJerk')
         #XZ with PosErr
         if self.Plot.XZ_PosErr == True:
             try:
@@ -659,6 +715,7 @@ class PA_Data_Analyze:
                     self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='PosErr (mm)', shareAxes=self.ShareAxes.XZ, figureName='XZ_PosErr', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ_PosErr\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XZ_PosErr')
         #XZ with Y
         if self.Plot.XZ_Y == True:
             try:
@@ -666,6 +723,7 @@ class PA_Data_Analyze:
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='Y (mm)', shareAxes=self.ShareAxes.XZ, figureName='XZ_Y', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ_Y\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XZ_Y')
 
         # ---------------------------------Plot 3D---------------------------------- #
         #XYZ
@@ -676,6 +734,7 @@ class PA_Data_Analyze:
                 self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', dataName='ActPos', figureName='XYZ', newFigure=False)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XYZ\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XYZ')
 
         #XYZ with Time
         if self.Plot.XYZ_Time == True:
@@ -684,6 +743,7 @@ class PA_Data_Analyze:
                 self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='Time (s)', figureName='XYZ_Time', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XYZ_Time\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XYZ_Time')
 
         #XYZ with Z
         if self.Plot.XYZ_Z == True:
@@ -692,6 +752,7 @@ class PA_Data_Analyze:
                 self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='Z (mm)', figureName='XYZ_Z', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XYZ_Z\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XYZ_Z')
 
         #XYZ with CmdPathVel
         if self.Plot.XYZ_PathVel == True:
@@ -700,6 +761,7 @@ class PA_Data_Analyze:
                 self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='PathVel (mm/min)', figureName='XYZ_PathVel', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XYZ_PathVel\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XYZ_PathVel')
 
         #XYZ with CmdPathAcc
         if self.Plot.XYZ_PathAcc == True:
@@ -708,6 +770,7 @@ class PA_Data_Analyze:
                 self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='PathAcc (m/s^2)', figureName='XYZ_PathAcc', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XYZ_PathAcc\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XYZ_PathAcc')
 
         #XYZ with CmdPathJerk
         if self.Plot.XYZ_PathJerk == True:
@@ -716,6 +779,7 @@ class PA_Data_Analyze:
                 self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='PathJerk (m/s^3)', figureName='XYZ_PathJerk', newFigure=True)
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError XYZ_PathJerk\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error XYZ_PathJerk')
 
         # ----------------------------Plot Circle Error----------------------------- #
         # circular error of XY
@@ -728,6 +792,7 @@ class PA_Data_Analyze:
                 self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data.CmdPos_X, self.Data.CmdPos_Y, self.Data.ActPos_X, self.Data.ActPos_Y, F=None, figureName='CircleErr_XY')
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_XY\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error CircleErr_XY')
 
         # circular error of YZ
         if self.Plot.CircleErr_YZ == True:
@@ -739,6 +804,7 @@ class PA_Data_Analyze:
                 self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data.CmdPos_Y, self.Data.CmdPos_Z, self.Data.ActPos_Y, self.Data.ActPos_Z, F=None, figureName='CircleErr_YZ')
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_YZ\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error CircleErr_YZ')
 
         # circular error of XZ
         if self.Plot.CircleErr_XZ == True:
@@ -750,7 +816,13 @@ class PA_Data_Analyze:
                 self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data.CmdPos_X, self.Data.CmdPos_Z, self.Data.ActPos_X, self.Data.ActPos_Z, F=None, figureName='CircleErr_XZ')
             except:
                 print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_XZ\033[0m')
+                self.OutputMessageToGUI('\nPlotData: Error CircleErr_XZ')
 
+        
+        # ---------------------------------end---------------------------------- #
+        if self.FigNum == 0:
+            print('\033[1;34m\nPlotData: \033[1;31mNo Figure\033[0m')
+            self.OutputMessageToGUI('\nPlotData: No Figure')
         return None
 
     ##################################################################################
@@ -763,7 +835,9 @@ class PA_Data_Analyze:
         if newFigure:
             self.FigNum += 1
             print('')
+            self.OutputMessageToGUI('\n')
         sys.stdout.write("\033[1;34m\rPlotData: \033[0mDraw Figure %2d  %s\033[0m" % (self.FigNum, figureName))
+        self.OutputMessageToGUI('PlotData: Draw Figure %2d  %s' % (self.FigNum, figureName), overwrite=True)
         fig = plt.figure(self.FigNum)
         if newFigure:
             fig.clf()
@@ -791,6 +865,7 @@ class PA_Data_Analyze:
         plt.draw()
         plt.pause(0.001)
         sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
+        self.OutputMessageToGUI('PlotData: Done Figure %2d  %s       ' % (self.FigNum, figureName), overwrite=True)
         plt.ioff()
         if shareAxes == self.ShareAxes.Time:
             self.ShareAxes.Time = ax
@@ -814,7 +889,9 @@ class PA_Data_Analyze:
         if newFigure:
             self.FigNum += 1
             print('')
+            self.OutputMessageToGUI('\n')
         sys.stdout.write("\033[1;34m\rPlotData: \033[0mDraw Figure %2d  %s\033[0m" % (self.FigNum, figureName))
+        self.OutputMessageToGUI('PlotData: Draw Figure %2d  %s' % (self.FigNum, figureName), overwrite=True)
         fig = plt.figure(self.FigNum)
         if newFigure:
             fig.clf()
@@ -848,6 +925,7 @@ class PA_Data_Analyze:
         plt.draw()
         plt.pause(0.001)
         sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
+        self.OutputMessageToGUI('PlotData: Done Figure %2d  %s       ' % (self.FigNum, figureName), overwrite=True)
         plt.ioff()
         if shareAxes == self.ShareAxes.XY:
             self.ShareAxes.XY = ax
@@ -876,7 +954,9 @@ class PA_Data_Analyze:
         if newFigure:
             self.FigNum += 1
             print('')
+            self.OutputMessageToGUI('\n')
         sys.stdout.write("\033[1;34m\rPlotData: \033[0mDraw Figure %2d  %s\033[0m" % (self.FigNum, figureName))
+        self.OutputMessageToGUI('PlotData: Draw Figure %2d  %s' % (self.FigNum, figureName), overwrite=True)
         fig = plt.figure(self.FigNum)
         if newFigure:
             fig.clf()
@@ -912,6 +992,7 @@ class PA_Data_Analyze:
         plt.draw()
         plt.pause(0.001)
         sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
+        self.OutputMessageToGUI('PlotData: Done Figure %2d  %s       ' % (self.FigNum, figureName), overwrite=True)
         plt.ioff()
         return None
 
@@ -969,7 +1050,9 @@ class PA_Data_Analyze:
         if newFigure:
             self.FigNum += 1
             print('')
+            self.OutputMessageToGUI('\n')
         sys.stdout.write("\033[1;34m\rPlotData: \033[0mDraw Figure %2d  %s\033[0m" % (self.FigNum, figureName))
+        self.OutputMessageToGUI('PlotData: Draw Figure %2d  %s' % (self.FigNum, figureName), overwrite=True)
         fig = plt.figure(self.FigNum)
         if newFigure:
             fig.clf()
@@ -986,8 +1069,21 @@ class PA_Data_Analyze:
         plt.draw()
         plt.pause(0.001)
         sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
+        self.OutputMessageToGUI('PlotData: Done Figure %2d  %s       ' % (self.FigNum, figureName), overwrite=True)
         plt.ioff()
         return None
+    
+    ##################################################################################
+    # -----------------------------Output message to GUI------------------------------ #
+    ##################################################################################
+    def OutputMessageToGUI(self, message, overwrite=False):
+        if self.GuiText != None:
+            lineIndex = str(int(float(self.GuiText.index('end')))-1)
+            if overwrite:
+                self.GuiText.delete(lineIndex+'.0', lineIndex+'.end')
+            self.GuiText.insert(lineIndex+'.end', message)
+            self.GuiText.update()
+            self.GuiText.see('end')
 
     ##################################################################################
     # -----------------------------Split Data from Str------------------------------ #
@@ -1012,15 +1108,21 @@ class PA_Data_Analyze:
             if re.match("[0-9a-zA-Z\\[\\]]*", element).group():
                 self.DataName.append(element)
         print('\033[1;34m\nDataName in the file:\033[0m')
+        self.OutputMessageToGUI('\nDataName in the file:\n')
         for i in range(self.DataName.__len__()):
-            print("%02d : \033[1;33m%s\033[0m" % (i + 1, self.DataName[i]))
+            print('%02d : \033[1;33m%s\033[0m' % (i + 1, self.DataName[i]))
+            self.OutputMessageToGUI('%02d : %s\n' % (i + 1, self.DataName[i]))
         print('')
+        self.OutputMessageToGUI('\n')
         return self.DataName
 
     ##################################################################################
     # -----------------------------Load Data from File------------------------------ #
     ##################################################################################
     def LoadData(self):
+        
+        print('\033[1;34m\n\nLoadData: \033[0mStarting...... (Time: %s)' % time.strftime('%H:%M:%S'))
+        self.OutputMessageToGUI('\n\nLoadData: Starting...... (Time: %s)' % time.strftime('%H:%M:%S'))
 
         # -----------------------open file and get textLen------------------------- #
         self.Data.Length = 0
@@ -1029,12 +1131,14 @@ class PA_Data_Analyze:
                 txt = f.readlines()
         except:
             print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): DataFileName %s\033[0m' % (sys._getframe().f_lineno, self.DataFileName))
+            self.OutputMessageToGUI('\nLoadData: Error (CodeLine %d): DataFileName %s\n' % (sys._getframe().f_lineno, self.DataFileName))
             self.Data.Var = dict()
             self.Data.Length = 0
             return None
         textLen = txt.__len__() - 2  # Remove last two lines
         if textLen <= 1:
             print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): textLen =%d <= 1 \033[0m' % (sys._getframe().f_lineno, textLen))
+            self.OutputMessageToGUI('\nLoadData: Error (CodeLine %d): textLen =%d <= 1 \n' % (sys._getframe().f_lineno, textLen))
             self.Data.Var = dict()
             self.Data.Length = 0
             return None
@@ -1045,12 +1149,14 @@ class PA_Data_Analyze:
         varNum = self.DataName.__len__()
         if varNum <= 0:
             print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): varNum = %d  <= 0 \033[0m' % (sys._getframe().f_lineno, varNum))
+            self.OutputMessageToGUI('\nLoadData: Error (CodeLine %d): varNum = %d  <= 0 \n' % (sys._getframe().f_lineno, varNum))
             self.Data.Var = dict()
             self.Data.Length = 0
             return None
         # -----------------------------get TimeRange-------------------------------- #
         if self.TimeRange.__len__() != 2:
             print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): TimeRange.__len__() = %d != 2 \033[0m' % (sys._getframe().f_lineno, self.TimeRange.__len__()))
+            self.OutputMessageToGUI('\nLoadData: Error (CodeLine %d): TimeRange.__len__() = %d != 2 \n' % (sys._getframe().f_lineno, self.TimeRange.__len__()))
             self.Data.Var = dict()
             self.Data.Length = 0
             return None
@@ -1064,6 +1170,7 @@ class PA_Data_Analyze:
         # -----------------------------get BlockRange--------------------------------- #
         if self.BlockRange.__len__() != 2:
             print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): BlockRange.__len__() = %d != 2 \033[0m' % (sys._getframe().f_lineno, self.BlockRange.__len__()))
+            self.OutputMessageToGUI('\nLoadData: Error (CodeLine %d): BlockRange.__len__() = %d != 2 \n' % (sys._getframe().f_lineno, self.BlockRange.__len__()))
             self.Data.Var = dict()
             self.Data.Length = 0
             return None
@@ -1093,16 +1200,14 @@ class PA_Data_Analyze:
             self.LoadDataPercentage = (i - minText) / (maxText - minText) * 100
             if int(self.LoadDataPercentage) > int(self.LoadDataPercentageOld):
                 sys.stdout.write('\033[1;34m\rLoadData: \033[0m%3d%%' % (self.LoadDataPercentage))
-                if self.GuiText != None:
-                    self.GuiText.delete('1.0', 'end')
-                    self.GuiText.insert('end', 'LoadData: %3d%%' % (self.LoadDataPercentage))
-                    self.GuiText.update()
+                self.OutputMessageToGUI('LoadData: %3d%%' % (self.LoadDataPercentage), overwrite=True)
             self.LoadDataPercentageOld = self.LoadDataPercentage
             self.LineData = self.SplitDataStr(txt[i])
             while True:
                 self.LineData = self.RemainingLineData + self.LineData
                 if self.LineData.__len__() < varNum:
-                    print('\033[1;34m\nLoadData: \033[1;31mError (File Line %d): LineData.__len__ < varNum (%d < %d) \033[0m' % ( i+1, self.LineData.__len__(), varNum))
+                    print('\033[1;34m\nLoadData: \033[1;31mError (DataFileLine %d): LineData.__len__ < varNum (%d < %d) \033[0m' % ( i+1, self.LineData.__len__(), varNum))
+                    self.OutputMessageToGUI('\nLoadData: Error (DataFileLine %d): LineData.__len__ < varNum (%d < %d) \n' % ( i+1, self.LineData.__len__(), varNum))
                     self.Data.Length = 0
                     return None
                 if BlockNoExistFlag:
@@ -1153,16 +1258,19 @@ class PA_Data_Analyze:
         
         self.Data.Length = self.Data.Var[self.DataName[0]].__len__()
         if self.Data.Var.__len__() <= 0 or self.Data.Length <= 0:
-            print('\033[1;34m\nLoadData: \033[1;31mError: Data Len = %d! (CodeLine %d) \033[0m' % (self.Data.Length, sys._getframe().f_lineno))
+            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): Data Len = %d! \033[0m' % (sys._getframe().f_lineno, self.Data.Length))
+            self.OutputMessageToGUI('\nLoadData: Error (CodeLine %d): Data Len = %d! \n' % (sys._getframe().f_lineno, self.Data.Length))
             self.Data.Length = 0
             return None
         if BlockNoExistFlag:
             self.Data.TimeRange  = [float(minTime), float(maxTime)]
             self.Data.BlockRange = [int(minBlockNo), int(maxBlockNo)]
-            print('\033[1;34m\rLoadData: \033[1;32m100%%\033[0m\nDataLen=%d, TimeRange=[%.3f, %.3f], BlockRange=[%d, %d] \033[0m' % (self.Data.Length, minTime, maxTime, minBlockNo, maxBlockNo))
+            print('\033[1;34m\rLoadData: \033[1;32m100%%\033[0m\nDataLength=%d, TimeRange=[%.3f, %.3f], BlockRange=[%d, %d] \033[0m' % (self.Data.Length, minTime, maxTime, minBlockNo, maxBlockNo))
+            self.OutputMessageToGUI('LoadData: 100%%\nDataLength=%d, BlockRange=[%d, %d], TimeRange=[%.3f, %.3f]' % (self.Data.Length, minBlockNo, maxBlockNo, minTime, maxTime), overwrite=True)
         else:
             self.Data.TimeRange  = [float(minTime), float(maxTime)]
-            print('\033[1;34m\rLoadData: \033[1;32m100%%\033[0m\nDataLen=%d, TimeRange=[%.3f, %.3f] \033[0m' % (self.Data.Length, minTime, maxTime))
+            print('\033[1;34m\rLoadData: \033[1;32m100%%\033[0m\nDataLength=%d, TimeRange=[%.3f, %.3f] \033[0m' % (self.Data.Length, minTime, maxTime))
+            self.OutputMessageToGUI('LoadData: 100%%\nDataLength=%d, TimeRange=[%.3f, %.3f]' % (self.Data.Length, minTime, maxTime), overwrite=True)
 
         # --------------------------------init Data-------------------------------- #
         #Time
@@ -1430,7 +1538,8 @@ class PA_Data_Analyze:
             self.InfoValueList = []
             for info in DataInfo:
                 if info.__len__() != self.Data.Length:
-                    print('\033[1;34m\n\nDataInfo: \033[1;33mWarnning: info.__len__() \033[0m')
+                    print('\033[1;34m\n\nDataInfo: \033[1;33mWarnning: info.__len__() = %d != self.Data.Length\033[0m' % info.__len__())
+                    self.OutputMessageToGUI('\n\nDataInfo: Warnning: info.__len__() = %d != self.Data.Length \n' % info.__len__())
                     break
                 self.InfoValueList.append(info)
             self.InfoText = []
@@ -1452,9 +1561,11 @@ class PA_Data_Analyze:
                         text += '\n'
                 self.InfoText.append(str(text))
             mpldatacursor.datacursor(artists, display='multiple', draggable=True, formatter=lambda **param: self.InfoText[param['ind'][0]])
-            print('\033[1;34m\n\nDataInfo: \033[1;32mDone\033[0m')
+            #print('\033[1;34m\n\nDataInfo: \033[1;32mDone\033[0m')
+            #self.OutputMessageToGUI('\n\nDataInfo: Done \n')
         except:
             print('\033[1;34m\n\nDataInfo: \033[1;31mError\033[0m')
+            self.OutputMessageToGUI('\n\nDataInfo: Error \n')
         return None
 
 ##################################################################################
@@ -1509,20 +1620,6 @@ if __name__ == '__main__':
         PA.AxisID_A = int(Combobox['AxisID_A'].get()) if Combobox['AxisID_A'].get() != '无' else 0
         PA.AxisID_B = int(Combobox['AxisID_B'].get()) if Combobox['AxisID_B'].get() != '无' else 0
 
-        """
-        ScrolledText['输出消息'].insert('end','1\n')
-        lineIndex = '%d'%float(ScrolledText['输出消息'].index('insert'))
-        ScrolledText['输出消息'].insert('end','a\n')
-        ScrolledText['输出消息'].tag_add('yxs', lineIndex+'.0', lineIndex+'.5')
-        ScrolledText['输出消息'].tag_config('yxs', foreground='red')
-        ScrolledText['输出消息'].insert('end','\rb\n')
-        print('%d'%float(ScrolledText['输出消息'].index('insert')))
-        lineIndex = '%d'%float(ScrolledText['输出消息'].index('insert'))
-        ScrolledText['输出消息'].insert('end','1111111\n')
-        ScrolledText['输出消息'].tag_add('yxs', lineIndex+'.0', lineIndex+'.5')
-        ScrolledText['输出消息'].tag_config('yxs', foreground='red')
-        ScrolledText['输出消息'].see('end')
-        """
         if PA.AxisID_X == 0 and PA.AxisID_Y == 0 and PA.AxisID_Z == 0 and PA.AxisID_A == 0:
             return None
         PA.GuiText = ScrolledText['输出消息']
@@ -1776,7 +1873,7 @@ if __name__ == '__main__':
     y = 0.32
     LabelFrame['绘图选项'] = ttk.LabelFrame(window, text='绘图选项')
     LabelFrame['绘图选项'].place(relx=x - 0.03, rely=y - 0.03, relheight=0.41, relwidth=0.95)
-
+    
     # ---------------------------------- 绘图选项1D ----------------------------------#
     x = 0
     y = 0
@@ -2154,4 +2251,3 @@ PA.DataInfo()
 #PA.DataInfo(PA.Data.Time, PA.Data.CmdPathVel, infoName=['Time(s)', 'F(mm/min)']) # You can also use it this way
 PA.ShowFigure()
 """
-    
