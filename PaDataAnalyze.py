@@ -1266,11 +1266,11 @@ class PA_Data_Analyze:
             self.Data.TimeRange  = [float(minTime), float(maxTime)]
             self.Data.BlockRange = [int(minBlockNo), int(maxBlockNo)]
             print('\033[1;34m\rLoadData: \033[1;32m100%%\033[0m\nDataLength=%d, TimeRange=[%.3f, %.3f], BlockRange=[%d, %d] \033[0m' % (self.Data.Length, minTime, maxTime, minBlockNo, maxBlockNo))
-            self.OutputMessageToGUI('LoadData: 100%%\nDataLength=%d, BlockRange=[%d, %d], TimeRange=[%.3f, %.3f]' % (self.Data.Length, minBlockNo, maxBlockNo, minTime, maxTime), overwrite=True)
+            self.OutputMessageToGUI('LoadData: 100%%      DataLength=%d, BlockRange=[%d, %d], TimeRange=[%.3f, %.3f]' % (self.Data.Length, minBlockNo, maxBlockNo, minTime, maxTime), overwrite=True)
         else:
             self.Data.TimeRange  = [float(minTime), float(maxTime)]
             print('\033[1;34m\rLoadData: \033[1;32m100%%\033[0m\nDataLength=%d, TimeRange=[%.3f, %.3f] \033[0m' % (self.Data.Length, minTime, maxTime))
-            self.OutputMessageToGUI('LoadData: 100%%\nDataLength=%d, TimeRange=[%.3f, %.3f]' % (self.Data.Length, minTime, maxTime), overwrite=True)
+            self.OutputMessageToGUI('LoadData: 100%%      DataLength=%d, TimeRange=[%.3f, %.3f]' % (self.Data.Length, minTime, maxTime), overwrite=True)
 
         # --------------------------------init Data-------------------------------- #
         #Time
