@@ -30,7 +30,6 @@
                 PA.Data.SetJerk_X               Unit: m/s^3
                 PA.Data.CmdJerk_X               Unit: m/s^3
                 PA.Data.ActJerk_X               Unit: m/s^3
-
 @Plot Flag
                 PA.Plot.BlockNo                 = True
                 PA.Plot.PathVel                 = True
@@ -84,10 +83,9 @@
 """
 
 Version = '1.6.0'
-
 ################################ Version History ##################################
 # ---------------------------------Version 1.6.0--------------------------------- #
-# Date: 2021/9/11
+# Date: 2021/9/12
 # Author: yangxiaosheng
 # Update: add user code in GUI
 # ---------------------------------Version 1.5.2--------------------------------- #
