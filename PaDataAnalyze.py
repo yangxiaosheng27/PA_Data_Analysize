@@ -83,13 +83,17 @@
                 PA.Plot.CircleErr_XZ            = True
 """
 
-Version = '1.5.2'
+Version = '1.6.0'
 
 ################################ Version History ##################################
+# ---------------------------------Version 1.6.0--------------------------------- #
+# Date: 2021/9/11
+# Author: yangxiaosheng
+# Update: add user code in GUI
 # ---------------------------------Version 1.5.2--------------------------------- #
 # Date: 2021/9/11
 # Author: yangxiaosheng
-# Update: print message to GUI
+# Update: add output message in GUI
 # ---------------------------------Version 1.5.1--------------------------------- #
 # Date: 2021/9/9
 # Author: yangxiaosheng
@@ -190,6 +194,7 @@ class PA_Data_Analyze:
         ##################################################################################
         self.FigNum                 = 0
         self.GuiText                = None
+        self.DataInfoExist          = False
         self.Data                   = self.Data_Class()
         self.ShareAxes              = self.ShareAxes_Class()
         self.reSplit                = re.compile("[\t\n ]")
@@ -275,8 +280,8 @@ class PA_Data_Analyze:
     ##################################################################################
     def PlotData(self):
         
-        print('\033[1;34m\n\nPlotData: \033[0mStarting...... (Time: %s)' % time.strftime('%H:%M:%S'))
-        self.OutputMessageToGUI('\n\nPlotData: Starting...... (Time: %s)' % time.strftime('%H:%M:%S'))
+        print('[%s]\n\033[1;34m\n\nPlotData: \033[0mStarting......' % time.strftime('%Y-%m-%d %H:%M:%S'))
+        self.OutputMessageToGUI('\n\n[%s]\nPlotData: Starting......' % time.strftime('%Y-%m-%d %H:%M:%S'))
         
         if self.Data.Length == 0:
             print('\033[1;34m\nPlotData: \033[1;31mError No Data\033[0m')
@@ -284,11 +289,12 @@ class PA_Data_Analyze:
             return None
 
         plt.close(fig='all')
-        self.FigNum = 0
+        self.FigNum         = 0
         self.ShareAxes.Time = None
-        self.ShareAxes.XY = None
-        self.ShareAxes.YZ = None
-        self.ShareAxes.XZ = None
+        self.ShareAxes.XY   = None
+        self.ShareAxes.YZ   = None
+        self.ShareAxes.XZ   = None
+        self.DataInfoExist  = False
             
         # ---------------------------------Plot 1D---------------------------------- #
         # BlockNo
@@ -836,8 +842,8 @@ class PA_Data_Analyze:
             self.FigNum += 1
             print('')
             self.OutputMessageToGUI('\n')
-        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDraw Figure %2d  %s\033[0m" % (self.FigNum, figureName))
-        self.OutputMessageToGUI('PlotData: Draw Figure %2d  %s' % (self.FigNum, figureName), overwrite=True)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDrawing Figure %2d  %s\033[0m" % (self.FigNum, figureName))
+        self.OutputMessageToGUI('PlotData: Drawing Figure %2d  %s' % (self.FigNum, figureName), overwrite=True)
         fig = plt.figure(self.FigNum)
         if newFigure:
             fig.clf()
@@ -864,8 +870,8 @@ class PA_Data_Analyze:
         plt.ion()
         plt.draw()
         plt.pause(0.001)
-        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
-        self.OutputMessageToGUI('PlotData: Done Figure %2d  %s       ' % (self.FigNum, figureName), overwrite=True)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone    \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
+        self.OutputMessageToGUI('PlotData: Done    Figure %2d  %s       ' % (self.FigNum, figureName), overwrite=True)
         plt.ioff()
         if shareAxes == self.ShareAxes.Time:
             self.ShareAxes.Time = ax
@@ -890,8 +896,8 @@ class PA_Data_Analyze:
             self.FigNum += 1
             print('')
             self.OutputMessageToGUI('\n')
-        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDraw Figure %2d  %s\033[0m" % (self.FigNum, figureName))
-        self.OutputMessageToGUI('PlotData: Draw Figure %2d  %s' % (self.FigNum, figureName), overwrite=True)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDrawing Figure %2d  %s\033[0m" % (self.FigNum, figureName))
+        self.OutputMessageToGUI('PlotData: Drawing Figure %2d  %s' % (self.FigNum, figureName), overwrite=True)
         fig = plt.figure(self.FigNum)
         if newFigure:
             fig.clf()
@@ -924,8 +930,8 @@ class PA_Data_Analyze:
         plt.ion()
         plt.draw()
         plt.pause(0.001)
-        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
-        self.OutputMessageToGUI('PlotData: Done Figure %2d  %s       ' % (self.FigNum, figureName), overwrite=True)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone    \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
+        self.OutputMessageToGUI('PlotData: Done    Figure %2d  %s       ' % (self.FigNum, figureName), overwrite=True)
         plt.ioff()
         if shareAxes == self.ShareAxes.XY:
             self.ShareAxes.XY = ax
@@ -955,8 +961,8 @@ class PA_Data_Analyze:
             self.FigNum += 1
             print('')
             self.OutputMessageToGUI('\n')
-        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDraw Figure %2d  %s\033[0m" % (self.FigNum, figureName))
-        self.OutputMessageToGUI('PlotData: Draw Figure %2d  %s' % (self.FigNum, figureName), overwrite=True)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDrawing Figure %2d  %s\033[0m" % (self.FigNum, figureName))
+        self.OutputMessageToGUI('PlotData: Drawing Figure %2d  %s' % (self.FigNum, figureName), overwrite=True)
         fig = plt.figure(self.FigNum)
         if newFigure:
             fig.clf()
@@ -991,8 +997,8 @@ class PA_Data_Analyze:
         plt.ion()
         plt.draw()
         plt.pause(0.001)
-        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
-        self.OutputMessageToGUI('PlotData: Done Figure %2d  %s       ' % (self.FigNum, figureName), overwrite=True)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone    \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
+        self.OutputMessageToGUI('PlotData: Done    Figure %2d  %s       ' % (self.FigNum, figureName), overwrite=True)
         plt.ioff()
         return None
 
@@ -1051,8 +1057,8 @@ class PA_Data_Analyze:
             self.FigNum += 1
             print('')
             self.OutputMessageToGUI('\n')
-        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDraw Figure %2d  %s\033[0m" % (self.FigNum, figureName))
-        self.OutputMessageToGUI('PlotData: Draw Figure %2d  %s' % (self.FigNum, figureName), overwrite=True)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDrawing Figure %2d  %s\033[0m" % (self.FigNum, figureName))
+        self.OutputMessageToGUI('PlotData: Drawing Figure %2d  %s' % (self.FigNum, figureName), overwrite=True)
         fig = plt.figure(self.FigNum)
         if newFigure:
             fig.clf()
@@ -1068,8 +1074,8 @@ class PA_Data_Analyze:
         plt.ion()
         plt.draw()
         plt.pause(0.001)
-        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
-        self.OutputMessageToGUI('PlotData: Done Figure %2d  %s       ' % (self.FigNum, figureName), overwrite=True)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone    \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
+        self.OutputMessageToGUI('PlotData: Done    Figure %2d  %s       ' % (self.FigNum, figureName), overwrite=True)
         plt.ioff()
         return None
     
@@ -1108,7 +1114,7 @@ class PA_Data_Analyze:
             if re.match("[0-9a-zA-Z\\[\\]]*", element).group():
                 self.DataName.append(element)
         print('\033[1;34m\nDataName in the file:\033[0m')
-        self.OutputMessageToGUI('\nDataName in the file:\n')
+        self.OutputMessageToGUI('\n\nDataName in the file:\n')
         for i in range(self.DataName.__len__()):
             print('%02d : \033[1;33m%s\033[0m' % (i + 1, self.DataName[i]))
             self.OutputMessageToGUI('%02d : %s\n' % (i + 1, self.DataName[i]))
@@ -1121,8 +1127,8 @@ class PA_Data_Analyze:
     ##################################################################################
     def LoadData(self):
         
-        print('\033[1;34m\n\nLoadData: \033[0mStarting...... (Time: %s)' % time.strftime('%H:%M:%S'))
-        self.OutputMessageToGUI('\n\nLoadData: Starting...... (Time: %s)' % time.strftime('%H:%M:%S'))
+        print('[%s]\n\033[1;34m\n\nLoadData: \033[0mStarting......' % time.strftime('%Y-%m-%d %H:%M:%S'))
+        self.OutputMessageToGUI('\n\n[%s]\nLoadData: Starting......' % time.strftime('%Y-%m-%d %H:%M:%S'))
 
         # -----------------------open file and get textLen------------------------- #
         self.Data.Length = 0
@@ -1518,6 +1524,8 @@ class PA_Data_Analyze:
             import mpldatacursor
         except:
             return None
+        if self.DataInfoExist:
+            return None
         if self.Data.Length == 0 or self.FigNum == 0:
             return None
         figs = [plt.figure(Num) for Num in range(1, self.FigNum + 1)]
@@ -1561,6 +1569,7 @@ class PA_Data_Analyze:
                         text += '\n'
                 self.InfoText.append(str(text))
             mpldatacursor.datacursor(artists, display='multiple', draggable=True, formatter=lambda **param: self.InfoText[param['ind'][0]])
+            self.DataInfoExist = True
             #print('\033[1;34m\n\nDataInfo: \033[1;32mDone\033[0m')
             #self.OutputMessageToGUI('\n\nDataInfo: Done \n')
         except:
@@ -1588,6 +1597,8 @@ if __name__ == '__main__':
     LabelFrame      = dict()
     CheckButton     = dict()
     CheckVar        = dict()
+    Notebook        = dict()
+    Frame           = dict()
 
     window = tk.Tk()
     window.title('PA Data Analyze v%s' % Version)
@@ -1687,7 +1698,27 @@ if __name__ == '__main__':
         PA.Plot.CircleErr_YZ = int(CheckVar['CircleErr_YZ'].get())
         PA.Plot.CircleErr_XZ = int(CheckVar['CircleErr_XZ'].get())
 
+        PA.GuiText = ScrolledText['输出消息']
         PA.PlotData()
+
+        UserCodeEnable = int(CheckVar['用户代码'].get())
+        UserCode = ScrolledText['用户代码'].get('1.0', 'end')
+        if UserCodeEnable:
+            try:
+                Data                = PA.Data
+                Var                 = PA.Data.Var
+                Plot                = PA.Plot
+                Plot1D              = PA.Plot1D
+                Plot2D              = PA.Plot2D
+                Plot3D              = PA.Plot3D
+                PlotCircleError     = PA.PlotCircleError
+                DataInfo            = PA.DataInfo
+                OutputMessageToGUI  = PA.OutputMessageToGUI
+                exec(UserCode)
+            except Exception as e:
+                print('\033[1;34m\nUerCode: \033[1;31mError: %s\033[0m' % str(e))
+                PA.OutputMessageToGUI('\n\nUserCode Error: %s' % str(e))
+            
         PA.DataInfo()
 
     #################################### 文件路径 ####################################
@@ -1868,284 +1899,287 @@ if __name__ == '__main__':
     Combobox['AxisID_B'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['B轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
     Combobox['AxisID_B'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.05)
 
-    #################################### 绘图选项 ####################################
-    x = 0.05
-    y = 0.32
-    LabelFrame['绘图选项'] = ttk.LabelFrame(window, text='绘图选项')
-    LabelFrame['绘图选项'].place(relx=x - 0.03, rely=y - 0.03, relheight=0.41, relwidth=0.95)
+    ###################################### 绘图 #####################################
+    Notebook['绘图'] = ttk.Notebook(window)
+    Frame['绘图选项'] = ttk.Frame(Notebook['绘图'])
+    Frame['自定义绘图'] = ttk.Frame(Notebook['绘图'])
+    Notebook['绘图'].add(Frame['绘图选项'], text='绘图选项')
+    Notebook['绘图'].add(Frame['自定义绘图'], text='自定义绘图')
+    Notebook['绘图'].place(relx=0.02, rely=0.29, relheight=0.41, relwidth=0.95)
     
+    #################################### 绘图选项 ####################################
     # ---------------------------------- 绘图选项1D ----------------------------------#
     x = 0
     y = 0
-    LabelFrame['1D'] = ttk.LabelFrame(LabelFrame['绘图选项'], text='1D')
-    LabelFrame['1D'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.345)
+    LabelFrame['1D'] = ttk.LabelFrame(Frame['绘图选项'], text='1D')
+    LabelFrame['1D'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.275)
 
     xBias = 0.02
     yBias = 0.11
-    xStep = 0.11
+    xStep = 0.09
     yStep = 0.1
     Key = 'BlockNo'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'PathVel'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'PathAcc'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'PathJerk'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'Pos_X'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'Vel_X'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'Acc_X'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'Jerk_X'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
 
     xBias += xStep
     yBias = 0.11
     Key = 'Pos_Y'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'Vel_Y'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'Acc_Y'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'Jerk_Y'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'Pos_Z'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'Vel_Z'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'Acc_Z'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'Jerk_Z'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
 
     xBias += xStep
     yBias = 0.11
     Key = 'Pos_A'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
-    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.08)
     yBias += yStep
     Key = 'Vel_A'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
-    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.08)
     yBias += yStep
     Key = 'Acc_A'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
-    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.08)
     yBias += yStep
     Key = 'Jerk_A'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
-    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.08)
     yBias += yStep
     Key = 'Pos_B'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
-    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.08)
     yBias += yStep
     Key = 'Vel_B'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
-    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.08)
     yBias += yStep
     Key = 'Acc_B'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
-    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.08)
     yBias += yStep
     Key = 'Jerk_B'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
-    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.08)
 
     # ---------------------------------- 绘图选项2D ----------------------------------#
-    x = 0.356
+    x = 0.296
     y = 0
-    LabelFrame['2D'] = ttk.LabelFrame(LabelFrame['绘图选项'], text='2D')
-    LabelFrame['2D'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.345)
+    LabelFrame['2D'] = ttk.LabelFrame(Frame['绘图选项'], text='2D')
+    LabelFrame['2D'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.385)
 
     xBias = 0.02
     yBias = 0.11
-    xStep = 0.11
+    xStep = 0.13
     yStep = 0.1
     Key = 'XY'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XY_Time'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XY_BlockNo'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XY_PathVel'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XY_PathAcc'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XY_PathJerk'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XY_PosErr'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XY_Z'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
 
     xBias += xStep
     yBias = 0.11
     Key = 'YZ'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'YZ_Time'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'YZ_BlockNo'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'YZ_PathVel'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'YZ_PathAcc'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'YZ_PathJerk'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'YZ_PosErr'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'YZ_X'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
 
     xBias += xStep
     yBias = 0.11
     Key = 'XZ'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XZ_Time'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XZ_BlockNo'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XZ_PathVel'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XZ_PathAcc'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XZ_PathJerk'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XZ_PosErr'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XZ_Y'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
 
     # ---------------------------------- 绘图选项3D ----------------------------------#
-    x = 0.714
+    x = 0.703
     y = 0
-    LabelFrame['3D'] = ttk.LabelFrame(LabelFrame['绘图选项'], text='3D')
+    LabelFrame['3D'] = ttk.LabelFrame(Frame['绘图选项'], text='3D')
     LabelFrame['3D'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.127)
 
     xBias = 0.02
@@ -2154,38 +2188,38 @@ if __name__ == '__main__':
     yStep = 0.1
     Key = 'XYZ'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XYZ_Time'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XYZ_Z'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XYZ_PathVel'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XYZ_PathAcc'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'XYZ_PathJerk'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
-    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.115)
 
     # ---------------------------------- 绘图选项Circle --------------------------------#
     x = 0.852
     y = 0
-    LabelFrame['Circle'] = ttk.LabelFrame(LabelFrame['绘图选项'], text='Circle')
+    LabelFrame['Circle'] = ttk.LabelFrame(Frame['绘图选项'], text='Circle')
     LabelFrame['Circle'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.127)
 
     xBias = 0.02
@@ -2194,27 +2228,36 @@ if __name__ == '__main__':
     yStep = 0.1
     Key = 'CircleErr_XY'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'CircleErr_YZ'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     yBias += yStep
     Key = 'CircleErr_XZ'
     CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(LabelFrame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    
+    ################################## 自定义绘图 ##################################
+    CheckVar['用户代码'] = tk.IntVar()
+    CheckVar['用户代码'].set(True)
+    CheckButton['用户代码'] = ttk.Checkbutton(Frame['自定义绘图'], text='使用以下代码（Python 3.8）：', variable=CheckVar['用户代码'], onvalue=True, offvalue=False)
+    CheckButton['用户代码'].place(relx=0.02, rely=0.02, relheight=0.1, relwidth=0.5)
+    ScrolledText['用户代码'] = scrolledtext.ScrolledText(Frame['自定义绘图'], font=('Consolas', 8))
+    ScrolledText['用户代码'].place(relx=0.03, rely=0.15, relheight=0.8, relwidth=0.95)
 
-    #################################### 输出消息 ####################################
+    #################################### 输出消息 ##################################
     x = 0.05
     y = 0.75
     Button['绘制图形'] = ttk.Button(window, text="绘制图形", command=plot_data)
     Button['绘制图形'].place(relx=x + 0.8, rely=y, relheight=0.22, relwidth=0.1)
     LabelFrame['输出消息'] = ttk.LabelFrame(window, text='输出消息')
     LabelFrame['输出消息'].place(relx=x - 0.03, rely=y - 0.04, relheight=0.28, relwidth=0.808)
-    ScrolledText['输出消息'] = scrolledtext.ScrolledText(window, font=('Microsoft YaHei', 8), relief='groove')
+    ScrolledText['输出消息'] = scrolledtext.ScrolledText(window, font=('Consolas', 8), relief='groove')
+    ScrolledText['输出消息'].insert('end', 'PA Data Analyze v%s' % Version)
     ScrolledText['输出消息'].place(relx=x, rely=y, relheight=0.22, relwidth=0.76)
 
     window.mainloop()

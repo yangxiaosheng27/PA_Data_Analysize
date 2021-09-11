@@ -4,10 +4,7 @@
 from PaDataAnalyze import PA_Data_Analyze
 
 PA = PA_Data_Analyze()
-PA.DataFile = r'E:\\CNCVariableTrace.txt'
-PA.DataFile = r'C:\PACnc\CNCVariableTrace.txt'
-PA.DataFile = r'D:\汇川\采样数据\20210826-久久象限痕\CNCVariableTrace-QEC滤波位置-圆弧补偿.txt'
-PA.DataFile = r'D:\汇川\采样数据\20210829-盛利达过切\CNCVariableTrace-盛利达按键过切.txt'
+PA.DataFileName = r'D:\汇川\采样数据\20210829-盛利达过切\CNCVariableTrace-盛利达按键过切.txt'
 
 PA.Ts = 0.001
 PA.BlockRange = [500, 389480]
@@ -63,16 +60,8 @@ PA.PlotData()
 
 PA.Plot1D(PA.Data['CmdPos_Z'] - PA.Data['SetPos_Z'], dataName='CmdPos_Z - ActPos_Z', shareAxes=PA.ShareAxes.Time)
 
-PA.Plot2D(PA.Data.ActPos_X, PA.Data.ActPos_Y, axisName_1='X (mm)', axis2Label='Y (mm)',color=PA.Data.ActPos_Z, colorName='ActZ', dataName='XY_ActZ', shareAxes=PA.ShareAxes.XY, newFig=True)
-PA.Plot2D(PA.Data.CmdPos_X, PA.Data.CmdPos_Y, axisName_1='X (mm)', axis2Label='Y (mm)',color=PA.Data.CmdPos_Z, colorName='CmdZ', dataName='XY_CmdZ', shareAxes=PA.ShareAxes.XY, newFig=True)
-
-
-"""
-
-PA.ShareAxes.Time = PA.Plot1D(PA.Data.Var['SCcReal[0]' ],dataName='accX',  shareAxes=PA.ShareAxes.Time)
-PA.ShareAxes.Time = PA.Plot1D(PA.Data.Var['SCcReal[18]'],dataName='CompX', shareAxes=PA.ShareAxes.Time)
-PA.ShareAxes.Time = PA.Plot1D(PA.Data.Var['SCcReal[19]'],dataName='CompY', shareAxes=PA.ShareAxes.Time)
-"""
+PA.Plot2D(PA.Data.ActPos_X, PA.Data.ActPos_Y, axisName_1='X (mm)', axisName_2='Y (mm)',color=PA.Data.ActPos_Z, colorName='ActZ', dataName='XY_ActZ', shareAxes=PA.ShareAxes.XY)
+PA.Plot2D(PA.Data.CmdPos_X, PA.Data.CmdPos_Y, axisName_1='X (mm)', axisName_2='Y (mm)',color=PA.Data.CmdPos_Z, colorName='CmdZ', dataName='XY_CmdZ', shareAxes=PA.ShareAxes.XY)
 
 
 #PA.DataInfo(PA.Data.Time, PA.Data.ActVel_X, PA.Data.Var['SCcReal[18]'], infoName=['Time(s)', 'ActVel_X(mm/min)', 'CompValue_X'])
