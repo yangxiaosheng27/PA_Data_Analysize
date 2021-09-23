@@ -153,19 +153,6 @@ class PA_Data_Analyze:
         self.TimeRange              = [0, 0] # select the sample data in Time range of [minTime, maxTime] (unit: s) ([0, 0] means select all Time)
         self.BlockRange             = [0, 0] # select the sample data in NC Block range of [minBlockNo, maxBlockNo] ([0, 0] means select all NC Block)
         self.Plot                   = self.PlotFlag_Class()
-        self.Plot1D_ShowActPathVel  = True
-        self.Plot1D_ShowActPathAcc  = False
-        self.Plot1D_ShowActPathJerk = False
-        self.Plot1D_ShowActAxisVel  = True
-        self.Plot1D_ShowActAxisAcc  = True
-        self.Plot1D_ShowActAxisJerk = False
-        self.Plot2D_EqualScale      = False
-        self.Plot2D_PathVelType     = 'Cmd' # 'Set' or 'Cmd' or 'Act'
-        self.Plot2D_PathAccType     = 'Cmd'
-        self.Plot2D_PathJerkType    = 'Cmd'
-        self.Plot2D_AbsVel          = False
-        self.Plot2D_AbsAcc          = True
-        self.Plot2D_AbsJerk         = True
         self.AxisID_X               = 0  # 0 means no axis,1 means the first axis
         self.AxisID_Y               = 0  # 0 means no axis,1 means the first axis
         self.AxisID_Z               = 0  # 0 means no axis,1 means the first axis
@@ -272,63 +259,41 @@ class PA_Data_Analyze:
         XZ              = None
 
     class PlotFlag_Class:
-        BlockNo         = False
-        PathVel         = False
-        PathAcc         = False
-        PathJerk        = False
-        Pos_X           = False
-        Vel_X           = False
-        Acc_X           = False
-        Jerk_X          = False
-        Pos_Y           = False
-        Vel_Y           = False
-        Acc_Y           = False
-        Jerk_Y          = False
-        Pos_Z           = False
-        Vel_Z           = False
-        Acc_Z           = False
-        Jerk_Z          = False
-        Pos_A           = False
-        Vel_A           = False
-        Acc_A           = False
-        Jerk_A          = False
-        Pos_B           = False
-        Vel_B           = False
-        Acc_B           = False
-        Jerk_B          = False
-        XY              = False
-        XY_Time         = False
-        XY_BlockNo      = False
-        XY_PathVel      = False
-        XY_PathAcc      = False
-        XY_PathJerk     = False
-        XY_PosErr       = False
-        XY_Z            = False
-        YZ              = False
-        YZ_Time         = False
-        YZ_BlockNo      = False
-        YZ_PathVel      = False
-        YZ_PathAcc      = False
-        YZ_PathJerk     = False
-        YZ_PosErr       = False
-        YZ_X            = False
-        XZ              = False
-        XZ_Time         = False
-        XZ_BlockNo      = False
-        XZ_PathVel      = False
-        XZ_PathAcc      = False
-        XZ_PathJerk     = False
-        XZ_PosErr       = False
-        XZ_Y            = False
-        XYZ             = False
-        XYZ_Time        = False
-        XYZ_Z           = False
-        XYZ_PathVel     = False
-        XYZ_PathAcc     = False
-        XYZ_PathJerk    = False
-        CircleErr_XY    = False
-        CircleErr_YZ    = False
-        CircleErr_XZ    = False
+        paramName = [
+            'BlockNo', 
+            'PathVel', 'PathAcc', 'PathJerk',
+            'Pos_X', 'Vel_X', 'Acc_X', 'Jerk_X',
+            'Pos_Y', 'Vel_Y', 'Acc_Y', 'Jerk_Y',
+            'Pos_Z', 'Vel_Z', 'Acc_Z', 'Jerk_Z',
+            'Pos_A', 'Vel_A', 'Acc_A', 'Jerk_A',
+            'Pos_B', 'Vel_B', 'Acc_B', 'Jerk_B',
+            'XY', 'XY_Time', 'XY_BlockNo', 'XY_PathVel', 'XY_PathAcc', 'XY_PathJerk', 'XY_PosErr', 'XY_Z',
+            'YZ', 'YZ_Time', 'YZ_BlockNo', 'YZ_PathVel', 'YZ_PathAcc', 'YZ_PathJerk', 'YZ_PosErr', 'YZ_X',
+            'XZ', 'XZ_Time', 'XZ_BlockNo', 'XZ_PathVel', 'XZ_PathAcc', 'XZ_PathJerk', 'XZ_PosErr', 'XZ_Y',
+            'XYZ', 'XYZ_Time', 'XYZ_Z', 'XYZ_PathVel', 'XYZ_PathAcc', 'XYZ_PathJerk', 
+            'CircleErr_XY', 'CircleErr_YZ', 'CircleErr_XZ',
+            'Plot1D_ShowActPathVel', 'Plot1D_ShowActPathAcc', 'Plot1D_ShowActPathJerk',
+            'Plot1D_ShowActAxisVel', 'Plot1D_ShowActAxisAcc', 'Plot1D_ShowActAxisJerk',
+            'Plot2D_PathVelType', 'Plot2D_PathAccType', 'Plot2D_PathJerkType',
+            'Plot2D_AbsVel', 'Plot2D_AbsAcc', 'Plot2D_AbsJerk',
+            'Plot2D_EqualScale'
+            ]
+        def __init__(self):
+            for name in self.paramName:
+                setattr(self, name, False)
+            self.Plot1D_ShowActPathVel  = True
+            self.Plot1D_ShowActPathAcc  = False
+            self.Plot1D_ShowActPathJerk = False
+            self.Plot1D_ShowActAxisVel  = True
+            self.Plot1D_ShowActAxisAcc  = True
+            self.Plot1D_ShowActAxisJerk = False
+            self.Plot2D_PathVelType     = 'Cmd' # 'Set' or 'Cmd' or 'Act'
+            self.Plot2D_PathAccType     = 'Cmd'
+            self.Plot2D_PathJerkType    = 'Cmd'
+            self.Plot2D_AbsVel          = False
+            self.Plot2D_AbsAcc          = True
+            self.Plot2D_AbsJerk         = True
+            self.Plot2D_EqualScale      = False
 
     ##################################################################################
     # -----------------------------------Plot Data---------------------------------- #
@@ -366,7 +331,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetPathVel, axisName_1='Vel (mm/min)', dataName='SetPathVel', shareAxis='time', title='PathVel', newFigure=True)
                 self.Plot1D(self.Data.CmdPathVel, axisName_1='Vel (mm/min)', dataName='CmdPathVel', shareAxis='time', title='PathVel', newFigure=False)
-                if self.Plot1D_ShowActPathVel == True and self.Data.ActPathVel.__len__() != 0:
+                if self.Plot.Plot1D_ShowActPathVel == True and self.Data.ActPathVel.__len__() != 0:
                     self.Plot1D(self.Data.ActPathVel, axisName_1='Vel (mm/min)', dataName='ActPathVel', shareAxis='time', title='PathVel', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError PathVel: %s\033[0m' % str(e))
@@ -377,7 +342,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetPathAcc, axisName_1='Acc (m/s^2)', dataName='SetPathAcc', shareAxis='time', title='PathAcc', newFigure=True)
                 self.Plot1D(self.Data.CmdPathAcc, axisName_1='Acc (m/s^2)', dataName='CmdPathAcc', shareAxis='time', title='PathAcc', newFigure=False)
-                if self.Plot1D_ShowActPathAcc == True and self.Data.ActPathAcc.__len__() != 0:
+                if self.Plot.Plot1D_ShowActPathAcc == True and self.Data.ActPathAcc.__len__() != 0:
                     self.Plot1D(self.Data.ActPathAcc, axisName_1='Acc (m/s^2)', dataName='ActPathAcc', shareAxis='time', title='PathAcc', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError PathAcc: %s\033[0m' % str(e))
@@ -388,7 +353,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetPathJerk, axisName_1='Jerk (m/s^3)', dataName='SetPathJerk', shareAxis='time', title='PathJerk', newFigure=True)
                 self.Plot1D(self.Data.CmdPathJerk, axisName_1='Jerk (m/s^3)', dataName='CmdPathJerk', shareAxis='time', title='PathJerk', newFigure=False)
-                if self.Plot1D_ShowActPathJerk == True and self.Data.ActPathJerk.__len__() != 0:
+                if self.Plot.Plot1D_ShowActPathJerk == True and self.Data.ActPathJerk.__len__() != 0:
                     self.Plot1D(self.Data.ActPathJerk, axisName_1='Jerk (m/s^3)', dataName='ActPathJerk', shareAxis='time', title='PathJerk', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError PathJerk: %s\033[0m' % str(e))
@@ -409,7 +374,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetVel_X, axisName_1='Vel (mm/min)', dataName='SetVel_X', shareAxis='time', title='Vel_X', newFigure=True)
                 self.Plot1D(self.Data.CmdVel_X, axisName_1='Vel (mm/min)', dataName='CmdVel_X', shareAxis='time', title='Vel_X', newFigure=False)
-                if self.Plot1D_ShowActAxisVel == True:
+                if self.Plot.Plot1D_ShowActAxisVel == True:
                     self.Plot1D(self.Data.ActVel_X, axisName_1='Vel (mm/min)', dataName='ActVel_X', shareAxis='time', title='Vel_X', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError Vel_X: %s\033[0m' % str(e))
@@ -419,7 +384,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetAcc_X, axisName_1='Acc (m/s^2)', dataName='SetAcc_X', shareAxis='time', title='Acc_X', newFigure=True)
                 self.Plot1D(self.Data.CmdAcc_X, axisName_1='Acc (m/s^2)', dataName='CmdAcc_X', shareAxis='time', title='Acc_X', newFigure=False)
-                if self.Plot1D_ShowActAxisAcc == True:
+                if self.Plot.Plot1D_ShowActAxisAcc == True:
                     self.Plot1D(self.Data.ActAcc_X, axisName_1='Acc (m/s^2)', dataName='ActAcc_X', shareAxis='time', title='Acc_X', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError Acc_X: %s\033[0m' % str(e))
@@ -429,7 +394,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetJerk_X, axisName_1='Jerk (m/s^3)', dataName='SetJerk_X', shareAxis='time', title='Jerk_X', newFigure=True)
                 self.Plot1D(self.Data.CmdJerk_X, axisName_1='Jerk (m/s^3)', dataName='CmdJerk_X', shareAxis='time', title='Jerk_X', newFigure=False)
-                if self.Plot1D_ShowActAxisJerk == True:
+                if self.Plot.Plot1D_ShowActAxisJerk == True:
                     self.Plot1D(self.Data.ActJerk_X, axisName_1='Jerk (m/s^3)', dataName='ActJerk_X', shareAxis='time', title='Jerk_X', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError Jerk_X: %s\033[0m' % str(e))
@@ -450,7 +415,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetVel_Y, axisName_1='Vel (mm/min)', dataName='SetVel_Y', shareAxis='time', title='Vel_Y', newFigure=True)
                 self.Plot1D(self.Data.CmdVel_Y, axisName_1='Vel (mm/min)', dataName='CmdVel_Y', shareAxis='time', title='Vel_Y', newFigure=False)
-                if self.Plot1D_ShowActAxisVel == True:
+                if self.Plot.Plot1D_ShowActAxisVel == True:
                     self.Plot1D(self.Data.ActVel_Y, axisName_1='Vel (mm/min)', dataName='ActVel_Y', shareAxis='time', title='Vel_Y', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError Vel_Y: %s\033[0m' % str(e))
@@ -460,7 +425,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetAcc_Y, axisName_1='Acc (m/s^2)', dataName='SetAcc_Y', shareAxis='time', title='Acc_Y', newFigure=True)
                 self.Plot1D(self.Data.CmdAcc_Y, axisName_1='Acc (m/s^2)', dataName='CmdAcc_Y', shareAxis='time', title='Acc_Y', newFigure=False)
-                if self.Plot1D_ShowActAxisAcc == True:
+                if self.Plot.Plot1D_ShowActAxisAcc == True:
                     self.Plot1D(self.Data.ActAcc_Y, axisName_1='Acc (m/s^2)', dataName='ActAcc_Y', shareAxis='time', title='Acc_Y', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError Acc_Y: %s\033[0m' % str(e))
@@ -470,7 +435,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetJerk_Y, axisName_1='Jerk (m/s^3)', dataName='SetJerk_Y', shareAxis='time', title='Jerk_Y', newFigure=True)
                 self.Plot1D(self.Data.CmdJerk_Y, axisName_1='Jerk (m/s^3)', dataName='CmdJerk_Y', shareAxis='time', title='Jerk_Y', newFigure=False)
-                if self.Plot1D_ShowActAxisJerk == True:
+                if self.Plot.Plot1D_ShowActAxisJerk == True:
                     self.Plot1D(self.Data.ActJerk_Y, axisName_1='Jerk (m/s^3)', dataName='ActJerk_Y', shareAxis='time', title='Jerk_Y', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError Jerk_Y: %s\033[0m' % str(e))
@@ -491,7 +456,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetVel_Z, axisName_1='Vel (mm/min)', dataName='SetVel_Z', shareAxis='time', title='Vel_Z', newFigure=True)
                 self.Plot1D(self.Data.CmdVel_Z, axisName_1='Vel (mm/min)', dataName='CmdVel_Z', shareAxis='time', title='Vel_Z', newFigure=False)
-                if self.Plot1D_ShowActAxisVel == True:
+                if self.Plot.Plot1D_ShowActAxisVel == True:
                     self.Plot1D(self.Data.ActVel_Z, axisName_1='Vel (mm/min)', dataName='ActVel_Z', shareAxis='time', title='Vel_Z', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError Vel_Z: %s\033[0m' % str(e))
@@ -501,7 +466,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetAcc_Z, axisName_1='Acc (m/s^2)', dataName='SetAcc_Z', shareAxis='time', title='Acc_Z', newFigure=True)
                 self.Plot1D(self.Data.CmdAcc_Z, axisName_1='Acc (m/s^2)', dataName='CmdAcc_Z', shareAxis='time', title='Acc_Z', newFigure=False)
-                if self.Plot1D_ShowActAxisAcc == True:
+                if self.Plot.Plot1D_ShowActAxisAcc == True:
                     self.Plot1D(self.Data.ActAcc_Z, axisName_1='Acc (m/s^2)', dataName='ActAcc_Z', shareAxis='time', title='Acc_Z', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError Acc_Z: %s\033[0m' % str(e))
@@ -511,7 +476,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetJerk_Z, axisName_1='Jerk (m/s^3)', dataName='SetJerk_Z', shareAxis='time', title='Jerk_Z', newFigure=True)
                 self.Plot1D(self.Data.CmdJerk_Z, axisName_1='Jerk (m/s^3)', dataName='CmdJerk_Z', shareAxis='time', title='Jerk_Z', newFigure=False)
-                if self.Plot1D_ShowActAxisJerk == True:
+                if self.Plot.Plot1D_ShowActAxisJerk == True:
                     self.Plot1D(self.Data.ActJerk_Z, axisName_1='Jerk (m/s^3)', dataName='ActJerk_Z', shareAxis='time', title='Jerk_Z', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError Jerk_Z: %s\033[0m' % str(e))
@@ -532,7 +497,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetVel_A, axisName_1='Vel (mm/min)', dataName='SetVel_A', shareAxis='time', title='Vel_A', newFigure=True)
                 self.Plot1D(self.Data.CmdVel_A, axisName_1='Vel (mm/min)', dataName='CmdVel_A', shareAxis='time', title='Vel_A', newFigure=False)
-                if self.Plot1D_ShowActAxisVel == True:
+                if self.Plot.Plot1D_ShowActAxisVel == True:
                     self.Plot1D(self.Data.ActVel_A, axisName_1='Vel (mm/min)', dataName='ActVel_A', shareAxis='time', title='Vel_A', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError Vel_A: %s\033[0m' % str(e))
@@ -542,7 +507,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetAcc_A, axisName_1='Acc (m/s^2)', dataName='SetAcc_A', shareAxis='time', title='Acc_A', newFigure=True)
                 self.Plot1D(self.Data.CmdAcc_A, axisName_1='Acc (m/s^2)', dataName='CmdAcc_A', shareAxis='time', title='Acc_A', newFigure=False)
-                if self.Plot1D_ShowActAxisAcc == True:
+                if self.Plot.Plot1D_ShowActAxisAcc == True:
                     self.Plot1D(self.Data.ActAcc_A, axisName_1='Acc (m/s^2)', dataName='ActAcc_A', shareAxis='time', title='Acc_A', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError Acc_A: %s\033[0m' % str(e))
@@ -552,7 +517,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetJerk_A, axisName_1='Jerk (m/s^3)', dataName='SetJerk_A', shareAxis='time', title='Jerk_A', newFigure=True)
                 self.Plot1D(self.Data.CmdJerk_A, axisName_1='Jerk (m/s^3)', dataName='CmdJerk_A', shareAxis='time', title='Jerk_A', newFigure=False)
-                if self.Plot1D_ShowActAxisJerk == True:
+                if self.Plot.Plot1D_ShowActAxisJerk == True:
                     self.Plot1D(self.Data.ActJerk_A, axisName_1='Jerk (m/s^3)', dataName='ActJerk_A', shareAxis='time', title='Jerk_A', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError Jerk_A: %s\033[0m' % str(e))
@@ -573,7 +538,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetVel_B, axisName_1='Vel (mm/min)', dataName='SetVel_B', shareAxis='time', title='Vel_B', newFigure=True)
                 self.Plot1D(self.Data.CmdVel_B, axisName_1='Vel (mm/min)', dataName='CmdVel_B', shareAxis='time', title='Vel_B', newFigure=False)
-                if self.Plot1D_ShowActAxisVel == True:
+                if self.Plot.Plot1D_ShowActAxisVel == True:
                     self.Plot1D(self.Data.ActVel_B, axisName_1='Vel (mm/min)', dataName='ActVel_B', shareAxis='time', title='Vel_B', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError Vel_B: %s\033[0m' % str(e))
@@ -583,7 +548,7 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetAcc_B, axisName_1='Acc (m/s^2)', dataName='SetAcc_B', shareAxis='time', title='Acc_B', newFigure=True)
                 self.Plot1D(self.Data.CmdAcc_B, axisName_1='Acc (m/s^2)', dataName='CmdAcc_B', shareAxis='time', title='Acc_B', newFigure=False)
-                if self.Plot1D_ShowActAxisAcc == True:
+                if self.Plot.Plot1D_ShowActAxisAcc == True:
                     self.Plot1D(self.Data.ActAcc_B, axisName_1='Acc (m/s^2)', dataName='ActAcc_B', shareAxis='time', title='Acc_B', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError Acc_B: %s\033[0m' % str(e))
@@ -593,14 +558,14 @@ class PA_Data_Analyze:
             try:
                 self.Plot1D(self.Data.SetJerk_B, axisName_1='Jerk (m/s^3)', dataName='SetJerk_B', shareAxis='time', title='Jerk_B', newFigure=True)
                 self.Plot1D(self.Data.CmdJerk_B, axisName_1='Jerk (m/s^3)', dataName='CmdJerk_B', shareAxis='time', title='Jerk_B', newFigure=False)
-                if self.Plot1D_ShowActAxisJerk == True:
+                if self.Plot.Plot1D_ShowActAxisJerk == True:
                     self.Plot1D(self.Data.ActJerk_B, axisName_1='Jerk (m/s^3)', dataName='ActJerk_B', shareAxis='time', title='Jerk_B', newFigure=False)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError Jerk_B: %s\033[0m' % str(e))
                 self.OutputMessageToGUI('\nPlotData: Error Jerk_B: %s' % str(e))
 
         # ---------------------------------Plot 2D---------------------------------- #
-        equalScale = True if self.Plot2D_EqualScale == True else False
+        equalScale = True if self.Plot.Plot2D_EqualScale == True else False
         # XY
         if self.Plot.XY == True:
             try:
@@ -629,18 +594,18 @@ class PA_Data_Analyze:
         #XY with PathVel
         if self.Plot.XY_PathVel == True:
             try:
-                if self.Plot2D_PathVelType == 'Set':
+                if self.Plot.Plot2D_PathVelType == 'Set':
                     color = self.Data.SetPathVel
                     name = 'SetPathVel'
-                elif self.Plot2D_PathVelType == 'Cmd':
+                elif self.Plot.Plot2D_PathVelType == 'Cmd':
                     color = self.Data.CmdPathVel
                     name = 'CmdPathVel'
-                elif self.Plot2D_PathVelType == 'Act':
+                elif self.Plot.Plot2D_PathVelType == 'Act':
                     color = self.Data.ActPathVel
                     name = 'ActPathVel'
                 else:
                     color = self.Data.CmdPathVel
-                if self.Plot2D_AbsVel == True:
+                if self.Plot.Plot2D_AbsVel == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) (mm/min)' % name
                 else:
@@ -652,18 +617,18 @@ class PA_Data_Analyze:
         #XY with PathAcc
         if self.Plot.XY_PathAcc == True:
             try:
-                if self.Plot2D_PathVelType == 'Set':
+                if self.Plot.Plot2D_PathVelType == 'Set':
                     color = self.Data.SetPathAcc
                     name = 'SetPathAcc'
-                elif self.Plot2D_PathVelType == 'Cmd':
+                elif self.Plot.Plot2D_PathVelType == 'Cmd':
                     color = self.Data.CmdPathAcc
                     name = 'CmdPathAcc'
-                elif self.Plot2D_PathVelType == 'Act':
+                elif self.Plot.Plot2D_PathVelType == 'Act':
                     color = self.Data.ActPathAcc
                     name = 'ActPathAcc'
                 else:
                     color = self.Data.CmdPathAcc
-                if self.Plot2D_AbsAcc == True:
+                if self.Plot.Plot2D_AbsAcc == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^2)' % name
                 else:
@@ -675,18 +640,18 @@ class PA_Data_Analyze:
         #XY with PathJerk
         if self.Plot.XY_PathJerk == True:
             try:
-                if self.Plot2D_PathVelType == 'Set':
+                if self.Plot.Plot2D_PathVelType == 'Set':
                     color = self.Data.SetPathJerk
                     name = 'SetPathJerk'
-                elif self.Plot2D_PathVelType == 'Cmd':
+                elif self.Plot.Plot2D_PathVelType == 'Cmd':
                     color = self.Data.CmdPathJerk
                     name = 'CmdPathJerk'
-                elif self.Plot2D_PathVelType == 'Act':
+                elif self.Plot.Plot2D_PathVelType == 'Act':
                     color = self.Data.ActPathJerk
                     name = 'ActPathJerk'
                 else:
                     color = self.Data.CmdPathJerk
-                if self.Plot2D_AbsJerk == True:
+                if self.Plot.Plot2D_AbsJerk == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^3)' % name
                 else:
@@ -741,18 +706,18 @@ class PA_Data_Analyze:
         #YZ with PathVel
         if self.Plot.YZ_PathVel == True:
             try:
-                if self.Plot2D_PathVelType == 'Set':
+                if self.Plot.Plot2D_PathVelType == 'Set':
                     color = self.Data.SetPathVel
                     name = 'SetPathVel'
-                elif self.Plot2D_PathVelType == 'Cmd':
+                elif self.Plot.Plot2D_PathVelType == 'Cmd':
                     color = self.Data.CmdPathVel
                     name = 'CmdPathVel'
-                elif self.Plot2D_PathVelType == 'Act':
+                elif self.Plot.Plot2D_PathVelType == 'Act':
                     color = self.Data.ActPathVel
                     name = 'ActPathVel'
                 else:
                     color = self.Data.CmdPathVel
-                if self.Plot2D_AbsVel == True:
+                if self.Plot.Plot2D_AbsVel == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) (mm/min)' % name
                 else:
@@ -764,18 +729,18 @@ class PA_Data_Analyze:
         #YZ with PathAcc
         if self.Plot.YZ_PathAcc == True:
             try:
-                if self.Plot2D_PathVelType == 'Set':
+                if self.Plot.Plot2D_PathVelType == 'Set':
                     color = self.Data.SetPathAcc
                     name = 'SetPathAcc'
-                elif self.Plot2D_PathVelType == 'Cmd':
+                elif self.Plot.Plot2D_PathVelType == 'Cmd':
                     color = self.Data.CmdPathAcc
                     name = 'CmdPathAcc'
-                elif self.Plot2D_PathVelType == 'Act':
+                elif self.Plot.Plot2D_PathVelType == 'Act':
                     color = self.Data.ActPathAcc
                     name = 'ActPathAcc'
                 else:
                     color = self.Data.CmdPathAcc
-                if self.Plot2D_AbsAcc == True:
+                if self.Plot.Plot2D_AbsAcc == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^2)' % name
                 else:
@@ -787,18 +752,18 @@ class PA_Data_Analyze:
         #YZ with PathJerk
         if self.Plot.YZ_PathJerk == True:
             try:
-                if self.Plot2D_PathVelType == 'Set':
+                if self.Plot.Plot2D_PathVelType == 'Set':
                     color = self.Data.SetPathJerk
                     name = 'SetPathJerk'
-                elif self.Plot2D_PathVelType == 'Cmd':
+                elif self.Plot.Plot2D_PathVelType == 'Cmd':
                     color = self.Data.CmdPathJerk
                     name = 'CmdPathJerk'
-                elif self.Plot2D_PathVelType == 'Act':
+                elif self.Plot.Plot2D_PathVelType == 'Act':
                     color = self.Data.ActPathJerk
                     name = 'ActPathJerk'
                 else:
                     color = self.Data.CmdPathJerk
-                if self.Plot2D_AbsJerk == True:
+                if self.Plot.Plot2D_AbsJerk == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^3)' % name
                 else:
@@ -853,18 +818,18 @@ class PA_Data_Analyze:
         #XZ with PathVel
         if self.Plot.XZ_PathVel == True:
             try:
-                if self.Plot2D_PathVelType == 'Set':
+                if self.Plot.Plot2D_PathVelType == 'Set':
                     color = self.Data.SetPathVel
                     name = 'SetPathVel'
-                elif self.Plot2D_PathVelType == 'Cmd':
+                elif self.Plot.Plot2D_PathVelType == 'Cmd':
                     color = self.Data.CmdPathVel
                     name = 'CmdPathVel'
-                elif self.Plot2D_PathVelType == 'Act':
+                elif self.Plot.Plot2D_PathVelType == 'Act':
                     color = self.Data.ActPathVel
                     name = 'ActPathVel'
                 else:
                     color = self.Data.CmdPathVel
-                if self.Plot2D_AbsVel == True:
+                if self.Plot.Plot2D_AbsVel == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) (mm/min)' % name
                 else:
@@ -876,18 +841,18 @@ class PA_Data_Analyze:
         #XZ with PathAcc
         if self.Plot.XZ_PathAcc == True:
             try:
-                if self.Plot2D_PathVelType == 'Set':
+                if self.Plot.Plot2D_PathVelType == 'Set':
                     color = self.Data.SetPathAcc
                     name = 'SetPathAcc'
-                elif self.Plot2D_PathVelType == 'Cmd':
+                elif self.Plot.Plot2D_PathVelType == 'Cmd':
                     color = self.Data.CmdPathAcc
                     name = 'CmdPathAcc'
-                elif self.Plot2D_PathVelType == 'Act':
+                elif self.Plot.Plot2D_PathVelType == 'Act':
                     color = self.Data.ActPathAcc
                     name = 'ActPathAcc'
                 else:
                     color = self.Data.CmdPathAcc
-                if self.Plot2D_AbsAcc == True:
+                if self.Plot.Plot2D_AbsAcc == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^2)' % name
                 else:
@@ -899,18 +864,18 @@ class PA_Data_Analyze:
         #XZ with PathJerk
         if self.Plot.XZ_PathJerk == True:
             try:
-                if self.Plot2D_PathVelType == 'Set':
+                if self.Plot.Plot2D_PathVelType == 'Set':
                     color = self.Data.SetPathJerk
                     name = 'SetPathJerk'
-                elif self.Plot2D_PathVelType == 'Cmd':
+                elif self.Plot.Plot2D_PathVelType == 'Cmd':
                     color = self.Data.CmdPathJerk
                     name = 'CmdPathJerk'
-                elif self.Plot2D_PathVelType == 'Act':
+                elif self.Plot.Plot2D_PathVelType == 'Act':
                     color = self.Data.ActPathJerk
                     name = 'ActPathJerk'
                 else:
                     color = self.Data.CmdPathJerk
-                if self.Plot2D_AbsJerk == True:
+                if self.Plot.Plot2D_AbsJerk == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^3)' % name
                 else:
@@ -1849,6 +1814,9 @@ if __name__ == '__main__':
         def __init__(self):
             self.WindowSize = '1000x615'
             self.lastTime = time.time()
+            self.EnableUserCode = True
+            self.UserCode = ''
+            
         def getWindowSize(self, event):
             self.currentTime = time.time()
             if (self.currentTime - self.lastTime) > 0.1:
@@ -1862,12 +1830,8 @@ if __name__ == '__main__':
     import os
     class Config():
         def __init__(self):
-            self.configParamNameStr = [
-                ('Window', ''),
-                (3,4)
-                ]
-            
             self.fileName = os.path.splitext(os.path.basename(__file__))[0] + '.ini'
+            print(self.fileName)
             self.conf = configparser.ConfigParser()
             self.conf.read(self.fileName)
             
@@ -1876,24 +1840,69 @@ if __name__ == '__main__':
                 try:
                     return self.conf.get(section, key)
                 except:
-                    self.conf.add_section(section)
-                    self.conf.set(section, key, str(defaultValue))
+                    try:
+                        self.conf.set(section, key, str(defaultValue))
+                    except:
+                        self.conf.add_section(section)
+                        self.conf.set(section, key, str(defaultValue))
                     return defaultValue
-            GUI.WindowSize = get_param('Window', 'WindowSize', str(GUI.WindowSize))
+                
+            GUI.WindowSize      = str(get_param('Window', 'WindowSize', str(GUI.WindowSize)))
+            GUI.EnableUserCode  = bool(get_param('Window', 'EnableUserCode', str(bool(GUI.EnableUserCode))) == 'True')
+            GUI.UserCode         = str(get_param('Window', 'UserCode', str(GUI.UserCode)))
+            
+            PA.DataFileName     = str(get_param('Load', 'DataFileName', str(PA.DataFileName)))
+            PA.Ts               = float(get_param('Load', 'Ts', str(PA.Ts)))
+            PA.BlockRange[0]    = int(float(get_param('Load', 'BlockRange[0]', str(PA.BlockRange[0]))))
+            PA.BlockRange[1]    = int(float(get_param('Load', 'BlockRange[1]', str(PA.BlockRange[1]))))
+            PA.TimeRange[0]     = float(get_param('Load', 'TimeRange[0]', str(PA.TimeRange[0])))
+            PA.TimeRange[1]     = float(get_param('Load', 'TimeRange[1]', str(PA.TimeRange[1])))
+            PA.AxisID_X         = int(float(get_param('Load', 'AxisID_X', str(PA.AxisID_X))))
+            PA.AxisID_Y         = int(float(get_param('Load', 'AxisID_Y', str(PA.AxisID_Y))))
+            PA.AxisID_Z         = int(float(get_param('Load', 'AxisID_Z', str(PA.AxisID_Z))))
+            PA.AxisID_A         = int(float(get_param('Load', 'AxisID_A', str(PA.AxisID_A))))
+            PA.AxisID_B         = int(float(get_param('Load', 'AxisID_B', str(PA.AxisID_B))))
+            
+            for name in PA.Plot.paramName:
+                value = bool(get_param('Plot', name, str(bool(getattr(PA.Plot, name)))) == 'True')
+                setattr(PA.Plot, name, value)
             
         def save(self):
             with open(self.fileName, 'w') as f:
+                def write_param(section, key, defaultValue):
+                    try:
+                        self.conf.set(section, key, str(defaultValue))
+                    except:
+                        self.conf.add_section(section)
+                        self.conf.set(section, key, str(defaultValue))
+
                 if GUI.WindowSize != '1x1':
-                    self.conf.set('Window', 'WindowSize', str(GUI.WindowSize))
+                    write_param('Window', 'WindowSize', str(GUI.WindowSize))
+                write_param('Window', 'EnableUserCode', str(bool(GUI.EnableUserCode)))
+                write_param('Window', 'UserCode', str(GUI.UserCode))
+                    
+                write_param('Load', 'DataFileName', str(PA.DataFileName))
+                write_param('Load', 'BlockRange[0]', str(PA.BlockRange[0]))
+                write_param('Load', 'BlockRange[1]', str(PA.BlockRange[1]))
+                write_param('Load', 'TimeRange[0]', str(PA.TimeRange[0]))
+                write_param('Load', 'TimeRange[1]', str(PA.TimeRange[1]))
+                write_param('Load', 'AxisID_X', str(PA.AxisID_X))
+                write_param('Load', 'AxisID_Y', str(PA.AxisID_Y))
+                write_param('Load', 'AxisID_Z', str(PA.AxisID_Z))
+                write_param('Load', 'AxisID_A', str(PA.AxisID_A))
+                write_param('Load', 'AxisID_B', str(PA.AxisID_B))
+                
+                for name in PA.Plot.paramName:
+                    write_param('Plot', name, str(bool(getattr(PA.Plot, name))))
+
                 self.conf.write(f)
         
     config = Config()
+    config.read()
 
     #init window
     window = tk.Tk()
     window.title('PA Data Analyze v%s' % Version)
-    windowSize = '1000x615'
-    config.read()
     window.geometry(GUI.WindowSize)
     window.bind('<Configure>', GUI.getWindowSize)
     #Pop up window
@@ -2011,11 +2020,11 @@ if __name__ == '__main__':
         config.save()
         PA.PlotData()
 
-        UserCodeEnable = int(CheckVar['用户代码'].get())
-        UserCode = ScrolledText['用户代码'].get('1.0', 'end')
-        if UserCodeEnable and PA.Data.Length != 0:
+        GUI.EnableUserCode = int(CheckVar['用户代码'].get())
+        GUI.UserCode = ScrolledText['用户代码'].get('1.0', 'end')
+        if GUI.EnableUserCode and PA.Data.Length != 0:
             try:
-                exec(UserCode)
+                exec(GUI.UserCode)
             except Exception as e:
                 print('\033[1;34m\nUerCode: \033[1;31mError: %s\033[0m' % str(e))
                 PA.OutputMessageToGUI('\n\nUserCode Error: %s' % str(e))
@@ -2609,11 +2618,11 @@ if __name__ == '__main__':
     ChangeCheckButtonColor(Key)
     
     ################################## 自定义绘图 ##################################
-    CheckVar['用户代码'] = tk.IntVar()
-    CheckVar['用户代码'].set(True)
+    CheckVar['用户代码'] = tk.IntVar(); CheckVar['用户代码'].set(GUI.EnableUserCode)
     CheckButton['用户代码'] = ttk.Checkbutton(Frame['自定义绘图'], text='使用以下代码（Python 3.8）：', variable=CheckVar['用户代码'], onvalue=True, offvalue=False)
     CheckButton['用户代码'].place(relx=0.02, rely=0.02, relheight=0.1, relwidth=0.5)
     ScrolledText['用户代码'] = scrolledtext.ScrolledText(Frame['自定义绘图'], font=('Consolas', 8))
+    ScrolledText['用户代码'].insert('end', '%s' % GUI.UserCode)
     ScrolledText['用户代码'].place(relx=0.03, rely=0.15, relheight=0.8, relwidth=0.95)
 
     #################################### 输出消息 ##################################
