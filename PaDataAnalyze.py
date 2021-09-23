@@ -12,78 +12,55 @@
                 CommandedPathVelocity           Unit: internal increment / Ts
                 (The internal increment defaults to 1um, Ts defaults to 0.001s)
 @Unit of Data
-                PA.Data.SetPathVel              Unit: mm/min
-                PA.Data.CmdPathVel              Unit: mm/min
-                PA.Data.SetPathAcc              Unit: m/s^2
-                PA.Data.CmdPathAcc              Unit: m/s^2
-                PA.Data.SetPathJerk             Unit: m/s^3
-                PA.Data.CmdPathJerk             Unit: m/s^3
-                PA.Data.SetPos_X                Unit: mm
-                PA.Data.CmdPos_X                Unit: mm
-                PA.Data.ActPos_X                Unit: mm
-                PA.Data.SetVel_X                Unit: mm/min
-                PA.Data.CmdVel_X                Unit: mm/min
-                PA.Data.ActVel_X                Unit: mm/min
-                PA.Data.SetAcc_X                Unit: m/s^2
-                PA.Data.CmdAcc_X                Unit: m/s^2
-                PA.Data.ActAcc_X                Unit: m/s^2
-                PA.Data.SetJerk_X               Unit: m/s^3
-                PA.Data.CmdJerk_X               Unit: m/s^3
-                PA.Data.ActJerk_X               Unit: m/s^3
-@Plot Flag
-                PA.Plot.BlockNo                 = True
-                PA.Plot.PathVel                 = True
-                PA.Plot.PathAcc                 = True
-                PA.Plot.PathJerk                = True
-                PA.Plot.Pos_X                   = True
-                PA.Plot.Vel_X                   = True
-                PA.Plot.Acc_X                   = True
-                PA.Plot.Jerk_X                  = True
-                PA.Plot.Pos_Y                   = True
-                PA.Plot.Vel_Y                   = True
-                PA.Plot.Acc_Y                   = True
-                PA.Plot.Jerk_Y                  = True
-                PA.Plot.Pos_Z                   = True
-                PA.Plot.Vel_Z                   = True
-                PA.Plot.Acc_Z                   = True
-                PA.Plot.Jerk_Z                  = True
-                PA.Plot.XY                      = True
-                PA.Plot.XY_Time                 = True
-                PA.Plot.XY_BlockNo              = True
-                PA.Plot.XY_PathVel              = True
-                PA.Plot.XY_PathAcc              = True
-                PA.Plot.XY_PathJerk             = True
-                PA.Plot.XY_PosErr               = True
-                PA.Plot.XY_Z                    = True
-                PA.Plot.YZ                      = True
-                PA.Plot.YZ_Time                 = True
-                PA.Plot.YZ_BlockNo              = True
-                PA.Plot.YZ_PathVel              = True
-                PA.Plot.YZ_PathAcc              = True
-                PA.Plot.YZ_PathJerk             = True
-                PA.Plot.YZ_PosErr               = True
-                PA.Plot.YZ_X                    = True
-                PA.Plot.XZ                      = True
-                PA.Plot.XZ_Time                 = True
-                PA.Plot.XZ_BlockNo              = True
-                PA.Plot.XZ_PathVel              = True
-                PA.Plot.XZ_PathAcc              = True
-                PA.Plot.XZ_PathJerk             = True
-                PA.Plot.XZ_PosErr               = True
-                PA.Plot.XZ_Y                    = True
-                PA.Plot.XYZ                     = True
-                PA.Plot.XYZ_Time                = True
-                PA.Plot.XYZ_Z                   = True
-                PA.Plot.XYZ_PathVel             = True
-                PA.Plot.XYZ_PathAcc             = True
-                PA.Plot.XYZ_PathJerk            = True
-                PA.Plot.CircleErr_XY            = True
-                PA.Plot.CircleErr_YZ            = True
-                PA.Plot.CircleErr_XZ            = True
+                SetPathVel                      Unit: mm/min
+                CmdPathVel                      Unit: mm/min
+                ActPathVel                      Unit: mm/min
+                SetPathAcc                      Unit: m/s^2
+                CmdPathAcc                      Unit: m/s^2
+                ActPathAcc                      Unit: m/s^2
+                SetPathJerk                     Unit: m/s^3
+                CmdPathJerk                     Unit: m/s^3
+                ActPathJerk                     Unit: m/s^3
+                SetPos_X                        Unit: mm
+                CmdPos_X                        Unit: mm
+                ActPos_X                        Unit: mm
+                SetVel_X                        Unit: mm/min
+                CmdVel_X                        Unit: mm/min
+                ActVel_X                        Unit: mm/min
+                SetAcc_X                        Unit: m/s^2
+                CmdAcc_X                        Unit: m/s^2
+                ActAcc_X                        Unit: m/s^2
+                SetJerk_X                       Unit: m/s^3
+                CmdJerk_X                       Unit: m/s^3
+                ActJerk_X                       Unit: m/s^3
 """
 
-Version = '1.6.0'
+Version = '1.7.0'
 ################################ Version History ##################################
+# ---------------------------------Version 1.7.1--------------------------------- #
+# Date: 2021/9/24
+# Author: yangxiaosheng
+# Update: provide more options for drawing 1D and 2D figure
+# ---------------------------------Version 1.7.0--------------------------------- #
+# Date: 2021/9/23
+# Author: yangxiaosheng
+# Update: save GUI config parameters to ini file for parameters loading when starting
+# ---------------------------------Version 1.6.4--------------------------------- #
+# Date: 2021/9/22
+# Author: yangxiaosheng
+# Update: fix the bug in drawing figure
+# ---------------------------------Version 1.6.3--------------------------------- #
+# Date: 2021/9/13
+# Author: yangxiaosheng
+# Update: add color in activing check button
+# ---------------------------------Version 1.6.2--------------------------------- #
+# Date: 2021/9/13
+# Author: yangxiaosheng
+# Update: fix some bug in loading data
+# ---------------------------------Version 1.6.1--------------------------------- #
+# Date: 2021/9/12
+# Author: yangxiaosheng
+# Update: add error message in GUI
 # ---------------------------------Version 1.6.0--------------------------------- #
 # Date: 2021/9/12
 # Author: yangxiaosheng
@@ -161,12 +138,7 @@ import numpy
 import time
 import sys
 import re
-
-import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog
-from tkinter import scrolledtext
-
+        
 class PA_Data_Analyze:
     def __init__(self):
         self.initParam()
@@ -175,17 +147,30 @@ class PA_Data_Analyze:
         ##################################################################################
         # ----------------------------------User Define--------------------------------- #
         ##################################################################################
-        self.Precision_um   = 1; # 1 internal incremental = Precision_um * 1um
-        self.Ts             = 0.001  # sample time, unit: s
-        self.DataFileName   = r'C:\PACnc\CNCVariableTrace.txt'
-        self.TimeRange      = [0, 0] # select the sample data in Time range of [minTime, maxTime] (unit: s) ([0, 0] means select all Time)
-        self.BlockRange     = [0, 0] # select the sample data in NC Block range of [minBlockNo, maxBlockNo] ([0, 0] means select all NC Block)
-        self.Plot           = self.PlotFlag_Class()
-        self.AxisID_X       = 0  # 0 means no axis,1 means the first axis
-        self.AxisID_Y       = 0  # 0 means no axis,1 means the first axis
-        self.AxisID_Z       = 0  # 0 means no axis,1 means the first axis
-        self.AxisID_A       = 0  # 0 means no axis,1 means the first axis
-        self.AxisID_B       = 0  # 0 means no axis,1 means the first axis
+        self.Precision_um           = 1; # 1 internal incremental = Precision_um * 1um
+        self.Ts                     = 0.001  # sample time, unit: s
+        self.DataFileName           = r'C:\PACnc\CNCVariableTrace.txt'
+        self.TimeRange              = [0, 0] # select the sample data in Time range of [minTime, maxTime] (unit: s) ([0, 0] means select all Time)
+        self.BlockRange             = [0, 0] # select the sample data in NC Block range of [minBlockNo, maxBlockNo] ([0, 0] means select all NC Block)
+        self.Plot                   = self.PlotFlag_Class()
+        self.Plot1D_ShowActPathVel  = True
+        self.Plot1D_ShowActPathAcc  = False
+        self.Plot1D_ShowActPathJerk = False
+        self.Plot1D_ShowActAxisVel  = True
+        self.Plot1D_ShowActAxisAcc  = True
+        self.Plot1D_ShowActAxisJerk = False
+        self.Plot2D_EqualScale      = False
+        self.Plot2D_PathVelType     = 'Cmd' # 'Set' or 'Cmd' or 'Act'
+        self.Plot2D_PathAccType     = 'Cmd'
+        self.Plot2D_PathJerkType    = 'Cmd'
+        self.Plot2D_AbsVel          = False
+        self.Plot2D_AbsAcc          = True
+        self.Plot2D_AbsJerk         = True
+        self.AxisID_X               = 0  # 0 means no axis,1 means the first axis
+        self.AxisID_Y               = 0  # 0 means no axis,1 means the first axis
+        self.AxisID_Z               = 0  # 0 means no axis,1 means the first axis
+        self.AxisID_A               = 0  # 0 means no axis,1 means the first axis
+        self.AxisID_B               = 0  # 0 means no axis,1 means the first axis
 
         ##################################################################################
         # -------------------------------Internal Param--------------------------------- #
@@ -194,9 +179,9 @@ class PA_Data_Analyze:
         self.GuiText                = None
         self.DataInfoExist          = False
         self.Data                   = self.Data_Class()
-        self.ShareAxes              = self.ShareAxes_Class()
-        self.reSplit                = re.compile("[\t\n ]")
-        self.reMatch                = re.compile("[-+0-9\\.]*")
+        self.ShareAxis              = self.ShareAxis_Class()
+        self.reSplit                = re.compile("[\t\n ,]")
+        self.reMatch                = re.compile("[-+0-9Ee\\.]*")
         self.DataName_SetPos        = 'SSetPos[%d]'
         self.DataName_CmdPos        = 'CommandedMachinePosCorr[%d]'
         self.DataName_ActPos        = 'SActMachinePos[%d]'
@@ -205,14 +190,86 @@ class PA_Data_Analyze:
         self.DataName_BlockNo       = 'BlockNoActive[0]'
 
     class Data_Class:
-        Var     = dict()
-        Length  = 0
+        Length          = 0
+        Var             = dict()
+        Time            = []
+        BlockNo         = []
+        SetPathVel      = []
+        CmdPathVel      = []
+        ActPathVel      = []
+        SetPathAcc      = []
+        CmdPathAcc      = []
+        ActPathAcc      = []
+        SetPathJerk     = []
+        CmdPathJerk     = []
+        ActPathJerk     = []
+        SetPos_X        = []
+        CmdPos_X        = []
+        ActPos_X        = []
+        SetVel_X        = []
+        CmdVel_X        = []
+        ActVel_X        = []
+        SetAcc_X        = []
+        CmdAcc_X        = []
+        ActAcc_X        = []
+        SetJerk_X       = []
+        CmdJerk_X       = []
+        ActJerk_X       = []
+        SetPos_Y        = []
+        CmdPos_Y        = []
+        ActPos_Y        = []
+        SetVel_Y        = []
+        CmdVel_Y        = []
+        ActVel_Y        = []
+        SetAcc_Y        = []
+        CmdAcc_Y        = []
+        ActAcc_Y        = []
+        SetJerk_Y       = []
+        CmdJerk_Y       = []
+        ActJerk_Y       = []
+        SetPos_Z        = []
+        CmdPos_Z        = []
+        ActPos_Z        = []
+        SetVel_Z        = []
+        CmdVel_Z        = []
+        ActVel_Z        = []
+        SetAcc_Z        = []
+        CmdAcc_Z        = []
+        ActAcc_Z        = []
+        SetJerk_Z       = []
+        CmdJerk_Z       = []
+        ActJerk_Z       = []
+        SetPos_A        = []
+        CmdPos_A        = []
+        ActPos_A        = []
+        SetVel_A        = []
+        CmdVel_A        = []
+        ActVel_A        = []
+        SetAcc_A        = []
+        CmdAcc_A        = []
+        ActAcc_A        = []
+        SetJerk_A       = []
+        CmdJerk_A       = []
+        ActJerk_A       = []
+        SetPos_B        = []
+        CmdPos_B        = []
+        ActPos_B        = []
+        SetVel_B        = []
+        CmdVel_B        = []
+        ActVel_B        = []
+        SetAcc_B        = []
+        CmdAcc_B        = []
+        ActAcc_B        = []
+        SetJerk_B       = []
+        CmdJerk_B       = []
+        ActJerk_B       = []
+        PosErr          = []
 
-    class ShareAxes_Class:
-        Time    = None
-        XY      = None
-        YZ      = None
-        XZ      = None
+    class ShareAxis_Class:
+        Time            = None
+        XY              = None
+        YZ              = None
+        XZ              = None
 
     class PlotFlag_Class:
         BlockNo         = False
@@ -288,10 +345,10 @@ class PA_Data_Analyze:
 
         plt.close(fig='all')
         self.FigNum         = 0
-        self.ShareAxes.Time = None
-        self.ShareAxes.XY   = None
-        self.ShareAxes.YZ   = None
-        self.ShareAxes.XZ   = None
+        self.ShareAxis.Time = None
+        self.ShareAxis.XY   = None
+        self.ShareAxis.YZ   = None
+        self.ShareAxis.XZ   = None
         self.DataInfoExist  = False
             
         # ---------------------------------Plot 1D---------------------------------- #
@@ -299,491 +356,642 @@ class PA_Data_Analyze:
         if self.Plot.BlockNo == True:
             try:
                 block = self.Data.BlockNo
-                self.Plot1D(block, dataName='BlockNo', figureName='BlockNo', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError BlockNo\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error BlockNo')
+                self.Plot1D(block, dataName='BlockNo', shareAxis='time', title='BlockNo', newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError BlockNo: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error BlockNo: %s' % str(e))
 
         # PathVel
         if self.Plot.PathVel == True:
             try:
-                self.Plot1D(self.Data.SetPathVel, axisName_1='Vel (mm/min)', dataName='SetPathVel', shareAxes=self.ShareAxes.Time, figureName='PathVel', newFigure=True)
-                self.Plot1D(self.Data.CmdPathVel, axisName_1='Vel (mm/min)', dataName='CmdPathVel', shareAxes=self.ShareAxes.Time, figureName='PathVel', newFigure=False)
-                if self.Data.ActPathVel.__len__() != 0:
-                    self.Plot1D(self.Data.ActPathVel, axisName_1='Vel (mm/min)', dataName='ActPathVel', shareAxes=self.ShareAxes.Time, figureName='PathVel', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError PathVel\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error PathVel')
+                self.Plot1D(self.Data.SetPathVel, axisName_1='Vel (mm/min)', dataName='SetPathVel', shareAxis='time', title='PathVel', newFigure=True)
+                self.Plot1D(self.Data.CmdPathVel, axisName_1='Vel (mm/min)', dataName='CmdPathVel', shareAxis='time', title='PathVel', newFigure=False)
+                if self.Plot1D_ShowActPathVel == True and self.Data.ActPathVel.__len__() != 0:
+                    self.Plot1D(self.Data.ActPathVel, axisName_1='Vel (mm/min)', dataName='ActPathVel', shareAxis='time', title='PathVel', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError PathVel: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error PathVel: %s' % str(e))
 
         # PathAcc
         if self.Plot.PathAcc == True:
             try:
-                self.Plot1D(self.Data.SetPathAcc, axisName_1='Acc (m/s^2)', dataName='SetPathAcc', shareAxes=self.ShareAxes.Time, figureName='PathAcc', newFigure=True)
-                self.Plot1D(self.Data.CmdPathAcc, axisName_1='Acc (m/s^2)', dataName='CmdPathAcc', shareAxes=self.ShareAxes.Time, figureName='PathAcc', newFigure=False)
-                #if self.Data.ActPathAcc.__len__() != 0:
-                    #self.Plot1D(self.Data.ActPathAcc, axisName_1='Acc (m/s^2)', dataName='ActPathAcc', shareAxes=self.ShareAxes.Time, figureName='PathAcc', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError PathAcc\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error PathAcc')
+                self.Plot1D(self.Data.SetPathAcc, axisName_1='Acc (m/s^2)', dataName='SetPathAcc', shareAxis='time', title='PathAcc', newFigure=True)
+                self.Plot1D(self.Data.CmdPathAcc, axisName_1='Acc (m/s^2)', dataName='CmdPathAcc', shareAxis='time', title='PathAcc', newFigure=False)
+                if self.Plot1D_ShowActPathAcc == True and self.Data.ActPathAcc.__len__() != 0:
+                    self.Plot1D(self.Data.ActPathAcc, axisName_1='Acc (m/s^2)', dataName='ActPathAcc', shareAxis='time', title='PathAcc', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError PathAcc: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error PathAcc: %s' % str(e))
 
         # PathJerk
         if self.Plot.PathJerk == True:
             try:
-                self.Plot1D(self.Data.SetPathJerk, axisName_1='Jerk (m/s^3)', dataName='SetPathJerk', shareAxes=self.ShareAxes.Time, figureName='PathJerk', newFigure=True)
-                self.Plot1D(self.Data.CmdPathJerk, axisName_1='Jerk (m/s^3)', dataName='CmdPathJerk', shareAxes=self.ShareAxes.Time, figureName='PathJerk', newFigure=False)
-                #if self.Data.ActPathJerk.__len__() != 0:
-                    #self.Plot1D(self.Data.ActPathJerk, axisName_1='Jerk (m/s^3)', dataName='ActPathJerk', shareAxes=self.ShareAxes.Time, figureName='PathJerk', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError PathJerk\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error PathJerk')
+                self.Plot1D(self.Data.SetPathJerk, axisName_1='Jerk (m/s^3)', dataName='SetPathJerk', shareAxis='time', title='PathJerk', newFigure=True)
+                self.Plot1D(self.Data.CmdPathJerk, axisName_1='Jerk (m/s^3)', dataName='CmdPathJerk', shareAxis='time', title='PathJerk', newFigure=False)
+                if self.Plot1D_ShowActPathJerk == True and self.Data.ActPathJerk.__len__() != 0:
+                    self.Plot1D(self.Data.ActPathJerk, axisName_1='Jerk (m/s^3)', dataName='ActPathJerk', shareAxis='time', title='PathJerk', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError PathJerk: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error PathJerk: %s' % str(e))
 
         # X
         # Pos_X
         if self.Plot.Pos_X == True:
             try:
-                self.Plot1D(self.Data.SetPos_X, axisName_1='Pos (mm)', dataName='SetPos_X', shareAxes=self.ShareAxes.Time, figureName='Pos_X', newFigure=True)
-                self.Plot1D(self.Data.CmdPos_X, axisName_1='Pos (mm)', dataName='CmdPos_X', shareAxes=self.ShareAxes.Time, figureName='Pos_X', newFigure=False)
-                self.Plot1D(self.Data.ActPos_X, axisName_1='Pos (mm)', dataName='ActPos_X', shareAxes=self.ShareAxes.Time, figureName='Pos_X', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Pos_X\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Pos_X')
+                self.Plot1D(self.Data.SetPos_X, axisName_1='Pos (mm)', dataName='SetPos_X', shareAxis='time', title='Pos_X', newFigure=True)
+                self.Plot1D(self.Data.CmdPos_X, axisName_1='Pos (mm)', dataName='CmdPos_X', shareAxis='time', title='Pos_X', newFigure=False)
+                self.Plot1D(self.Data.ActPos_X, axisName_1='Pos (mm)', dataName='ActPos_X', shareAxis='time', title='Pos_X', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Pos_X: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Pos_X: %s' % str(e))
         # Vel_X
         if self.Plot.Vel_X == True:
             try:
-                self.Plot1D(self.Data.SetVel_X, axisName_1='Vel (mm/min)', dataName='SetVel_X', shareAxes=self.ShareAxes.Time, figureName='Vel_X', newFigure=True)
-                self.Plot1D(self.Data.CmdVel_X, axisName_1='Vel (mm/min)', dataName='CmdVel_X', shareAxes=self.ShareAxes.Time, figureName='Vel_X', newFigure=False)
-                self.Plot1D(self.Data.ActVel_X, axisName_1='Vel (mm/min)', dataName='ActVel_X', shareAxes=self.ShareAxes.Time, figureName='Vel_X', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Vel_X\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Vel_X')
+                self.Plot1D(self.Data.SetVel_X, axisName_1='Vel (mm/min)', dataName='SetVel_X', shareAxis='time', title='Vel_X', newFigure=True)
+                self.Plot1D(self.Data.CmdVel_X, axisName_1='Vel (mm/min)', dataName='CmdVel_X', shareAxis='time', title='Vel_X', newFigure=False)
+                if self.Plot1D_ShowActAxisVel == True:
+                    self.Plot1D(self.Data.ActVel_X, axisName_1='Vel (mm/min)', dataName='ActVel_X', shareAxis='time', title='Vel_X', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Vel_X: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Vel_X: %s' % str(e))
         # Acc_X
         if self.Plot.Acc_X == True:
             try:
-                self.Plot1D(self.Data.SetAcc_X, axisName_1='Acc (m/s^2)', dataName='SetAcc_X', shareAxes=self.ShareAxes.Time, figureName='Acc_X', newFigure=True)
-                self.Plot1D(self.Data.CmdAcc_X, axisName_1='Acc (m/s^2)', dataName='CmdAcc_X', shareAxes=self.ShareAxes.Time, figureName='Acc_X', newFigure=False)
-                self.Plot1D(self.Data.ActAcc_X, axisName_1='Acc (m/s^2)', dataName='ActAcc_X', shareAxes=self.ShareAxes.Time, figureName='Acc_X', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Acc_X\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Acc_X')
+                self.Plot1D(self.Data.SetAcc_X, axisName_1='Acc (m/s^2)', dataName='SetAcc_X', shareAxis='time', title='Acc_X', newFigure=True)
+                self.Plot1D(self.Data.CmdAcc_X, axisName_1='Acc (m/s^2)', dataName='CmdAcc_X', shareAxis='time', title='Acc_X', newFigure=False)
+                if self.Plot1D_ShowActAxisAcc == True:
+                    self.Plot1D(self.Data.ActAcc_X, axisName_1='Acc (m/s^2)', dataName='ActAcc_X', shareAxis='time', title='Acc_X', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Acc_X: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Acc_X: %s' % str(e))
         # Jerk_X
         if self.Plot.Jerk_X == True:
             try:
-                self.Plot1D(self.Data.SetJerk_X, axisName_1='Jerk (m/s^3)', dataName='SetJerk_X', shareAxes=self.ShareAxes.Time, figureName='Jerk_X', newFigure=True)
-                self.Plot1D(self.Data.CmdJerk_X, axisName_1='Jerk (m/s^3)', dataName='CmdJerk_X', shareAxes=self.ShareAxes.Time, figureName='Jerk_X', newFigure=False)
-                # self.Plot1D(self.Data.ActJerk_X, axisName_1='Jerk (m/s^3)', dataName='ActJerk_X', shareAxes=self.ShareAxes.Time, figureName='Jerk_X', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Jerk_X\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Jerk_X')
+                self.Plot1D(self.Data.SetJerk_X, axisName_1='Jerk (m/s^3)', dataName='SetJerk_X', shareAxis='time', title='Jerk_X', newFigure=True)
+                self.Plot1D(self.Data.CmdJerk_X, axisName_1='Jerk (m/s^3)', dataName='CmdJerk_X', shareAxis='time', title='Jerk_X', newFigure=False)
+                if self.Plot1D_ShowActAxisJerk == True:
+                    self.Plot1D(self.Data.ActJerk_X, axisName_1='Jerk (m/s^3)', dataName='ActJerk_X', shareAxis='time', title='Jerk_X', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Jerk_X: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Jerk_X: %s' % str(e))
 
         # Y
         # Pos_Y
         if self.Plot.Pos_Y == True:
             try:
-                self.Plot1D(self.Data.SetPos_Y, axisName_1='Pos (mm)', dataName='SetPos_Y', shareAxes=self.ShareAxes.Time, figureName='Pos_Y', newFigure=True)
-                self.Plot1D(self.Data.CmdPos_Y, axisName_1='Pos (mm)', dataName='CmdPos_Y', shareAxes=self.ShareAxes.Time, figureName='Pos_Y', newFigure=False)
-                self.Plot1D(self.Data.ActPos_Y, axisName_1='Pos (mm)', dataName='ActPos_Y', shareAxes=self.ShareAxes.Time, figureName='Pos_Y', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Pos_Y\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Pos_Y')
+                self.Plot1D(self.Data.SetPos_Y, axisName_1='Pos (mm)', dataName='SetPos_Y', shareAxis='time', title='Pos_Y', newFigure=True)
+                self.Plot1D(self.Data.CmdPos_Y, axisName_1='Pos (mm)', dataName='CmdPos_Y', shareAxis='time', title='Pos_Y', newFigure=False)
+                self.Plot1D(self.Data.ActPos_Y, axisName_1='Pos (mm)', dataName='ActPos_Y', shareAxis='time', title='Pos_Y', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Pos_Y: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Pos_Y: %s' % str(e))
         # Vel_Y
         if self.Plot.Vel_Y == True:
             try:
-                self.Plot1D(self.Data.SetVel_Y, axisName_1='Vel (mm/min)', dataName='SetVel_Y', shareAxes=self.ShareAxes.Time, figureName='Vel_Y', newFigure=True)
-                self.Plot1D(self.Data.CmdVel_Y, axisName_1='Vel (mm/min)', dataName='CmdVel_Y', shareAxes=self.ShareAxes.Time, figureName='Vel_Y', newFigure=False)
-                self.Plot1D(self.Data.ActVel_Y, axisName_1='Vel (mm/min)', dataName='ActVel_Y', shareAxes=self.ShareAxes.Time, figureName='Vel_Y', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Vel_Y\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Vel_Y')
+                self.Plot1D(self.Data.SetVel_Y, axisName_1='Vel (mm/min)', dataName='SetVel_Y', shareAxis='time', title='Vel_Y', newFigure=True)
+                self.Plot1D(self.Data.CmdVel_Y, axisName_1='Vel (mm/min)', dataName='CmdVel_Y', shareAxis='time', title='Vel_Y', newFigure=False)
+                if self.Plot1D_ShowActAxisVel == True:
+                    self.Plot1D(self.Data.ActVel_Y, axisName_1='Vel (mm/min)', dataName='ActVel_Y', shareAxis='time', title='Vel_Y', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Vel_Y: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Vel_Y: %s' % str(e))
         # Acc_Y
         if self.Plot.Acc_Y == True:
             try:
-                self.Plot1D(self.Data.SetAcc_Y, axisName_1='Acc (m/s^2)', dataName='SetAcc_Y', shareAxes=self.ShareAxes.Time, figureName='Acc_Y', newFigure=True)
-                self.Plot1D(self.Data.CmdAcc_Y, axisName_1='Acc (m/s^2)', dataName='CmdAcc_Y', shareAxes=self.ShareAxes.Time, figureName='Acc_Y', newFigure=False)
-                self.Plot1D(self.Data.ActAcc_Y, axisName_1='Acc (m/s^2)', dataName='ActAcc_Y', shareAxes=self.ShareAxes.Time, figureName='Acc_Y', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Acc_Y\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Acc_Y')
+                self.Plot1D(self.Data.SetAcc_Y, axisName_1='Acc (m/s^2)', dataName='SetAcc_Y', shareAxis='time', title='Acc_Y', newFigure=True)
+                self.Plot1D(self.Data.CmdAcc_Y, axisName_1='Acc (m/s^2)', dataName='CmdAcc_Y', shareAxis='time', title='Acc_Y', newFigure=False)
+                if self.Plot1D_ShowActAxisAcc == True:
+                    self.Plot1D(self.Data.ActAcc_Y, axisName_1='Acc (m/s^2)', dataName='ActAcc_Y', shareAxis='time', title='Acc_Y', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Acc_Y: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Acc_Y: %s' % str(e))
         # Jerk_Y
         if self.Plot.Jerk_Y == True:
             try:
-                self.Plot1D(self.Data.SetJerk_Y, axisName_1='Jerk (m/s^3)', dataName='SetJerk_Y', shareAxes=self.ShareAxes.Time, figureName='Jerk_Y', newFigure=True)
-                self.Plot1D(self.Data.CmdJerk_Y, axisName_1='Jerk (m/s^3)', dataName='CmdJerk_Y', shareAxes=self.ShareAxes.Time, figureName='Jerk_Y', newFigure=False)
-                # self.Plot1D(self.Data.ActJerk_Y, axisName_1='Jerk (m/s^3)', dataName='ActJerk_Y', shareAxes=self.ShareAxes.Time, figureName='Jerk_Y', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Jerk_Y\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Jerk_Y')
+                self.Plot1D(self.Data.SetJerk_Y, axisName_1='Jerk (m/s^3)', dataName='SetJerk_Y', shareAxis='time', title='Jerk_Y', newFigure=True)
+                self.Plot1D(self.Data.CmdJerk_Y, axisName_1='Jerk (m/s^3)', dataName='CmdJerk_Y', shareAxis='time', title='Jerk_Y', newFigure=False)
+                if self.Plot1D_ShowActAxisJerk == True:
+                    self.Plot1D(self.Data.ActJerk_Y, axisName_1='Jerk (m/s^3)', dataName='ActJerk_Y', shareAxis='time', title='Jerk_Y', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Jerk_Y: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Jerk_Y: %s' % str(e))
 
         # Z
         #Pos_Z
         if self.Plot.Pos_Z == True:
             try:
-                self.Plot1D(self.Data.SetPos_Z, axisName_1='Pos (mm)', dataName='SetPos_Z', shareAxes=self.ShareAxes.Time, figureName='Pos_Z', newFigure=True)
-                self.Plot1D(self.Data.CmdPos_Z, axisName_1='Pos (mm)', dataName='CmdPos_Z', shareAxes=self.ShareAxes.Time, figureName='Pos_Z', newFigure=False)
-                self.Plot1D(self.Data.ActPos_Z, axisName_1='Pos (mm)', dataName='ActPos_Z', shareAxes=self.ShareAxes.Time, figureName='Pos_Z', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Pos_Z\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Pos_Z')
+                self.Plot1D(self.Data.SetPos_Z, axisName_1='Pos (mm)', dataName='SetPos_Z', shareAxis='time', title='Pos_Z', newFigure=True)
+                self.Plot1D(self.Data.CmdPos_Z, axisName_1='Pos (mm)', dataName='CmdPos_Z', shareAxis='time', title='Pos_Z', newFigure=False)
+                self.Plot1D(self.Data.ActPos_Z, axisName_1='Pos (mm)', dataName='ActPos_Z', shareAxis='time', title='Pos_Z', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Pos_Z: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Pos_Z: %s' % str(e))
         #Vel_Z
         if self.Plot.Vel_Z == True:
             try:
-                self.Plot1D(self.Data.SetVel_Z, axisName_1='Vel (mm/min)', dataName='SetVel_Z', shareAxes=self.ShareAxes.Time, figureName='Vel_Z', newFigure=True)
-                self.Plot1D(self.Data.CmdVel_Z, axisName_1='Vel (mm/min)', dataName='CmdVel_Z', shareAxes=self.ShareAxes.Time, figureName='Vel_Z', newFigure=False)
-                self.Plot1D(self.Data.ActVel_Z, axisName_1='Vel (mm/min)', dataName='ActVel_Z', shareAxes=self.ShareAxes.Time, figureName='Vel_Z', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Vel_Z\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Vel_Z')
+                self.Plot1D(self.Data.SetVel_Z, axisName_1='Vel (mm/min)', dataName='SetVel_Z', shareAxis='time', title='Vel_Z', newFigure=True)
+                self.Plot1D(self.Data.CmdVel_Z, axisName_1='Vel (mm/min)', dataName='CmdVel_Z', shareAxis='time', title='Vel_Z', newFigure=False)
+                if self.Plot1D_ShowActAxisVel == True:
+                    self.Plot1D(self.Data.ActVel_Z, axisName_1='Vel (mm/min)', dataName='ActVel_Z', shareAxis='time', title='Vel_Z', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Vel_Z: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Vel_Z: %s' % str(e))
         #Acc_Z
         if self.Plot.Acc_Z == True:
             try:
-                self.Plot1D(self.Data.SetAcc_Z, axisName_1='Acc (m/s^2)', dataName='SetAcc_Z', shareAxes=self.ShareAxes.Time, figureName='Acc_Z', newFigure=True)
-                self.Plot1D(self.Data.CmdAcc_Z, axisName_1='Acc (m/s^2)', dataName='CmdAcc_Z', shareAxes=self.ShareAxes.Time, figureName='Acc_Z', newFigure=False)
-                self.Plot1D(self.Data.ActAcc_Z, axisName_1='Acc (m/s^2)', dataName='ActAcc_Z', shareAxes=self.ShareAxes.Time, figureName='Acc_Z', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Acc_Z\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Acc_Z')
+                self.Plot1D(self.Data.SetAcc_Z, axisName_1='Acc (m/s^2)', dataName='SetAcc_Z', shareAxis='time', title='Acc_Z', newFigure=True)
+                self.Plot1D(self.Data.CmdAcc_Z, axisName_1='Acc (m/s^2)', dataName='CmdAcc_Z', shareAxis='time', title='Acc_Z', newFigure=False)
+                if self.Plot1D_ShowActAxisAcc == True:
+                    self.Plot1D(self.Data.ActAcc_Z, axisName_1='Acc (m/s^2)', dataName='ActAcc_Z', shareAxis='time', title='Acc_Z', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Acc_Z: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Acc_Z: %s' % str(e))
         # Jerk_Z
         if self.Plot.Jerk_Z == True:
             try:
-                self.Plot1D(self.Data.SetJerk_Z, axisName_1='Jerk (m/s^3)', dataName='SetJerk_Z', shareAxes=self.ShareAxes.Time, figureName='Jerk_Z', newFigure=True)
-                self.Plot1D(self.Data.CmdJerk_Z, axisName_1='Jerk (m/s^3)', dataName='CmdJerk_Z', shareAxes=self.ShareAxes.Time, figureName='Jerk_Z', newFigure=False)
-                # self.Plot1D(self.Data.ActJerk_Z, axisName_1='Jerk (m/s^3)', dataName='ActJerk_Z', shareAxes=self.ShareAxes.Time, figureName='Jerk_Z', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Jerk_Z\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Jerk_Z')
+                self.Plot1D(self.Data.SetJerk_Z, axisName_1='Jerk (m/s^3)', dataName='SetJerk_Z', shareAxis='time', title='Jerk_Z', newFigure=True)
+                self.Plot1D(self.Data.CmdJerk_Z, axisName_1='Jerk (m/s^3)', dataName='CmdJerk_Z', shareAxis='time', title='Jerk_Z', newFigure=False)
+                if self.Plot1D_ShowActAxisJerk == True:
+                    self.Plot1D(self.Data.ActJerk_Z, axisName_1='Jerk (m/s^3)', dataName='ActJerk_Z', shareAxis='time', title='Jerk_Z', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Jerk_Z: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Jerk_Z: %s' % str(e))
 
         # A
         #Pos_A
         if self.Plot.Pos_A == True:
             try:
-                self.Plot1D(self.Data.SetPos_A, axisName_1='Pos (mm)', dataName='SetPos_A', shareAxes=self.ShareAxes.Time, figureName='Pos_A', newFigure=True)
-                self.Plot1D(self.Data.CmdPos_A, axisName_1='Pos (mm)', dataName='CmdPos_A', shareAxes=self.ShareAxes.Time, figureName='Pos_A', newFigure=False)
-                self.Plot1D(self.Data.ActPos_A, axisName_1='Pos (mm)', dataName='ActPos_A', shareAxes=self.ShareAxes.Time, figureName='Pos_A', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Pos_A\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Pos_A')
+                self.Plot1D(self.Data.SetPos_A, axisName_1='Pos (mm)', dataName='SetPos_A', shareAxis='time', title='Pos_A', newFigure=True)
+                self.Plot1D(self.Data.CmdPos_A, axisName_1='Pos (mm)', dataName='CmdPos_A', shareAxis='time', title='Pos_A', newFigure=False)
+                self.Plot1D(self.Data.ActPos_A, axisName_1='Pos (mm)', dataName='ActPos_A', shareAxis='time', title='Pos_A', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Pos_A: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Pos_A: %s' % str(e))
         #Vel_A
         if self.Plot.Vel_A == True:
             try:
-                self.Plot1D(self.Data.SetVel_A, axisName_1='Vel (mm/min)', dataName='SetVel_A', shareAxes=self.ShareAxes.Time, figureName='Vel_A', newFigure=True)
-                self.Plot1D(self.Data.CmdVel_A, axisName_1='Vel (mm/min)', dataName='CmdVel_A', shareAxes=self.ShareAxes.Time, figureName='Vel_A', newFigure=False)
-                self.Plot1D(self.Data.ActVel_A, axisName_1='Vel (mm/min)', dataName='ActVel_A', shareAxes=self.ShareAxes.Time, figureName='Vel_A', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Vel_A\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Vel_A')
+                self.Plot1D(self.Data.SetVel_A, axisName_1='Vel (mm/min)', dataName='SetVel_A', shareAxis='time', title='Vel_A', newFigure=True)
+                self.Plot1D(self.Data.CmdVel_A, axisName_1='Vel (mm/min)', dataName='CmdVel_A', shareAxis='time', title='Vel_A', newFigure=False)
+                if self.Plot1D_ShowActAxisVel == True:
+                    self.Plot1D(self.Data.ActVel_A, axisName_1='Vel (mm/min)', dataName='ActVel_A', shareAxis='time', title='Vel_A', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Vel_A: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Vel_A: %s' % str(e))
         #Acc_A
         if self.Plot.Acc_A == True:
             try:
-                self.Plot1D(self.Data.SetAcc_A, axisName_1='Acc (m/s^2)', dataName='SetAcc_A', shareAxes=self.ShareAxes.Time, figureName='Acc_A', newFigure=True)
-                self.Plot1D(self.Data.CmdAcc_A, axisName_1='Acc (m/s^2)', dataName='CmdAcc_A', shareAxes=self.ShareAxes.Time, figureName='Acc_A', newFigure=False)
-                self.Plot1D(self.Data.ActAcc_A, axisName_1='Acc (m/s^2)', dataName='ActAcc_A', shareAxes=self.ShareAxes.Time, figureName='Acc_A', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Acc_A\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Acc_A')
+                self.Plot1D(self.Data.SetAcc_A, axisName_1='Acc (m/s^2)', dataName='SetAcc_A', shareAxis='time', title='Acc_A', newFigure=True)
+                self.Plot1D(self.Data.CmdAcc_A, axisName_1='Acc (m/s^2)', dataName='CmdAcc_A', shareAxis='time', title='Acc_A', newFigure=False)
+                if self.Plot1D_ShowActAxisAcc == True:
+                    self.Plot1D(self.Data.ActAcc_A, axisName_1='Acc (m/s^2)', dataName='ActAcc_A', shareAxis='time', title='Acc_A', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Acc_A: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Acc_A: %s' % str(e))
         # Jerk_A
         if self.Plot.Jerk_A == True:
             try:
-                self.Plot1D(self.Data.SetJerk_A, axisName_1='Jerk (m/s^3)', dataName='SetJerk_A', shareAxes=self.ShareAxes.Time, figureName='Jerk_A', newFigure=True)
-                self.Plot1D(self.Data.CmdJerk_A, axisName_1='Jerk (m/s^3)', dataName='CmdJerk_A', shareAxes=self.ShareAxes.Time, figureName='Jerk_A', newFigure=False)
-                # self.Plot1D(self.Data.ActJerk_A, axisName_1='Jerk (m/s^3)', dataName='ActJerk_A', shareAxes=self.ShareAxes.Time, figureName='Jerk_A', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Jerk_A\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Jerk_A')
+                self.Plot1D(self.Data.SetJerk_A, axisName_1='Jerk (m/s^3)', dataName='SetJerk_A', shareAxis='time', title='Jerk_A', newFigure=True)
+                self.Plot1D(self.Data.CmdJerk_A, axisName_1='Jerk (m/s^3)', dataName='CmdJerk_A', shareAxis='time', title='Jerk_A', newFigure=False)
+                if self.Plot1D_ShowActAxisJerk == True:
+                    self.Plot1D(self.Data.ActJerk_A, axisName_1='Jerk (m/s^3)', dataName='ActJerk_A', shareAxis='time', title='Jerk_A', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Jerk_A: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Jerk_A: %s' % str(e))
 
         # B
         #Pos_B
         if self.Plot.Pos_B == True:
             try:
-                self.Plot1D(self.Data.SetPos_B, axisName_1='Pos (mm)', dataName='SetPos_B', shareAxes=self.ShareAxes.Time, figureName='Pos_B', newFigure=True)
-                self.Plot1D(self.Data.CmdPos_B, axisName_1='Pos (mm)', dataName='CmdPos_B', shareAxes=self.ShareAxes.Time, figureName='Pos_B', newFigure=False)
-                self.Plot1D(self.Data.ActPos_B, axisName_1='Pos (mm)', dataName='ActPos_B', shareAxes=self.ShareAxes.Time, figureName='Pos_B', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Pos_B\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Pos_B')
+                self.Plot1D(self.Data.SetPos_B, axisName_1='Pos (mm)', dataName='SetPos_B', shareAxis='time', title='Pos_B', newFigure=True)
+                self.Plot1D(self.Data.CmdPos_B, axisName_1='Pos (mm)', dataName='CmdPos_B', shareAxis='time', title='Pos_B', newFigure=False)
+                self.Plot1D(self.Data.ActPos_B, axisName_1='Pos (mm)', dataName='ActPos_B', shareAxis='time', title='Pos_B', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Pos_B: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Pos_B: %s' % str(e))
         #Vel_B
         if self.Plot.Vel_B == True:
             try:
-                self.Plot1D(self.Data.SetVel_B, axisName_1='Vel (mm/min)', dataName='SetVel_B', shareAxes=self.ShareAxes.Time, figureName='Vel_B', newFigure=True)
-                self.Plot1D(self.Data.CmdVel_B, axisName_1='Vel (mm/min)', dataName='CmdVel_B', shareAxes=self.ShareAxes.Time, figureName='Vel_B', newFigure=False)
-                self.Plot1D(self.Data.ActVel_B, axisName_1='Vel (mm/min)', dataName='ActVel_B', shareAxes=self.ShareAxes.Time, figureName='Vel_B', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Vel_B\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Vel_B')
+                self.Plot1D(self.Data.SetVel_B, axisName_1='Vel (mm/min)', dataName='SetVel_B', shareAxis='time', title='Vel_B', newFigure=True)
+                self.Plot1D(self.Data.CmdVel_B, axisName_1='Vel (mm/min)', dataName='CmdVel_B', shareAxis='time', title='Vel_B', newFigure=False)
+                if self.Plot1D_ShowActAxisVel == True:
+                    self.Plot1D(self.Data.ActVel_B, axisName_1='Vel (mm/min)', dataName='ActVel_B', shareAxis='time', title='Vel_B', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Vel_B: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Vel_B: %s' % str(e))
         #Acc_B
         if self.Plot.Acc_B == True:
             try:
-                self.Plot1D(self.Data.SetAcc_B, axisName_1='Acc (m/s^2)', dataName='SetAcc_B', shareAxes=self.ShareAxes.Time, figureName='Acc_B', newFigure=True)
-                self.Plot1D(self.Data.CmdAcc_B, axisName_1='Acc (m/s^2)', dataName='CmdAcc_B', shareAxes=self.ShareAxes.Time, figureName='Acc_B', newFigure=False)
-                self.Plot1D(self.Data.ActAcc_B, axisName_1='Acc (m/s^2)', dataName='ActAcc_B', shareAxes=self.ShareAxes.Time, figureName='Acc_B', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Acc_B\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Acc_B')
+                self.Plot1D(self.Data.SetAcc_B, axisName_1='Acc (m/s^2)', dataName='SetAcc_B', shareAxis='time', title='Acc_B', newFigure=True)
+                self.Plot1D(self.Data.CmdAcc_B, axisName_1='Acc (m/s^2)', dataName='CmdAcc_B', shareAxis='time', title='Acc_B', newFigure=False)
+                if self.Plot1D_ShowActAxisAcc == True:
+                    self.Plot1D(self.Data.ActAcc_B, axisName_1='Acc (m/s^2)', dataName='ActAcc_B', shareAxis='time', title='Acc_B', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Acc_B: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Acc_B: %s' % str(e))
         # Jerk_B
         if self.Plot.Jerk_B == True:
             try:
-                self.Plot1D(self.Data.SetJerk_B, axisName_1='Jerk (m/s^3)', dataName='SetJerk_B', shareAxes=self.ShareAxes.Time, figureName='Jerk_B', newFigure=True)
-                self.Plot1D(self.Data.CmdJerk_B, axisName_1='Jerk (m/s^3)', dataName='CmdJerk_B', shareAxes=self.ShareAxes.Time, figureName='Jerk_B', newFigure=False)
-                # self.Plot1D(self.Data.ActJerk_B, axisName_1='Jerk (m/s^3)', dataName='ActJerk_B', shareAxes=self.ShareAxes.Time, figureName='Jerk_B', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError Jerk_B\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error Jerk_B')
+                self.Plot1D(self.Data.SetJerk_B, axisName_1='Jerk (m/s^3)', dataName='SetJerk_B', shareAxis='time', title='Jerk_B', newFigure=True)
+                self.Plot1D(self.Data.CmdJerk_B, axisName_1='Jerk (m/s^3)', dataName='CmdJerk_B', shareAxis='time', title='Jerk_B', newFigure=False)
+                if self.Plot1D_ShowActAxisJerk == True:
+                    self.Plot1D(self.Data.ActJerk_B, axisName_1='Jerk (m/s^3)', dataName='ActJerk_B', shareAxis='time', title='Jerk_B', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError Jerk_B: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error Jerk_B: %s' % str(e))
 
         # ---------------------------------Plot 2D---------------------------------- #
+        equalScale = True if self.Plot2D_EqualScale == True else False
         # XY
         if self.Plot.XY == True:
             try:
-                self.Plot2D(self.Data.SetPos_X, self.Data.SetPos_Y, axisName_1='X (mm)', axisName_2='Y (mm)', dataName='SetPos', shareAxes=self.ShareAxes.XY, figureName='XY', newFigure=True)
-                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, axisName_1='X (mm)', axisName_2='Y (mm)', dataName='CmdPos', shareAxes=self.ShareAxes.XY, figureName='XY', newFigure=False)
-                self.Plot2D(self.Data.ActPos_X, self.Data.ActPos_Y, axisName_1='X (mm)', axisName_2='Y (mm)', dataName='ActPos', shareAxes=self.ShareAxes.XY, figureName='XY', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XY\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XY')
+                self.Plot2D(self.Data.SetPos_X, self.Data.SetPos_Y, axisName_1='X (mm)', axisName_2='Y (mm)', dataName='SetPos', shareAxis='xy', title='XY', equalScale=equalScale, newFigure=True)
+                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, axisName_1='X (mm)', axisName_2='Y (mm)', dataName='CmdPos', shareAxis='xy', title='XY', equalScale=equalScale, newFigure=False)
+                self.Plot2D(self.Data.ActPos_X, self.Data.ActPos_Y, axisName_1='X (mm)', axisName_2='Y (mm)', dataName='ActPos', shareAxis='xy', title='XY', equalScale=equalScale, newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XY: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XY: %s' % str(e))
         # XY with BlockNo
         if self.Plot.XY_BlockNo == True:
             try:
                 color = self.Data.BlockNo
-                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='BlockNo', shareAxes=self.ShareAxes.XY, figureName='XY_BlockNo', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError BlockNo\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error BlockNo')
+                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='BlockNo', shareAxis='xy', title='XY_BlockNo', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError BlockNo: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error BlockNo: %s' % str(e))
         # XY with Time
         if self.Plot.XY_Time == True:
             try:
                 color = self.Data.Time
-                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='Time (s)', shareAxes=self.ShareAxes.XY, figureName='XY_Time', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XY_Time\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XY_Time')
+                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='Time (s)', shareAxis='xy', title='XY_Time', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XY_Time: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XY_Time: %s' % str(e))
         #XY with PathVel
         if self.Plot.XY_PathVel == True:
             try:
-                color = self.Data.CmdPathVel
-                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='PathVel (mm/min)', shareAxes=self.ShareAxes.XY, figureName='XY_PathVel', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XY_PathVel\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XY_PathVel')
+                if self.Plot2D_PathVelType == 'Set':
+                    color = self.Data.SetPathVel
+                    name = 'SetPathVel'
+                elif self.Plot2D_PathVelType == 'Cmd':
+                    color = self.Data.CmdPathVel
+                    name = 'CmdPathVel'
+                elif self.Plot2D_PathVelType == 'Act':
+                    color = self.Data.ActPathVel
+                    name = 'ActPathVel'
+                else:
+                    color = self.Data.CmdPathVel
+                if self.Plot2D_AbsVel == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) (mm/min)' % name
+                else:
+                    colorName = '%s (mm/min)' % name
+                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName=colorName, shareAxis='xy', title='XY_PathVel', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XY_PathVel: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XY_PathVel: %s' % str(e))
         #XY with PathAcc
         if self.Plot.XY_PathAcc == True:
             try:
-                color = self.Data.CmdPathAcc
-                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='PathAcc (m/s^2)', shareAxes=self.ShareAxes.XY, figureName='XY_PathAcc', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XY_PathAcc\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XY_PathAcc')
+                if self.Plot2D_PathVelType == 'Set':
+                    color = self.Data.SetPathAcc
+                    name = 'SetPathAcc'
+                elif self.Plot2D_PathVelType == 'Cmd':
+                    color = self.Data.CmdPathAcc
+                    name = 'CmdPathAcc'
+                elif self.Plot2D_PathVelType == 'Act':
+                    color = self.Data.ActPathAcc
+                    name = 'ActPathAcc'
+                else:
+                    color = self.Data.CmdPathAcc
+                if self.Plot2D_AbsAcc == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) ((m/s^2)' % name
+                else:
+                    colorName = '%s ((m/s^2)' % name
+                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName=colorName, shareAxis='xy', title='XY_PathAcc', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XY_PathAcc: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XY_PathAcc: %s' % str(e))
         #XY with PathJerk
         if self.Plot.XY_PathJerk == True:
             try:
-                color = self.Data.CmdPathJerk
-                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='PathJerk (m/s^3)', shareAxes=self.ShareAxes.XY, figureName='XY_PathJerk', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XY_PathJerk\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XY_PathJerk')
+                if self.Plot2D_PathVelType == 'Set':
+                    color = self.Data.SetPathJerk
+                    name = 'SetPathJerk'
+                elif self.Plot2D_PathVelType == 'Cmd':
+                    color = self.Data.CmdPathJerk
+                    name = 'CmdPathJerk'
+                elif self.Plot2D_PathVelType == 'Act':
+                    color = self.Data.ActPathJerk
+                    name = 'ActPathJerk'
+                else:
+                    color = self.Data.CmdPathJerk
+                if self.Plot2D_AbsJerk == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) ((m/s^3)' % name
+                else:
+                    colorName = '%s ((m/s^3)' % name
+                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName=colorName, shareAxis='xy', title='XY_PathJerk', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XY_PathJerk: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XY_PathJerk: %s' % str(e))
         #XY with PosErr
         if self.Plot.XY_PosErr == True:
             try:
                 if self.Data.PosErr.__len__() != 0:
                     color = self.Data.PosErr
-                    self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='PosErr (mm)', shareAxes=self.ShareAxes.XY, figureName='XY_PosErr', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XY_PosErr\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XY_PosErr')
+                    self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='PosErr (mm)', shareAxis='xy', title='XY_PosErr', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XY_PosErr: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XY_PosErr: %s' % str(e))
         #XY with Z
         if self.Plot.XY_Z == True:
             try:
                 color = self.Data.CmdPos_Z
-                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='Z (mm)', shareAxes=self.ShareAxes.XY, figureName='XY_Z', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XY_Z\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XY_Z')
+                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName='Z (mm)', shareAxis='xy', title='XY_Z', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XY_Z: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XY_Z: %s' % str(e))
         
         # YZ
         if self.Plot.YZ == True:
             try:
-                self.Plot2D(self.Data.SetPos_Y, self.Data.SetPos_Z, axisName_1='Y (mm)', axisName_2='Z (mm)', dataName='SetPos', shareAxes=self.ShareAxes.YZ, figureName='YZ', newFigure=True)
-                self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, axisName_1='Y (mm)', axisName_2='Z (mm)', dataName='CmdPos', shareAxes=self.ShareAxes.YZ, figureName='YZ', newFigure=False)
-                self.Plot2D(self.Data.ActPos_Y, self.Data.ActPos_Z, axisName_1='Y (mm)', axisName_2='Z (mm)', dataName='ActPos', shareAxes=self.ShareAxes.YZ, figureName='YZ', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError YZ\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error YZ')
+                self.Plot2D(self.Data.SetPos_Y, self.Data.SetPos_Z, axisName_1='Y (mm)', axisName_2='Z (mm)', dataName='SetPos', shareAxis='yz', title='YZ', equalScale=equalScale, newFigure=True)
+                self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, axisName_1='Y (mm)', axisName_2='Z (mm)', dataName='CmdPos', shareAxis='yz', title='YZ', equalScale=equalScale, newFigure=False)
+                self.Plot2D(self.Data.ActPos_Y, self.Data.ActPos_Z, axisName_1='Y (mm)', axisName_2='Z (mm)', dataName='ActPos', shareAxis='yz', title='YZ', equalScale=equalScale, newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error YZ: %s' % str(e))
         # YZ with BlockNo
         if self.Plot.YZ_BlockNo == True:
             try:
                 color = self.Data.BlockNo
-                self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='BlockNo', shareAxes=self.ShareAxes.YZ, figureName='YZ_BlockNo', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError YZ_BlockNo\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error YZ_BlockNo')
+                self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='BlockNo', shareAxis='yz', title='YZ_BlockNo', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ_BlockNo: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error YZ_BlockNo: %s' % str(e))
         # YZ with Time
         if self.Plot.YZ_Time == True:
             try:
                 color = self.Data.Time
-                self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='Time (s)', shareAxes=self.ShareAxes.YZ, figureName='YZ_Time', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError YZ_Time\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error YZ_Time')
+                self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='Time (s)', shareAxis='yz', title='YZ_Time', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ_Time: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error YZ_Time: %s' % str(e))
         #YZ with PathVel
         if self.Plot.YZ_PathVel == True:
             try:
-                color = self.Data.CmdPathVel
-                self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='PathVel (mm/min)', shareAxes=self.ShareAxes.YZ, figureName='YZ_PathVel', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathVel\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error YZ_PathVel')
+                if self.Plot2D_PathVelType == 'Set':
+                    color = self.Data.SetPathVel
+                    name = 'SetPathVel'
+                elif self.Plot2D_PathVelType == 'Cmd':
+                    color = self.Data.CmdPathVel
+                    name = 'CmdPathVel'
+                elif self.Plot2D_PathVelType == 'Act':
+                    color = self.Data.ActPathVel
+                    name = 'ActPathVel'
+                else:
+                    color = self.Data.CmdPathVel
+                if self.Plot2D_AbsVel == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) (mm/min)' % name
+                else:
+                    colorName = '%s (mm/min)' % name
+                self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName=colorName, shareAxis='yz', title='YZ_PathVel', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathVel: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error YZ_PathVel: %s' % str(e))
         #YZ with PathAcc
         if self.Plot.YZ_PathAcc == True:
             try:
-                color = self.Data.CmdPathAcc
-                self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='PathAcc (m/s^2)', shareAxes=self.ShareAxes.YZ, figureName='YZ_PathAcc', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathAcc\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error YZ_PathAcc')
+                if self.Plot2D_PathVelType == 'Set':
+                    color = self.Data.SetPathAcc
+                    name = 'SetPathAcc'
+                elif self.Plot2D_PathVelType == 'Cmd':
+                    color = self.Data.CmdPathAcc
+                    name = 'CmdPathAcc'
+                elif self.Plot2D_PathVelType == 'Act':
+                    color = self.Data.ActPathAcc
+                    name = 'ActPathAcc'
+                else:
+                    color = self.Data.CmdPathAcc
+                if self.Plot2D_AbsAcc == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) ((m/s^2)' % name
+                else:
+                    colorName = '%s ((m/s^2)' % name
+                self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName=colorName, shareAxis='yz', title='YZ_PathAcc', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathAcc: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error YZ_PathAcc: %s' % str(e))
         #YZ with PathJerk
         if self.Plot.YZ_PathJerk == True:
             try:
-                color = self.Data.CmdPathJerk
-                self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='PathJerk (m/s^3)', shareAxes=self.ShareAxes.YZ, figureName='YZ_PathJerk', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathJerk\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error YZ_PathJerk')
+                if self.Plot2D_PathVelType == 'Set':
+                    color = self.Data.SetPathJerk
+                    name = 'SetPathJerk'
+                elif self.Plot2D_PathVelType == 'Cmd':
+                    color = self.Data.CmdPathJerk
+                    name = 'CmdPathJerk'
+                elif self.Plot2D_PathVelType == 'Act':
+                    color = self.Data.ActPathJerk
+                    name = 'ActPathJerk'
+                else:
+                    color = self.Data.CmdPathJerk
+                if self.Plot2D_AbsJerk == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) ((m/s^3)' % name
+                else:
+                    colorName = '%s ((m/s^3)' % name
+                self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName=colorName, shareAxis='yz', title='YZ_PathJerk', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathJerk: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error YZ_PathJerk: %s' % str(e))
         #YZ with PosErr
         if self.Plot.YZ_PosErr == True:
             try:
                 if self.Data.PosErr.__len__() != 0:
                     color = self.Data.PosErr
-                    self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='PosErr (mm)', shareAxes=self.ShareAxes.YZ, figureName='YZ_PosErr', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError YZ_PosErr\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error YZ_PosErr')
+                    self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='PosErr (mm)', shareAxis='yz', title='YZ_PosErr', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ_PosErr: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error YZ_PosErr: %s' % str(e))
         #YZ with X
         if self.Plot.YZ_X == True:
             try:
                 color = self.Data.CmdPos_X
-                self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='X (mm)', shareAxes=self.ShareAxes.YZ, figureName='YZ_X', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError YZ_X\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error YZ_X')
+                self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName='X (mm)', shareAxis='yz', title='YZ_X', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError YZ_X: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error YZ_X: %s' % str(e))
 
         # XZ
         if self.Plot.XZ == True:
             try:
-                self.Plot2D(self.Data.SetPos_X, self.Data.SetPos_Z, axisName_1='X (mm)', axisName_2='Z (mm)', dataName='SetPos', shareAxes=self.ShareAxes.XZ, figureName='XZ', newFigure=True)
-                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, axisName_1='X (mm)', axisName_2='Z (mm)', dataName='CmdPos', shareAxes=self.ShareAxes.XZ, figureName='XZ', newFigure=False)
-                self.Plot2D(self.Data.ActPos_X, self.Data.ActPos_Z, axisName_1='X (mm)', axisName_2='Z (mm)', dataName='ActPos', shareAxes=self.ShareAxes.XZ, figureName='XZ', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XZ\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XZ')
+                self.Plot2D(self.Data.SetPos_X, self.Data.SetPos_Z, axisName_1='X (mm)', axisName_2='Z (mm)', dataName='SetPos', shareAxis='xz', title='XZ', equalScale=equalScale, newFigure=True)
+                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, axisName_1='X (mm)', axisName_2='Z (mm)', dataName='CmdPos', shareAxis='xz', title='XZ', equalScale=equalScale, newFigure=False)
+                self.Plot2D(self.Data.ActPos_X, self.Data.ActPos_Z, axisName_1='X (mm)', axisName_2='Z (mm)', dataName='ActPos', shareAxis='xz', title='XZ', equalScale=equalScale, newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XZ: %s' % str(e))
         # XZ with BlockNo
         if self.Plot.XZ_BlockNo == True:
             try:
                 color = self.Data.BlockNo
-                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='BlockNo', shareAxes=self.ShareAxes.XZ, figureName='XZ_BlockNo', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XZ_BlockNo\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XZ_BlockNo')
+                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='BlockNo', shareAxis='xz', title='XZ_BlockNo', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ_BlockNo: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XZ_BlockNo: %s' % str(e))
         # XZ with Time
         if self.Plot.XZ_Time == True:
             try:
                 color = self.Data.Time
-                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='Time (s)', shareAxes=self.ShareAxes.XZ, figureName='XZ_Time', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XZ_Time\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XZ_Time')
+                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='Time (s)', shareAxis='xz', title='XZ_Time', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ_Time: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XZ_Time: %s' % str(e))
         #XZ with PathVel
         if self.Plot.XZ_PathVel == True:
             try:
-                color = self.Data.CmdPathVel
-                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='PathVel (mm/min)', shareAxes=self.ShareAxes.XZ, figureName='XZ_PathVel', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathVel\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XZ_PathVel')
+                if self.Plot2D_PathVelType == 'Set':
+                    color = self.Data.SetPathVel
+                    name = 'SetPathVel'
+                elif self.Plot2D_PathVelType == 'Cmd':
+                    color = self.Data.CmdPathVel
+                    name = 'CmdPathVel'
+                elif self.Plot2D_PathVelType == 'Act':
+                    color = self.Data.ActPathVel
+                    name = 'ActPathVel'
+                else:
+                    color = self.Data.CmdPathVel
+                if self.Plot2D_AbsVel == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) (mm/min)' % name
+                else:
+                    colorName = '%s (mm/min)' % name
+                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName=colorName, shareAxis='xz', title='XZ_PathVel', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathVel: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XZ_PathVel: %s' % str(e))
         #XZ with PathAcc
         if self.Plot.XZ_PathAcc == True:
             try:
-                color = self.Data.CmdPathAcc
-                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='PathAcc (m/s^2)', shareAxes=self.ShareAxes.XZ, figureName='XZ_PathAcc', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathAcc\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XZ_PathAcc')
+                if self.Plot2D_PathVelType == 'Set':
+                    color = self.Data.SetPathAcc
+                    name = 'SetPathAcc'
+                elif self.Plot2D_PathVelType == 'Cmd':
+                    color = self.Data.CmdPathAcc
+                    name = 'CmdPathAcc'
+                elif self.Plot2D_PathVelType == 'Act':
+                    color = self.Data.ActPathAcc
+                    name = 'ActPathAcc'
+                else:
+                    color = self.Data.CmdPathAcc
+                if self.Plot2D_AbsAcc == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) ((m/s^2)' % name
+                else:
+                    colorName = '%s ((m/s^2)' % name
+                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName=colorName, shareAxis='xz', title='XZ_PathAcc', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathAcc: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XZ_PathAcc: %s' % str(e))
         #XZ with PathJerk
         if self.Plot.XZ_PathJerk == True:
             try:
-                color = self.Data.CmdPathJerk
-                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='PathJerk (m/s^3)', shareAxes=self.ShareAxes.XZ, figureName='XZ_PathJerk', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathJerk\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XZ_PathJerk')
+                if self.Plot2D_PathVelType == 'Set':
+                    color = self.Data.SetPathJerk
+                    name = 'SetPathJerk'
+                elif self.Plot2D_PathVelType == 'Cmd':
+                    color = self.Data.CmdPathJerk
+                    name = 'CmdPathJerk'
+                elif self.Plot2D_PathVelType == 'Act':
+                    color = self.Data.ActPathJerk
+                    name = 'ActPathJerk'
+                else:
+                    color = self.Data.CmdPathJerk
+                if self.Plot2D_AbsJerk == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) ((m/s^3)' % name
+                else:
+                    colorName = '%s ((m/s^3)' % name
+                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName=colorName, shareAxis='xz', title='XZ_PathJerk', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathJerk: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XZ_PathJerk: %s' % str(e))
         #XZ with PosErr
         if self.Plot.XZ_PosErr == True:
             try:
                 if self.Data.PosErr.__len__() != 0:
                     color = self.Data.PosErr
-                    self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='PosErr (mm)', shareAxes=self.ShareAxes.XZ, figureName='XZ_PosErr', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XZ_PosErr\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XZ_PosErr')
+                    self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='PosErr (mm)', shareAxis='xz', title='XZ_PosErr', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ_PosErr: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XZ_PosErr: %s' % str(e))
         #XZ with Y
         if self.Plot.XZ_Y == True:
             try:
                 color = self.Data.CmdPos_Y
-                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='Y (mm)', shareAxes=self.ShareAxes.XZ, figureName='XZ_Y', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XZ_Y\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XZ_Y')
+                self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName='Y (mm)', shareAxis='xz', title='XZ_Y', equalScale=equalScale, newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XZ_Y: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XZ_Y: %s' % str(e))
 
         # ---------------------------------Plot 3D---------------------------------- #
         #XYZ
         if self.Plot.XYZ == True:
             try:
-                self.Plot3D(self.Data.SetPos_X, self.Data.SetPos_Y, self.Data.SetPos_Z, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', dataName='SetPos', figureName='XYZ', newFigure=True)
-                self.Plot3D(self.Data.CmdPos_X, self.Data.CmdPos_Y, self.Data.CmdPos_Z, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', dataName='CmdPos', figureName='XYZ', newFigure=False)
-                self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', dataName='ActPos', figureName='XYZ', newFigure=False)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XYZ\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XYZ')
+                self.Plot3D(self.Data.SetPos_X, self.Data.SetPos_Y, self.Data.SetPos_Z, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', dataName='SetPos', title='XYZ', newFigure=True)
+                self.Plot3D(self.Data.CmdPos_X, self.Data.CmdPos_Y, self.Data.CmdPos_Z, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', dataName='CmdPos', title='XYZ', newFigure=False)
+                self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', dataName='ActPos', title='XYZ', newFigure=False)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XYZ: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XYZ: %s' % str(e))
 
         #XYZ with Time
         if self.Plot.XYZ_Time == True:
             try:
                 color = self.Data.Time
-                self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='Time (s)', figureName='XYZ_Time', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XYZ_Time\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XYZ_Time')
+                self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='Time (s)', title='XYZ_Time', newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XYZ_Time: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XYZ_Time: %s' % str(e))
 
         #XYZ with Z
         if self.Plot.XYZ_Z == True:
             try:
                 color = self.Data.ActPos_Z
-                self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='Z (mm)', figureName='XYZ_Z', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XYZ_Z\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XYZ_Z')
+                self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='Z (mm)', title='XYZ_Z', newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XYZ_Z: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XYZ_Z: %s' % str(e))
 
         #XYZ with CmdPathVel
         if self.Plot.XYZ_PathVel == True:
             try:
                 color = self.Data.CmdPathVel
-                self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='PathVel (mm/min)', figureName='XYZ_PathVel', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XYZ_PathVel\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XYZ_PathVel')
+                self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='CmdPathVel (mm/min)', title='XYZ_PathVel', newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XYZ_PathVel: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XYZ_PathVel: %s' % str(e))
 
         #XYZ with CmdPathAcc
         if self.Plot.XYZ_PathAcc == True:
             try:
                 color = self.Data.CmdPathAcc
-                self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='PathAcc (m/s^2)', figureName='XYZ_PathAcc', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XYZ_PathAcc\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XYZ_PathAcc')
+                self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='CmdPathAcc (m/s^2)', title='XYZ_PathAcc', newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XYZ_PathAcc: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XYZ_PathAcc: %s' % str(e))
 
         #XYZ with CmdPathJerk
         if self.Plot.XYZ_PathJerk == True:
             try:
                 color = self.Data.CmdPathJerk
-                self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='PathJerk (m/s^3)', figureName='XYZ_PathJerk', newFigure=True)
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError XYZ_PathJerk\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error XYZ_PathJerk')
+                self.Plot3D(self.Data.ActPos_X, self.Data.ActPos_Y, self.Data.ActPos_Z, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', axisName_3='Z (mm)', colorName='CmdPathJerk (m/s^3)', title='XYZ_PathJerk', newFigure=True)
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError XYZ_PathJerk: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error XYZ_PathJerk: %s' % str(e))
 
         # ----------------------------Plot Circle Error----------------------------- #
         # circular error of XY
@@ -793,10 +1001,10 @@ class PA_Data_Analyze:
                 Center2 = (max(self.Data.SetPos_Y) + min(self.Data.SetPos_Y)) / 2
                 R_MaxErr = 0.05
                 R = (max(self.Data.SetPos_X) - min(self.Data.SetPos_X)) / 2
-                self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data.CmdPos_X, self.Data.CmdPos_Y, self.Data.ActPos_X, self.Data.ActPos_Y, F=None, figureName='CircleErr_XY')
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_XY\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error CircleErr_XY')
+                self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data.CmdPos_X, self.Data.CmdPos_Y, self.Data.ActPos_X, self.Data.ActPos_Y, F=None, title='CircleErr_XY')
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_XY: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error CircleErr_XY: %s' % str(e))
 
         # circular error of YZ
         if self.Plot.CircleErr_YZ == True:
@@ -805,10 +1013,10 @@ class PA_Data_Analyze:
                 Center2 = (max(self.Data.SetPos_Z) + min(self.Data.SetPos_Z)) / 2
                 R_MaxErr = 0.05
                 R = (max(self.Data.SetPos_Y) - min(self.Data.SetPos_Y)) / 2
-                self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data.CmdPos_Y, self.Data.CmdPos_Z, self.Data.ActPos_Y, self.Data.ActPos_Z, F=None, figureName='CircleErr_YZ')
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_YZ\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error CircleErr_YZ')
+                self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data.CmdPos_Y, self.Data.CmdPos_Z, self.Data.ActPos_Y, self.Data.ActPos_Z, F=None, title='CircleErr_YZ')
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_YZ: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error CircleErr_YZ: %s' % str(e))
 
         # circular error of XZ
         if self.Plot.CircleErr_XZ == True:
@@ -817,22 +1025,19 @@ class PA_Data_Analyze:
                 Center2 = (max(self.Data.SetPos_Z) + min(self.Data.SetPos_Z)) / 2
                 R_MaxErr = 0.05
                 R = (max(self.Data.SetPos_X) - min(self.Data.SetPos_X)) / 2
-                self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data.CmdPos_X, self.Data.CmdPos_Z, self.Data.ActPos_X, self.Data.ActPos_Z, F=None, figureName='CircleErr_XZ')
-            except:
-                print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_XZ\033[0m')
-                self.OutputMessageToGUI('\nPlotData: Error CircleErr_XZ')
+                self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data.CmdPos_X, self.Data.CmdPos_Z, self.Data.ActPos_X, self.Data.ActPos_Z, F=None, title='CircleErr_XZ')
+            except Exception as e:
+                print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_XZ: %s\033[0m' % str(e))
+                self.OutputMessageToGUI('\nPlotData: Error CircleErr_XZ: %s' % str(e))
 
         
         # ---------------------------------end---------------------------------- #
-        if self.FigNum == 0:
-            print('\033[1;34m\nPlotData: \033[1;31mNo Figure\033[0m')
-            self.OutputMessageToGUI('\nPlotData: No Figure')
         return None
 
     ##################################################################################
     # ----------------------------------Plot 1D Data-------------------------------- #
     ##################################################################################
-    def Plot1D(self, x, axisName_1=None, dataName=None, shareAxes=None, newFigure=True, title=None, mark='.-', tLimit=None, xLimit=None, figureName=''):
+    def Plot1D(self, x, axisName_1=None, dataName=None, shareAxis=None, newFigure=True, mark='.-', tLimit=None, xLimit=None, title=''):
         plt.rcParams['font.family'] = 'Microsoft YaHei'
         plt.rcParams.update({'figure.max_open_warning': 0})
         x = np.array(x)
@@ -840,13 +1045,17 @@ class PA_Data_Analyze:
             self.FigNum += 1
             print('')
             self.OutputMessageToGUI('\n')
-        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDrawing Figure %2d  %s\033[0m" % (self.FigNum, figureName))
-        self.OutputMessageToGUI('PlotData: Drawing Figure %2d  %s' % (self.FigNum, figureName), overwrite=True)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDrawing Figure %2d  %s\033[0m" % (self.FigNum, title))
+        self.OutputMessageToGUI('PlotData: Drawing Figure %2d  %s' % (self.FigNum, title), overwrite=True)
         fig = plt.figure(self.FigNum)
         if newFigure:
             fig.clf()
+        if shareAxis == 'Time' or shareAxis == 'time':
+            shareAx = self.ShareAxis.Time
+        else:
+            shareAx = None
         if fig.get_axes() == []:
-            ax = fig.add_subplot(1, 1, 1, sharex=shareAxes)
+            ax = fig.add_subplot(1, 1, 1, sharex=shareAx)
         else:
             ax = fig.get_axes()[0]
         ax.plot(self.Data.Time, x, mark, label=dataName, alpha=0.7)
@@ -854,10 +1063,8 @@ class PA_Data_Analyze:
         ax.set_ylabel(axisName_1)
         if dataName != None:
             ax.legend(loc="upper right")
-        if title != None:
+        if title != '':
             ax.set_title(title)
-        elif figureName != '':
-            ax.set_title(figureName)
         else:
             ax.set_title('1D')
         if tLimit != None:
@@ -868,17 +1075,17 @@ class PA_Data_Analyze:
         plt.ion()
         plt.draw()
         plt.pause(0.001)
-        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone    \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
-        self.OutputMessageToGUI('PlotData: Done    Figure %2d  %s       ' % (self.FigNum, figureName), overwrite=True)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone    \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, title))
+        self.OutputMessageToGUI('PlotData: Done    Figure %2d  %s       ' % (self.FigNum, title), overwrite=True)
         plt.ioff()
-        if shareAxes == self.ShareAxes.Time:
-            self.ShareAxes.Time = ax
+        if shareAxis == 'Time' or shareAxis == 'time':
+            self.ShareAxis.Time = ax
         return ax
 
     ##################################################################################
     # ----------------------------------Plot 2D Data-------------------------------- #
     ##################################################################################
-    def Plot2D(self, x, y, color=None, axisName_1=None, axisName_2=None, colorName=None, dataName=None, shareAxes=None, newFigure=True, title=None, mark='.-', xLimit=None, yLimit=None, figureName=''):
+    def Plot2D(self, x, y, color=None, axisName_1=None, axisName_2=None, colorName=None, dataName=None, shareAxis=None, newFigure=True, mark='.-', xLimit=None, yLimit=None, title='', equalScale=False):
         plt.rcParams['font.family'] = 'Microsoft YaHei'
         plt.rcParams.update({'figure.max_open_warning': 0})
         try:
@@ -894,13 +1101,21 @@ class PA_Data_Analyze:
             self.FigNum += 1
             print('')
             self.OutputMessageToGUI('\n')
-        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDrawing Figure %2d  %s\033[0m" % (self.FigNum, figureName))
-        self.OutputMessageToGUI('PlotData: Drawing Figure %2d  %s' % (self.FigNum, figureName), overwrite=True)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDrawing Figure %2d  %s\033[0m" % (self.FigNum, title))
+        self.OutputMessageToGUI('PlotData: Drawing Figure %2d  %s' % (self.FigNum, title), overwrite=True)
         fig = plt.figure(self.FigNum)
         if newFigure:
             fig.clf()
+        if shareAxis == 'XY' or shareAxis == 'xy':
+            shareAx = self.ShareAxis.XY
+        elif shareAxis == 'YZ' or shareAxis == 'yz':
+            shareAx = self.ShareAxis.YZ
+        elif shareAxis == 'XZ' or shareAxis == 'xz':
+            shareAx = self.ShareAxis.XZ
+        else:
+            shareAx = None
         if fig.get_axes() == []:
-            ax = fig.add_subplot(1, 1, 1, sharex=shareAxes, sharey=shareAxes)
+            ax = fig.add_subplot(1, 1, 1, sharex=shareAx, sharey=shareAx)
         else:
             ax = fig.get_axes()[0]
         if colorFlag:
@@ -914,10 +1129,8 @@ class PA_Data_Analyze:
         ax.set_ylabel(axisName_2)
         if dataName != None:
             ax.legend(loc="upper right")
-        if title != None:
+        if title != '':
             ax.set_title(title)
-        elif figureName != '':
-            ax.set_title(figureName)
         else:
             ax.set_title('2D')
         if xLimit != None:
@@ -925,24 +1138,26 @@ class PA_Data_Analyze:
         if yLimit != None:
             plt.ylim(yLimit)
         ax.grid('on')
+        if equalScale == True:
+            plt.axis('equal')
         plt.ion()
         plt.draw()
         plt.pause(0.001)
-        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone    \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
-        self.OutputMessageToGUI('PlotData: Done    Figure %2d  %s       ' % (self.FigNum, figureName), overwrite=True)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone    \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, title))
+        self.OutputMessageToGUI('PlotData: Done    Figure %2d  %s       ' % (self.FigNum, title), overwrite=True)
         plt.ioff()
-        if shareAxes == self.ShareAxes.XY:
-            self.ShareAxes.XY = ax
-        elif shareAxes == self.ShareAxes.YZ:
-            self.ShareAxes.YZ = ax
-        elif shareAxes == self.ShareAxes.XZ:
-            self.ShareAxes.XZ = ax
+        if shareAxis == 'XY' or shareAxis == 'xy':
+            self.ShareAxis.XY = ax
+        elif shareAxis == 'YZ' or shareAxis == 'yz':
+            self.ShareAxis.YZ = ax
+        elif shareAxis == 'XZ' or shareAxis == 'xz':
+            self.ShareAxis.XZ = ax
         return ax
 
     ##################################################################################
     # ----------------------------------Plot 3D Data-------------------------------- #
     ##################################################################################
-    def Plot3D(self, x, y, z, color=None, axisName_1=None, axisName_2=None, axisName_3=None, colorName=None, dataName=None, newFigure=True, title=None, mark='-', xLimit=None, yLimit=None, zLimit=None, figureName=''):
+    def Plot3D(self, x, y, z, color=None, axisName_1=None, axisName_2=None, axisName_3=None, colorName=None, dataName=None, newFigure=True, mark='-', xLimit=None, yLimit=None, zLimit=None, title=''):
         plt.rcParams['font.family'] = 'Microsoft YaHei'
         plt.rcParams.update({'figure.max_open_warning': 0})
         try:
@@ -959,8 +1174,8 @@ class PA_Data_Analyze:
             self.FigNum += 1
             print('')
             self.OutputMessageToGUI('\n')
-        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDrawing Figure %2d  %s\033[0m" % (self.FigNum, figureName))
-        self.OutputMessageToGUI('PlotData: Drawing Figure %2d  %s' % (self.FigNum, figureName), overwrite=True)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDrawing Figure %2d  %s\033[0m" % (self.FigNum, title))
+        self.OutputMessageToGUI('PlotData: Drawing Figure %2d  %s' % (self.FigNum, title), overwrite=True)
         fig = plt.figure(self.FigNum)
         if newFigure:
             fig.clf()
@@ -979,10 +1194,8 @@ class PA_Data_Analyze:
         ax.set_zlabel(axisName_3)
         if dataName != None:
             ax.legend(loc="upper right")
-        if title != None:
+        if title != '':
             ax.set_title(title)
-        elif figureName != '':
-            ax.set_title(figureName)
         else:
             ax.set_title('3D')
         if xLimit != None:
@@ -995,15 +1208,15 @@ class PA_Data_Analyze:
         plt.ion()
         plt.draw()
         plt.pause(0.001)
-        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone    \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
-        self.OutputMessageToGUI('PlotData: Done    Figure %2d  %s       ' % (self.FigNum, figureName), overwrite=True)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone    \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, title))
+        self.OutputMessageToGUI('PlotData: Done    Figure %2d  %s       ' % (self.FigNum, title), overwrite=True)
         plt.ioff()
         return None
 
     ##################################################################################
     # -------------------------------Plot Circle Error------------------------------ #
     ##################################################################################
-    def PlotCircleError(self, R, R_MaxErr, Center1, Center2, CmdPos1_mm, CmdPos2_mm, ActPos1_mm, ActPos2_mm, F=None, title=None, figureName=''):
+    def PlotCircleError(self, R, R_MaxErr, Center1, Center2, CmdPos1_mm, CmdPos2_mm, ActPos1_mm, ActPos2_mm, F=None, title=''):
         R_Display = 2 * R_MaxErr
         R_DisplayStep = R_MaxErr / 3
         Len = CmdPos1_mm.__len__()
@@ -1037,7 +1250,7 @@ class PA_Data_Analyze:
         dataName3 = 'ActPos(R=%.3fmm,Err=%.3fum)' % (np.mean(R_Act), np.mean(R_ActErr) * 1e3)
         dataName = [dataNmae1, dataName2, dataName3]
         
-        self.PlotPolar(Thtea, Radius, title=title, dataName=dataName, newFigure=True, figureName=figureName)
+        self.PlotPolar(Thtea, Radius, title=title, dataName=dataName, newFigure=True)
         plt.yticks(np.array(range(int((R_Display - R_MaxErr) * 1000), int((R_Display + R_MaxErr) * 1000), int(R_DisplayStep * 1000))) / 1000, np.array(range(int(-R_MaxErr * 1000), int(R_MaxErr * 1000), int(R_DisplayStep * 1000))))
         
         return None
@@ -1045,7 +1258,7 @@ class PA_Data_Analyze:
     ##################################################################################
     # --------------------------------Plot Polar Data------------------------------- #
     ##################################################################################
-    def PlotPolar(self, Theta, Radius, title=None, dataName=None, mark='-', newFigure=True, figureName=''):
+    def PlotPolar(self, Theta, Radius, dataName=None, mark='-', newFigure=True, title=''):
         plt.rcParams['font.family'] = 'Microsoft YaHei'
         plt.rcParams.update({'figure.max_open_warning': 0})
         #len = min(Theta.__len__(), Radius.__len__())
@@ -1055,25 +1268,23 @@ class PA_Data_Analyze:
             self.FigNum += 1
             print('')
             self.OutputMessageToGUI('\n')
-        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDrawing Figure %2d  %s\033[0m" % (self.FigNum, figureName))
-        self.OutputMessageToGUI('PlotData: Drawing Figure %2d  %s' % (self.FigNum, figureName), overwrite=True)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[0mDrawing Figure %2d  %s\033[0m" % (self.FigNum, title))
+        self.OutputMessageToGUI('PlotData: Drawing Figure %2d  %s' % (self.FigNum, title), overwrite=True)
         fig = plt.figure(self.FigNum)
         if newFigure:
             fig.clf()
             #fig.add_subplot(111, projection='polar')
         plt.polar(Theta, Radius, mark, alpha=0.5)
-        if title != None:
+        if title != '':
             plt.title(title)
-        elif figureName != '':
-            plt.title(figureName)
         if dataName != None:
             plt.legend(dataName, loc="upper right")
         plt.grid('on')
         plt.ion()
         plt.draw()
         plt.pause(0.001)
-        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone    \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, figureName))
-        self.OutputMessageToGUI('PlotData: Done    Figure %2d  %s       ' % (self.FigNum, figureName), overwrite=True)
+        sys.stdout.write("\033[1;34m\rPlotData: \033[1;32mDone    \033[0mFigure %2d  %s       \033[0m" % (self.FigNum, title))
+        self.OutputMessageToGUI('PlotData: Done    Figure %2d  %s       ' % (self.FigNum, title), overwrite=True)
         plt.ioff()
         return None
     
@@ -1089,11 +1300,16 @@ class PA_Data_Analyze:
             self.GuiText.update()
             self.GuiText.see('end')
 
+    def diff(self, x):
+        y = np.array(x)
+        y = np.diff(y)
+        y = np.append(y, y[-1])
+        return y
     ##################################################################################
     # -----------------------------Split Data from Str------------------------------ #
     ##################################################################################
     def SplitDataStr(self, str):
-        # elementList = re.split("[\t\n ]", str)
+        # elementList = re.split("[\t\n ,]", str)
         elementList = self.reSplit.split(str)
         data = []
         for element in elementList:
@@ -1133,9 +1349,9 @@ class PA_Data_Analyze:
         try:
             with open(self.DataFileName, 'r') as f:
                 txt = f.readlines()
-        except:
-            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): DataFileName %s\033[0m' % (sys._getframe().f_lineno, self.DataFileName))
-            self.OutputMessageToGUI('\nLoadData: Error (CodeLine %d): DataFileName %s\n' % (sys._getframe().f_lineno, self.DataFileName))
+        except Exception as e:
+            print('\033[1;34m\nLoadData: \033[1;31mError(CodeLine %d) in loading DataFile: %s\033[0m' % (sys._getframe().f_lineno, str(e)))
+            self.OutputMessageToGUI('\nLoadData: Error (CodeLine %d) in loading DataFile: %s\n' % (sys._getframe().f_lineno, str(e)))
             self.Data.Var = dict()
             self.Data.Length = 0
             return None
@@ -1247,7 +1463,7 @@ class PA_Data_Analyze:
                             minTime = maxTime = float(Time)
                         else:
                             minTime = min(minTime, float(Time))
-                            maxTime = min(maxTime, float(Time))
+                            maxTime = max(maxTime, float(Time))
                 Time += self.Ts
                 Time = round(Time, 6)
                 self.RemainingLineData = self.LineData[varNum:]
@@ -1277,6 +1493,9 @@ class PA_Data_Analyze:
             self.OutputMessageToGUI('LoadData: 100%%      DataLength=%d, TimeRange=[%.3f, %.3f]' % (self.Data.Length, minTime, maxTime), overwrite=True)
 
         # --------------------------------init Data-------------------------------- #
+        #Ts (Sample time)
+        self.Data.Ts = self.Ts
+        
         #Time
         if self.Ts > 0:
             self.Data.Time = np.array(range(0, self.Data.Length)) * self.Ts + minTime
@@ -1521,6 +1740,8 @@ class PA_Data_Analyze:
         try:
             import mpldatacursor
         except:
+            print('\033[1;34m\n\nDataInfo: \033[1;31mError: can not import mpldatacursor\033[0m')
+            self.OutputMessageToGUI('\n\nDataInfo: Error: can not import mpldatacursor \n')
             return None
         if self.DataInfoExist:
             return None
@@ -1566,13 +1787,13 @@ class PA_Data_Analyze:
                     if j < self.InfoValueList.__len__() - 1:
                         text += '\n'
                 self.InfoText.append(str(text))
-            mpldatacursor.datacursor(artists, display='multiple', draggable=True, formatter=lambda **param: self.InfoText[param['ind'][0]])
+            mpldatacursor.datacursor(artists, display='multiple', draggable=True, formatter=lambda **param: self.InfoText[param['ind'][0]]+'\nValue: (%g, %g)' % (param['x'], param['y']))
             self.DataInfoExist = True
             #print('\033[1;34m\n\nDataInfo: \033[1;32mDone\033[0m')
             #self.OutputMessageToGUI('\n\nDataInfo: Done \n')
-        except:
-            print('\033[1;34m\n\nDataInfo: \033[1;31mError\033[0m')
-            self.OutputMessageToGUI('\n\nDataInfo: Error \n')
+        except Exception as e:
+            print('\033[1;34m\n\nDataInfo: \033[1;31mError: %s\033[0m' % str(e))
+            self.OutputMessageToGUI('\n\nDataInfo: Error: %s\n' % str(e))
         return None
 
 ##################################################################################
@@ -1580,10 +1801,31 @@ class PA_Data_Analyze:
 ##################################################################################
 if __name__ == '__main__':
 
+    # init paramters of PA
     PA = PA_Data_Analyze()
     PA.AxisID_X = 1
     PA.AxisID_Y = 2
     PA.AxisID_Z = 3
+    
+    # for UserCode in GUI
+    data                = PA.Data
+    var                 = PA.Data.Var
+    plot1               = PA.Plot1D
+    plot2               = PA.Plot2D
+    plot3               = PA.Plot3D
+    plotCircleError     = PA.PlotCircleError
+    info                = PA.DataInfo
+    out                 = PA.OutputMessageToGUI
+    diff                = PA.diff
+    sqrt                = np.sqrt
+    sin                 = np.sin
+    cos                 = np.cos
+    tan                 = np.tan
+    arccos              = np.arccos
+    arcsin              = np.arcsin
+    arctan              = np.arctan
+    arctan2             = np.arctan2
+    exp                 = np.exp
 
     TextBox         = dict()
     Button          = dict()
@@ -1597,12 +1839,64 @@ if __name__ == '__main__':
     CheckVar        = dict()
     Notebook        = dict()
     Frame           = dict()
+    
+    #init parameters of GUI
+    import tkinter as tk
+    from tkinter import ttk
+    from tkinter import filedialog
+    from tkinter import scrolledtext
+    class GUI_Param():
+        def __init__(self):
+            self.WindowSize = '1000x615'
+            self.lastTime = time.time()
+        def getWindowSize(self, event):
+            self.currentTime = time.time()
+            if (self.currentTime - self.lastTime) > 0.1:
+                self.WindowSize = '%dx%d' % (event.width, event.height)
+            self.lastTime = time.time()
+    
+    GUI = GUI_Param()
+    
+    # init config used in GUI
+    import configparser
+    import os
+    class Config():
+        def __init__(self):
+            self.configParamNameStr = [
+                ('Window', ''),
+                (3,4)
+                ]
+            
+            self.fileName = os.path.splitext(os.path.basename(__file__))[0] + '.ini'
+            self.conf = configparser.ConfigParser()
+            self.conf.read(self.fileName)
+            
+        def read(self):
+            def get_param(section, key, defaultValue):
+                try:
+                    return self.conf.get(section, key)
+                except:
+                    self.conf.add_section(section)
+                    self.conf.set(section, key, str(defaultValue))
+                    return defaultValue
+            GUI.WindowSize = get_param('Window', 'WindowSize', str(GUI.WindowSize))
+            
+        def save(self):
+            with open(self.fileName, 'w') as f:
+                if GUI.WindowSize != '1x1':
+                    self.conf.set('Window', 'WindowSize', str(GUI.WindowSize))
+                self.conf.write(f)
+        
+    config = Config()
 
+    #init window
     window = tk.Tk()
     window.title('PA Data Analyze v%s' % Version)
-    #window.geometry('1000x615')
-    window.geometry('1300x800')
-    #弹出窗口
+    windowSize = '1000x615'
+    config.read()
+    window.geometry(GUI.WindowSize)
+    window.bind('<Configure>', GUI.getWindowSize)
+    #Pop up window
     window.iconify()
     window.update()
     window.deiconify()
@@ -1614,15 +1908,30 @@ if __name__ == '__main__':
             Entry['文件路径'].insert('insert', filename)
 
     def load_file():
+        PA.GuiText = ScrolledText['输出消息']
+        
         PA.DataFileName = Entry['文件路径'].get()
-        PA.Ts = float(Entry['Ts'].get())
-
-        PA.BlockRange[0] = int(Entry['BlockRange_0'].get()) if Entry['BlockRange_0'].get() != '无' and Entry['BlockRange_0'].get() != '' else 0
-        PA.BlockRange[1] = int(Entry['BlockRange_1'].get()) if Entry['BlockRange_1'].get() != '无' and Entry['BlockRange_1'].get() != '' else 0
-
-        PA.TimeRange[0] = float(Entry['TimeRange_0'].get()) if Entry['TimeRange_0'].get() != '无' and Entry['TimeRange_0'].get() != '' else 0
-        PA.TimeRange[1] = float(Entry['TimeRange_1'].get()) if Entry['TimeRange_1'].get() != '无' and Entry['TimeRange_1'].get() != '' else 0
-
+        
+        try:
+            PA.Ts = float(Entry['Ts'].get())
+        except Exception as e:
+            PA.OutputMessageToGUI('\n\nLoadData: Error Ts: %s' % str(e))
+            return None
+        
+        try:
+            PA.BlockRange[0] = int(Entry['BlockRange_0'].get()) if Entry['BlockRange_0'].get() != '无' and Entry['BlockRange_0'].get() != '' else 0
+            PA.BlockRange[1] = int(Entry['BlockRange_1'].get()) if Entry['BlockRange_1'].get() != '无' and Entry['BlockRange_1'].get() != '' else 0
+        except Exception as e:
+            PA.OutputMessageToGUI('\n\nLoadData: Error BlockRange: %s' % str(e))
+            return None
+        
+        try:
+            PA.TimeRange[0] = float(Entry['TimeRange_0'].get()) if Entry['TimeRange_0'].get() != '无' and Entry['TimeRange_0'].get() != '' else 0
+            PA.TimeRange[1] = float(Entry['TimeRange_1'].get()) if Entry['TimeRange_1'].get() != '无' and Entry['TimeRange_1'].get() != '' else 0
+        except Exception as e:
+            PA.OutputMessageToGUI('\n\nLoadData: Error TimeRange: %s' % str(e))
+            return None
+        
         PA.AxisID_X = int(Combobox['AxisID_X'].get()) if Combobox['AxisID_X'].get() != '无' else 0
         PA.AxisID_Y = int(Combobox['AxisID_Y'].get()) if Combobox['AxisID_Y'].get() != '无' else 0
         PA.AxisID_Z = int(Combobox['AxisID_Z'].get()) if Combobox['AxisID_Z'].get() != '无' else 0
@@ -1631,10 +1940,13 @@ if __name__ == '__main__':
 
         if PA.AxisID_X == 0 and PA.AxisID_Y == 0 and PA.AxisID_Z == 0 and PA.AxisID_A == 0:
             return None
-        PA.GuiText = ScrolledText['输出消息']
+        
+        config.save()
         PA.LoadData()
 
     def plot_data():
+        PA.GuiText = ScrolledText['输出消息']
+        
         PA.Plot.BlockNo = int(CheckVar['BlockNo'].get())
         PA.Plot.PathVel = int(CheckVar['PathVel'].get())
         PA.Plot.PathAcc = int(CheckVar['PathAcc'].get())
@@ -1696,29 +2008,23 @@ if __name__ == '__main__':
         PA.Plot.CircleErr_YZ = int(CheckVar['CircleErr_YZ'].get())
         PA.Plot.CircleErr_XZ = int(CheckVar['CircleErr_XZ'].get())
 
-        PA.GuiText = ScrolledText['输出消息']
+        config.save()
         PA.PlotData()
 
         UserCodeEnable = int(CheckVar['用户代码'].get())
         UserCode = ScrolledText['用户代码'].get('1.0', 'end')
-        if UserCodeEnable:
+        if UserCodeEnable and PA.Data.Length != 0:
             try:
-                Data                = PA.Data
-                Var                 = PA.Data.Var
-                Plot                = PA.Plot
-                Plot1D              = PA.Plot1D
-                Plot2D              = PA.Plot2D
-                Plot3D              = PA.Plot3D
-                PlotCircleError     = PA.PlotCircleError
-                DataInfo            = PA.DataInfo
-                OutputMessageToGUI  = PA.OutputMessageToGUI
                 exec(UserCode)
             except Exception as e:
                 print('\033[1;34m\nUerCode: \033[1;31mError: %s\033[0m' % str(e))
                 PA.OutputMessageToGUI('\n\nUserCode Error: %s' % str(e))
-            
+        
         PA.DataInfo()
-
+        if PA.FigNum == 0:
+            print('\033[1;34m\nPlotData: \033[1;31mNo Figure\033[0m')
+            PA.OutputMessageToGUI('\nPlotData: No Figure')
+    
     #################################### 文件路径 ####################################
     x = 0.05
     y = 0.05
@@ -1905,7 +2211,13 @@ if __name__ == '__main__':
     Notebook['绘图'].add(Frame['自定义绘图'], text='自定义绘图')
     Notebook['绘图'].place(relx=0.02, rely=0.29, relheight=0.41, relwidth=0.95)
     
-    #################################### 绘图选项 ####################################
+    #################################### 绘图选项 ####################################    
+    s = ttk.Style()                                                                
+    s.configure('Blue.TCheckbutton', foreground='blue')                            
+    s.configure('Black.TCheckbutton', foreground='black')
+    def ChangeCheckButtonColor(Key):
+        CheckButton[Key].configure(style='Blue.TCheckbutton') if CheckVar[Key].get() == True else CheckButton[Key].configure(style='Black.TCheckbutton')
+    
     # ---------------------------------- 绘图选项1D ----------------------------------#
     x = 0
     y = 0
@@ -1917,128 +2229,152 @@ if __name__ == '__main__':
     xStep = 0.09
     yStep = 0.1
     Key = 'BlockNo'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('BlockNo'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'PathVel'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('PathVel'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'PathAcc'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('PathAcc'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'PathJerk'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('PathJerk'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Pos_X'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Pos_X'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Vel_X'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Vel_X'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Acc_X'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Acc_X'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Jerk_X'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Jerk_X'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
 
     xBias += xStep
     yBias = 0.11
     Key = 'Pos_Y'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Pos_Y'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Vel_Y'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Vel_Y'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Acc_Y'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Acc_Y'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Jerk_Y'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Jerk_Y'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Pos_Z'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Pos_Z'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Vel_Z'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Vel_Z'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Acc_Z'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Acc_Z'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Jerk_Z'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Jerk_Z'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
 
     xBias += xStep
     yBias = 0.11
     Key = 'Pos_A'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Pos_A'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.08)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Vel_A'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Vel_A'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.08)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Acc_A'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Acc_A'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.08)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Jerk_A'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Jerk_A'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.08)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Pos_B'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Pos_B'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.08)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Vel_B'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Vel_B'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.08)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Acc_B'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Acc_B'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.08)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Jerk_B'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('Jerk_B'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.08)
+    ChangeCheckButtonColor(Key)
 
     # ---------------------------------- 绘图选项2D ----------------------------------#
     x = 0.296
@@ -2051,128 +2387,152 @@ if __name__ == '__main__':
     xStep = 0.13
     yStep = 0.1
     Key = 'XY'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XY'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XY_Time'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XY_Time'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XY_BlockNo'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XY_BlockNo'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XY_PathVel'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XY_PathVel'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XY_PathAcc'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XY_PathAcc'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XY_PathJerk'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XY_PathJerk'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XY_PosErr'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XY_PosErr'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XY_Z'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XY_Z'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
 
     xBias += xStep
     yBias = 0.11
     Key = 'YZ'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('YZ'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'YZ_Time'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('YZ_Time'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'YZ_BlockNo'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('YZ_BlockNo'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'YZ_PathVel'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('YZ_PathVel'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'YZ_PathAcc'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('YZ_PathAcc'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'YZ_PathJerk'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('YZ_PathJerk'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'YZ_PosErr'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('YZ_PosErr'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'YZ_X'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('YZ_X'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
 
     xBias += xStep
     yBias = 0.11
     Key = 'XZ'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XZ'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XZ_Time'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XZ_Time'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XZ_BlockNo'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XZ_BlockNo'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XZ_PathVel'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XZ_PathVel'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XZ_PathAcc'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XZ_PathAcc'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XZ_PathJerk'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XZ_PathJerk'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XZ_PosErr'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XZ_PosErr'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XZ_Y'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XZ_Y'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
 
     # ---------------------------------- 绘图选项3D ----------------------------------#
     x = 0.703
@@ -2185,34 +2545,40 @@ if __name__ == '__main__':
     xStep = 0.11
     yStep = 0.1
     Key = 'XYZ'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XYZ'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XYZ_Time'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XYZ_Time'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XYZ_Z'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XYZ_Z'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XYZ_PathVel'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XYZ_PathVel'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XYZ_PathAcc'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XYZ_PathAcc'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'XYZ_PathJerk'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('XYZ_PathJerk'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.115)
+    ChangeCheckButtonColor(Key)
 
     # ---------------------------------- 绘图选项Circle --------------------------------#
     x = 0.852
@@ -2225,19 +2591,22 @@ if __name__ == '__main__':
     xStep = 0.11
     yStep = 0.1
     Key = 'CircleErr_XY'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('CircleErr_XY'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'CircleErr_YZ'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('CircleErr_YZ'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'CircleErr_XZ'
-    CheckVar[Key] = tk.IntVar()
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图选项'], command=lambda: ChangeCheckButtonColor('CircleErr_XZ'), text=Key, variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
+    ChangeCheckButtonColor(Key)
     
     ################################## 自定义绘图 ##################################
     CheckVar['用户代码'] = tk.IntVar()
@@ -2259,6 +2628,7 @@ if __name__ == '__main__':
     ScrolledText['输出消息'].place(relx=x, rely=y, relheight=0.22, relwidth=0.76)
 
     window.mainloop()
+    config.save()
 
 ##################################################################################
 # -------------------------Example of external file use------------------------- #

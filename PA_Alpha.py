@@ -64,7 +64,6 @@ PA.Plot2D(PA.Data.ActPos_X, PA.Data.ActPos_Y, axisName_1='X (mm)', axisName_2='Y
 PA.Plot2D(PA.Data.CmdPos_X, PA.Data.CmdPos_Y, axisName_1='X (mm)', axisName_2='Y (mm)',color=PA.Data.CmdPos_Z, colorName='CmdZ', dataName='XY_CmdZ', shareAxes=PA.ShareAxes.XY)
 
 
-#PA.DataInfo(PA.Data.Time, PA.Data.ActVel_X, PA.Data.Var['SCcReal[18]'], infoName=['Time(s)', 'ActVel_X(mm/min)', 'CompValue_X'])
 PA.DataInfo()
 PA.ShowFigure()
 
