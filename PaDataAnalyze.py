@@ -35,14 +35,14 @@
                 ActJerk_X                       Unit: m/s^3
 """
 
-Version = '1.7.0'
+Version = '1.7.1'
 ################################ Version History ##################################
 # ---------------------------------Version 1.7.1--------------------------------- #
-# Date: 2021/9/24
+# Date: 2021/9/27
 # Author: yangxiaosheng
 # Update: provide more options for drawing 1D and 2D figure
 # ---------------------------------Version 1.7.0--------------------------------- #
-# Date: 2021/9/23
+# Date: 2021/9/24
 # Author: yangxiaosheng
 # Update: save GUI config parameters to ini file for parameters loading when starting
 # ---------------------------------Version 1.6.4--------------------------------- #
@@ -275,7 +275,7 @@ class PA_Data_Analyze:
             'Plot1D_ShowActPathVel', 'Plot1D_ShowActPathAcc', 'Plot1D_ShowActPathJerk',
             'Plot1D_ShowActAxisVel', 'Plot1D_ShowActAxisAcc', 'Plot1D_ShowActAxisJerk',
             'Plot2D_PathVelType', 'Plot2D_PathAccType', 'Plot2D_PathJerkType',
-            'Plot2D_AbsVel', 'Plot2D_AbsAcc', 'Plot2D_AbsJerk',
+            'Plot2D_AbsPathVel', 'Plot2D_AbsPathAcc', 'Plot2D_AbsPathJerk',
             'Plot2D_EqualScale'
             ]
         def __init__(self):
@@ -290,9 +290,9 @@ class PA_Data_Analyze:
             self.Plot2D_PathVelType     = 'Cmd' # 'Set' or 'Cmd' or 'Act'
             self.Plot2D_PathAccType     = 'Cmd'
             self.Plot2D_PathJerkType    = 'Cmd'
-            self.Plot2D_AbsVel          = False
-            self.Plot2D_AbsAcc          = True
-            self.Plot2D_AbsJerk         = True
+            self.Plot2D_AbsPathVel      = False
+            self.Plot2D_AbsPathAcc      = True
+            self.Plot2D_AbsPathJerk     = True
             self.Plot2D_EqualScale      = False
 
     ##################################################################################
@@ -605,7 +605,8 @@ class PA_Data_Analyze:
                     name = 'ActPathVel'
                 else:
                     color = self.Data.CmdPathVel
-                if self.Plot.Plot2D_AbsVel == True:
+                    name = 'CmdPathVel'
+                if self.Plot.Plot2D_AbsPathVel == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) (mm/min)' % name
                 else:
@@ -628,7 +629,8 @@ class PA_Data_Analyze:
                     name = 'ActPathAcc'
                 else:
                     color = self.Data.CmdPathAcc
-                if self.Plot.Plot2D_AbsAcc == True:
+                    name = 'CmdPathAcc'
+                if self.Plot.Plot2D_AbsPathAcc == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^2)' % name
                 else:
@@ -651,7 +653,8 @@ class PA_Data_Analyze:
                     name = 'ActPathJerk'
                 else:
                     color = self.Data.CmdPathJerk
-                if self.Plot.Plot2D_AbsJerk == True:
+                    name = 'CmdPathJerk'
+                if self.Plot.Plot2D_AbsPathJerk == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^3)' % name
                 else:
@@ -717,11 +720,12 @@ class PA_Data_Analyze:
                     name = 'ActPathVel'
                 else:
                     color = self.Data.CmdPathVel
-                if self.Plot.Plot2D_AbsVel == True:
+                if self.Plot.Plot2D_AbsPathVel == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) (mm/min)' % name
                 else:
                     colorName = '%s (mm/min)' % name
+                    name = 'CmdPathVel'
                 self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName=colorName, shareAxis='yz', title='YZ_PathVel', equalScale=equalScale, newFigure=True)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathVel: %s\033[0m' % str(e))
@@ -740,7 +744,8 @@ class PA_Data_Analyze:
                     name = 'ActPathAcc'
                 else:
                     color = self.Data.CmdPathAcc
-                if self.Plot.Plot2D_AbsAcc == True:
+                    name = 'CmdPathAcc'
+                if self.Plot.Plot2D_AbsPathAcc == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^2)' % name
                 else:
@@ -763,7 +768,8 @@ class PA_Data_Analyze:
                     name = 'ActPathJerk'
                 else:
                     color = self.Data.CmdPathJerk
-                if self.Plot.Plot2D_AbsJerk == True:
+                    name = 'CmdPathJerk'
+                if self.Plot.Plot2D_AbsPathJerk == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^3)' % name
                 else:
@@ -829,7 +835,8 @@ class PA_Data_Analyze:
                     name = 'ActPathVel'
                 else:
                     color = self.Data.CmdPathVel
-                if self.Plot.Plot2D_AbsVel == True:
+                    name = 'CmdPathVel'
+                if self.Plot.Plot2D_AbsPathVel == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) (mm/min)' % name
                 else:
@@ -852,7 +859,8 @@ class PA_Data_Analyze:
                     name = 'ActPathAcc'
                 else:
                     color = self.Data.CmdPathAcc
-                if self.Plot.Plot2D_AbsAcc == True:
+                    name = 'CmdPathAcc'
+                if self.Plot.Plot2D_AbsPathAcc == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^2)' % name
                 else:
@@ -875,7 +883,8 @@ class PA_Data_Analyze:
                     name = 'ActPathJerk'
                 else:
                     color = self.Data.CmdPathJerk
-                if self.Plot.Plot2D_AbsJerk == True:
+                    name = 'CmdPathJerk'
+                if self.Plot.Plot2D_AbsPathJerk == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^3)' % name
                 else:
@@ -1792,18 +1801,18 @@ if __name__ == '__main__':
     arctan2             = np.arctan2
     exp                 = np.exp
 
-    TextBox         = dict()
-    Button          = dict()
-    Entry           = dict()
-    Label           = dict()
-    StringVar       = dict()
-    Combobox        = dict()
-    ScrolledText    = dict()
-    LabelFrame      = dict()
-    CheckButton     = dict()
-    CheckVar        = dict()
-    Notebook        = dict()
-    Frame           = dict()
+    TextBox             = dict()
+    Button              = dict()
+    Entry               = dict()
+    Label               = dict()
+    StringVar           = dict()
+    Combobox            = dict()
+    ScrolledText        = dict()
+    LabelFrame          = dict()
+    CheckButton         = dict()
+    CheckVar            = dict()
+    Notebook            = dict()
+    Frame               = dict()
     
     #init parameters of GUI
     import tkinter as tk
@@ -1813,15 +1822,21 @@ if __name__ == '__main__':
     class GUI_Param():
         def __init__(self):
             self.WindowSize = '1000x615'
+            self.WindowPosition = ''
             self.lastTime = time.time()
             self.EnableUserCode = True
             self.UserCode = ''
             
         def getWindowSize(self, event):
+            if str(event.widget) != '.':
+                return None
+            #print(event.widget, event.width, event.height, event.x, event.y)
             self.currentTime = time.time()
-            if (self.currentTime - self.lastTime) > 0.1:
+            #if (self.currentTime - self.lastTime) > 0.2 and event.width > 1 and event.height > 1:
+            if event.width > 1 and event.height > 1:
                 self.WindowSize = '%dx%d' % (event.width, event.height)
-            self.lastTime = time.time()
+                self.WindowPosition = '+%d+%d' % (event.x, event.y)
+            #self.lastTime = time.time()
     
     GUI = GUI_Param()
     
@@ -1847,24 +1862,31 @@ if __name__ == '__main__':
                         self.conf.set(section, key, str(defaultValue))
                     return defaultValue
                 
-            GUI.WindowSize      = str(get_param('Window', 'WindowSize', str(GUI.WindowSize)))
-            GUI.EnableUserCode  = bool(get_param('Window', 'EnableUserCode', str(bool(GUI.EnableUserCode))) == 'True')
-            GUI.UserCode         = str(get_param('Window', 'UserCode', str(GUI.UserCode)))
+            GUI.WindowSize      = str(get_param('WINDOW', 'WindowSize', str(GUI.WindowSize)))
+            GUI.WindowPosition  = str(get_param('WINDOW', 'WindowPosition', str(GUI.WindowPosition)))
+            GUI.EnableUserCode  = bool(get_param('WINDOW', 'EnableUserCode', str(bool(GUI.EnableUserCode))) == 'True')
+            GUI.UserCode        = str(get_param('WINDOW', 'UserCode', str(GUI.UserCode)))
             
-            PA.DataFileName     = str(get_param('Load', 'DataFileName', str(PA.DataFileName)))
-            PA.Ts               = float(get_param('Load', 'Ts', str(PA.Ts)))
-            PA.BlockRange[0]    = int(float(get_param('Load', 'BlockRange[0]', str(PA.BlockRange[0]))))
-            PA.BlockRange[1]    = int(float(get_param('Load', 'BlockRange[1]', str(PA.BlockRange[1]))))
-            PA.TimeRange[0]     = float(get_param('Load', 'TimeRange[0]', str(PA.TimeRange[0])))
-            PA.TimeRange[1]     = float(get_param('Load', 'TimeRange[1]', str(PA.TimeRange[1])))
-            PA.AxisID_X         = int(float(get_param('Load', 'AxisID_X', str(PA.AxisID_X))))
-            PA.AxisID_Y         = int(float(get_param('Load', 'AxisID_Y', str(PA.AxisID_Y))))
-            PA.AxisID_Z         = int(float(get_param('Load', 'AxisID_Z', str(PA.AxisID_Z))))
-            PA.AxisID_A         = int(float(get_param('Load', 'AxisID_A', str(PA.AxisID_A))))
-            PA.AxisID_B         = int(float(get_param('Load', 'AxisID_B', str(PA.AxisID_B))))
+            PA.DataFileName     = str(get_param('LOAD', 'DataFileName', str(PA.DataFileName)))
+            PA.Ts               = float(get_param('LOAD', 'Ts', str(PA.Ts)))
+            PA.BlockRange[0]    = int(float(get_param('LOAD', 'BlockRange[0]', str(PA.BlockRange[0]))))
+            PA.BlockRange[1]    = int(float(get_param('LOAD', 'BlockRange[1]', str(PA.BlockRange[1]))))
+            PA.TimeRange[0]     = float(get_param('LOAD', 'TimeRange[0]', str(PA.TimeRange[0])))
+            PA.TimeRange[1]     = float(get_param('LOAD', 'TimeRange[1]', str(PA.TimeRange[1])))
+            PA.AxisID_X         = int(float(get_param('LOAD', 'AxisID_X', str(PA.AxisID_X))))
+            PA.AxisID_Y         = int(float(get_param('LOAD', 'AxisID_Y', str(PA.AxisID_Y))))
+            PA.AxisID_Z         = int(float(get_param('LOAD', 'AxisID_Z', str(PA.AxisID_Z))))
+            PA.AxisID_A         = int(float(get_param('LOAD', 'AxisID_A', str(PA.AxisID_A))))
+            PA.AxisID_B         = int(float(get_param('LOAD', 'AxisID_B', str(PA.AxisID_B))))
             
             for name in PA.Plot.paramName:
-                value = bool(get_param('Plot', name, str(bool(getattr(PA.Plot, name)))) == 'True')
+                value = getattr(PA.Plot, name)
+                value = value if type(value) == str else str(bool(value))
+                value = get_param('PLOT', name, value)
+                if value == 'True' or value == 'true':
+                    value = True
+                elif value == 'False' or value == 'false':
+                    value = False
                 setattr(PA.Plot, name, value)
             
         def save(self):
@@ -1877,23 +1899,26 @@ if __name__ == '__main__':
                         self.conf.set(section, key, str(defaultValue))
 
                 if GUI.WindowSize != '1x1':
-                    write_param('Window', 'WindowSize', str(GUI.WindowSize))
-                write_param('Window', 'EnableUserCode', str(bool(GUI.EnableUserCode)))
-                write_param('Window', 'UserCode', str(GUI.UserCode))
+                    write_param('WINDOW', 'WindowSize', str(GUI.WindowSize))
+                    write_param('WINDOW', 'WindowPosition', str(GUI.WindowPosition))
+                write_param('WINDOW', 'EnableUserCode', str(bool(GUI.EnableUserCode)))
+                write_param('WINDOW', 'UserCode', str(GUI.UserCode))
                     
-                write_param('Load', 'DataFileName', str(PA.DataFileName))
-                write_param('Load', 'BlockRange[0]', str(PA.BlockRange[0]))
-                write_param('Load', 'BlockRange[1]', str(PA.BlockRange[1]))
-                write_param('Load', 'TimeRange[0]', str(PA.TimeRange[0]))
-                write_param('Load', 'TimeRange[1]', str(PA.TimeRange[1]))
-                write_param('Load', 'AxisID_X', str(PA.AxisID_X))
-                write_param('Load', 'AxisID_Y', str(PA.AxisID_Y))
-                write_param('Load', 'AxisID_Z', str(PA.AxisID_Z))
-                write_param('Load', 'AxisID_A', str(PA.AxisID_A))
-                write_param('Load', 'AxisID_B', str(PA.AxisID_B))
+                write_param('LOAD', 'DataFileName', str(PA.DataFileName))
+                write_param('LOAD', 'BlockRange[0]', str(PA.BlockRange[0]))
+                write_param('LOAD', 'BlockRange[1]', str(PA.BlockRange[1]))
+                write_param('LOAD', 'TimeRange[0]', str(PA.TimeRange[0]))
+                write_param('LOAD', 'TimeRange[1]', str(PA.TimeRange[1]))
+                write_param('LOAD', 'AxisID_X', str(PA.AxisID_X))
+                write_param('LOAD', 'AxisID_Y', str(PA.AxisID_Y))
+                write_param('LOAD', 'AxisID_Z', str(PA.AxisID_Z))
+                write_param('LOAD', 'AxisID_A', str(PA.AxisID_A))
+                write_param('LOAD', 'AxisID_B', str(PA.AxisID_B))
                 
                 for name in PA.Plot.paramName:
-                    write_param('Plot', name, str(bool(getattr(PA.Plot, name))))
+                    value = getattr(PA.Plot, name)
+                    value = value if type(value) == str else str(bool(value))
+                    write_param('PLOT', name, value)
 
                 self.conf.write(f)
         
@@ -1903,59 +1928,59 @@ if __name__ == '__main__':
     #init window
     window = tk.Tk()
     window.title('PA Data Analyze v%s' % Version)
-    window.geometry(GUI.WindowSize)
+    window.geometry(GUI.WindowSize + GUI.WindowPosition)
     window.bind('<Configure>', GUI.getWindowSize)
     #Pop up window
     window.iconify()
     window.update()
     window.deiconify()
 
-    def open_file():
+    def OpenFile():
         filename = filedialog.askopenfilename(title='打开文件', filetypes=[('txt', '*.txt')])
-        if filename != '':
+        if type(filename)==str and filename != '':
             Entry['文件路径'].delete(0, tk.END)
             Entry['文件路径'].insert('insert', filename)
 
-    def load_file():
-        PA.GuiText = ScrolledText['输出消息']
-        
+    err = -1
+    def LoadParamSync():
         PA.DataFileName = Entry['文件路径'].get()
-        
         try:
             PA.Ts = float(Entry['Ts'].get())
         except Exception as e:
             PA.OutputMessageToGUI('\n\nLoadData: Error Ts: %s' % str(e))
-            return None
+            return err
         
         try:
             PA.BlockRange[0] = int(Entry['BlockRange_0'].get()) if Entry['BlockRange_0'].get() != '无' and Entry['BlockRange_0'].get() != '' else 0
             PA.BlockRange[1] = int(Entry['BlockRange_1'].get()) if Entry['BlockRange_1'].get() != '无' and Entry['BlockRange_1'].get() != '' else 0
         except Exception as e:
             PA.OutputMessageToGUI('\n\nLoadData: Error BlockRange: %s' % str(e))
-            return None
+            return err
         
         try:
             PA.TimeRange[0] = float(Entry['TimeRange_0'].get()) if Entry['TimeRange_0'].get() != '无' and Entry['TimeRange_0'].get() != '' else 0
             PA.TimeRange[1] = float(Entry['TimeRange_1'].get()) if Entry['TimeRange_1'].get() != '无' and Entry['TimeRange_1'].get() != '' else 0
         except Exception as e:
             PA.OutputMessageToGUI('\n\nLoadData: Error TimeRange: %s' % str(e))
-            return None
+            return err
         
         PA.AxisID_X = int(Combobox['AxisID_X'].get()) if Combobox['AxisID_X'].get() != '无' else 0
         PA.AxisID_Y = int(Combobox['AxisID_Y'].get()) if Combobox['AxisID_Y'].get() != '无' else 0
         PA.AxisID_Z = int(Combobox['AxisID_Z'].get()) if Combobox['AxisID_Z'].get() != '无' else 0
         PA.AxisID_A = int(Combobox['AxisID_A'].get()) if Combobox['AxisID_A'].get() != '无' else 0
         PA.AxisID_B = int(Combobox['AxisID_B'].get()) if Combobox['AxisID_B'].get() != '无' else 0
-
+        return None
+        
+    def load_file():
+        PA.GuiText = ScrolledText['输出消息']
+        if LoadParamSync() == err:
+            return None
         if PA.AxisID_X == 0 and PA.AxisID_Y == 0 and PA.AxisID_Z == 0 and PA.AxisID_A == 0:
             return None
-        
         config.save()
         PA.LoadData()
-
-    def plot_data():
-        PA.GuiText = ScrolledText['输出消息']
         
+    def PlotParamSync():
         PA.Plot.BlockNo = int(CheckVar['BlockNo'].get())
         PA.Plot.PathVel = int(CheckVar['PathVel'].get())
         PA.Plot.PathAcc = int(CheckVar['PathAcc'].get())
@@ -2016,12 +2041,33 @@ if __name__ == '__main__':
         PA.Plot.CircleErr_XY = int(CheckVar['CircleErr_XY'].get())
         PA.Plot.CircleErr_YZ = int(CheckVar['CircleErr_YZ'].get())
         PA.Plot.CircleErr_XZ = int(CheckVar['CircleErr_XZ'].get())
+        
+        PA.Plot.Plot1D_ShowActPathVel = int(CheckVar['Plot1D_ShowActPathVel'].get())
+        PA.Plot.Plot1D_ShowActPathAcc = int(CheckVar['Plot1D_ShowActPathAcc'].get())
+        PA.Plot.Plot1D_ShowActPathJerk = int(CheckVar['Plot1D_ShowActPathJerk'].get())
+        PA.Plot.Plot1D_ShowActAxisVel = int(CheckVar['Plot1D_ShowActAxisVel'].get())
+        PA.Plot.Plot1D_ShowActAxisAcc = int(CheckVar['Plot1D_ShowActAxisAcc'].get())
+        PA.Plot.Plot1D_ShowActAxisJerk = int(CheckVar['Plot1D_ShowActAxisJerk'].get())
+        
+        PA.Plot2D_PathVelType = Combobox['Plot2D_PathVelType'].get()
+        PA.Plot2D_PathAccType = Combobox['Plot2D_PathAccType'].get()
+        PA.Plot2D_PathJerkType = Combobox['Plot2D_PathJerkType'].get()
+        PA.Plot.Plot2D_AbsPathVel = int(CheckVar['Plot2D_AbsPathVel'].get())
+        PA.Plot.Plot2D_AbsPathAcc = int(CheckVar['Plot2D_AbsPathAcc'].get())
+        PA.Plot.Plot2D_AbsPathJerk = int(CheckVar['Plot2D_AbsPathJerk'].get())
+        PA.Plot.Plot2D_EqualScale = int(CheckVar['Plot2D_EqualScale'].get())
+        
+        GUI.EnableUserCode = int(CheckVar['用户代码'].get())
+        GUI.UserCode = ScrolledText['用户代码'].get('1.0', 'end')
+        return None
 
+    def plot_data():
+        PA.GuiText = ScrolledText['输出消息']
+        if PlotParamSync() == err:
+            return None
         config.save()
         PA.PlotData()
 
-        GUI.EnableUserCode = int(CheckVar['用户代码'].get())
-        GUI.UserCode = ScrolledText['用户代码'].get('1.0', 'end')
         if GUI.EnableUserCode and PA.Data.Length != 0:
             try:
                 exec(GUI.UserCode)
@@ -2044,7 +2090,7 @@ if __name__ == '__main__':
     Entry['文件路径'].delete(0, tk.END)
     Entry['文件路径'].insert('insert', PA.DataFileName)
     Entry['文件路径'].place(relx=x, rely=y, relheight=0.05, relwidth=0.7)
-    Button['选择文件'] = ttk.Button(window, text="选择文件", command=open_file)
+    Button['选择文件'] = ttk.Button(window, text="选择文件", command=OpenFile)
     Button['选择文件'].place(relx=x + 0.8, rely=y, relheight=0.05, relwidth=0.1)
 
     #################################### 采样参数 ####################################
@@ -2214,13 +2260,12 @@ if __name__ == '__main__':
 
     ###################################### 绘图 #####################################
     Notebook['绘图'] = ttk.Notebook(window)
-    Frame['绘图选项'] = ttk.Frame(Notebook['绘图'])
-    Frame['自定义绘图'] = ttk.Frame(Notebook['绘图'])
-    Notebook['绘图'].add(Frame['绘图选项'], text='绘图选项')
-    Notebook['绘图'].add(Frame['自定义绘图'], text='自定义绘图')
     Notebook['绘图'].place(relx=0.02, rely=0.29, relheight=0.41, relwidth=0.95)
     
-    #################################### 绘图选项 ####################################    
+    #################################### 绘图选项 ####################################
+    Frame['绘图选项'] = ttk.Frame(Notebook['绘图'])
+    Notebook['绘图'].add(Frame['绘图选项'], text='绘图选项')
+    
     s = ttk.Style()                                                                
     s.configure('Blue.TCheckbutton', foreground='blue')                            
     s.configure('Black.TCheckbutton', foreground='black')
@@ -2230,8 +2275,8 @@ if __name__ == '__main__':
     # ---------------------------------- 绘图选项1D ----------------------------------#
     x = 0
     y = 0
-    LabelFrame['1D'] = ttk.LabelFrame(Frame['绘图选项'], text='1D')
-    LabelFrame['1D'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.275)
+    LabelFrame['一维绘图选项'] = ttk.LabelFrame(Frame['绘图选项'], text='一维绘图选项')
+    LabelFrame['一维绘图选项'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.275)
 
     xBias = 0.02
     yBias = 0.11
@@ -2388,8 +2433,8 @@ if __name__ == '__main__':
     # ---------------------------------- 绘图选项2D ----------------------------------#
     x = 0.296
     y = 0
-    LabelFrame['2D'] = ttk.LabelFrame(Frame['绘图选项'], text='2D')
-    LabelFrame['2D'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.385)
+    LabelFrame['二维绘图选项'] = ttk.LabelFrame(Frame['绘图选项'], text='二维绘图选项')
+    LabelFrame['二维绘图选项'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.385)
 
     xBias = 0.02
     yBias = 0.11
@@ -2546,8 +2591,8 @@ if __name__ == '__main__':
     # ---------------------------------- 绘图选项3D ----------------------------------#
     x = 0.703
     y = 0
-    LabelFrame['3D'] = ttk.LabelFrame(Frame['绘图选项'], text='3D')
-    LabelFrame['3D'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.127)
+    LabelFrame['三维绘图选项'] = ttk.LabelFrame(Frame['绘图选项'], text='三维绘图选项')
+    LabelFrame['三维绘图选项'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.127)
 
     xBias = 0.02
     yBias = 0.11
@@ -2592,8 +2637,8 @@ if __name__ == '__main__':
     # ---------------------------------- 绘图选项Circle --------------------------------#
     x = 0.852
     y = 0
-    LabelFrame['Circle'] = ttk.LabelFrame(Frame['绘图选项'], text='Circle')
-    LabelFrame['Circle'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.127)
+    LabelFrame['循圆误差选项'] = ttk.LabelFrame(Frame['绘图选项'], text='循圆误差选项')
+    LabelFrame['循圆误差选项'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.127)
 
     xBias = 0.02
     yBias = 0.11
@@ -2617,7 +2662,125 @@ if __name__ == '__main__':
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     ChangeCheckButtonColor(Key)
     
+    ################################## 绘图细节 ##################################
+    Frame['绘图细节'] = ttk.Frame(Notebook['绘图'])
+    Notebook['绘图'].add(Frame['绘图细节'], text='绘图细节')
+    
+    x = 0
+    y = 0
+    LabelFrame['一维绘图细节'] = ttk.LabelFrame(Frame['绘图细节'], text='一维绘图细节')
+    LabelFrame['一维绘图细节'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.2)
+    xBias = 0.02
+    yBias = 0.11
+    xStep = 0.11
+    yStep = 0.11
+    relheight = 0.1
+    relwidth = 0.18
+    
+    Key = 'Plot1D_ShowActPathVel'
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActPathVel'), text='显示实际合成速度', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
+    ChangeCheckButtonColor(Key)
+    yBias += yStep
+    Key = 'Plot1D_ShowActPathAcc'
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActPathAcc'), text='显示实际合成加速度', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
+    ChangeCheckButtonColor(Key)
+    yBias += yStep
+    Key = 'Plot1D_ShowActPathJerk'
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActPathJerk'), text='显示实际合成加加速度', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
+    ChangeCheckButtonColor(Key)
+    yBias += yStep
+    Key = 'Plot1D_ShowActAxisVel'
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActAxisVel'), text='显示实际各轴速度', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
+    ChangeCheckButtonColor(Key)
+    yBias += yStep
+    Key = 'Plot1D_ShowActAxisAcc'
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActAxisAcc'), text='显示实际各轴加速度', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
+    ChangeCheckButtonColor(Key)
+    yBias += yStep
+    Key = 'Plot1D_ShowActAxisJerk'
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActAxisJerk'), text='显示实际各轴加加速度', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
+    ChangeCheckButtonColor(Key)
+    
+    x = 0.22
+    y = 0
+    LabelFrame['二维绘图细节'] = ttk.LabelFrame(Frame['绘图细节'], text='二维绘图细节')
+    LabelFrame['二维绘图细节'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.2)
+    xBias = 0.02
+    yBias = 0.11
+    xStep = 0.11
+    yStep = 0.11
+    relheight = 0.1
+    relwidth = 0.18
+    
+    Key = 'Plot2D_EqualScale'
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot2D_EqualScale'), text='等比例刻度缩放', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
+    ChangeCheckButtonColor(Key)
+    yBias += yStep
+    Key = 'Plot2D_PathVelType'
+    Label[Key] = ttk.Label(Frame['绘图细节'], text='PathVel来源', anchor='w', font=('Microsoft YaHei', 9))
+    Label[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidth*3/5)
+    StringVar[Key] = tk.StringVar()
+    StringVar[Key].set(str(getattr(PA.Plot, Key)))
+    values = ['Set', 'Cmd', 'Act']
+    Combobox[Key] = ttk.Combobox(Frame['绘图细节'], textvariable=StringVar[Key], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox[Key].place(relx=x+xBias+relwidth*3/5, rely=y+yBias, relheight=relheight, relwidth=relwidth*2/5)
+    yBias += yStep
+    Key = 'Plot2D_PathAccType'
+    Label[Key] = ttk.Label(Frame['绘图细节'], text='PathAcc来源', anchor='w', font=('Microsoft YaHei', 9))
+    Label[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidth*3/5)
+    StringVar[Key] = tk.StringVar()
+    StringVar[Key].set(str(getattr(PA.Plot, Key)))
+    values = ['Set', 'Cmd', 'Act']
+    Combobox[Key] = ttk.Combobox(Frame['绘图细节'], textvariable=StringVar[Key], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox[Key].place(relx=x+xBias+relwidth*3/5, rely=y+yBias, relheight=relheight, relwidth=relwidth*2/5)
+    yBias += yStep
+    Key = 'Plot2D_PathJerkType'
+    Label[Key] = ttk.Label(Frame['绘图细节'], text='PathJerk来源', anchor='w', font=('Microsoft YaHei', 9))
+    Label[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidth*3/5)
+    StringVar[Key] = tk.StringVar()
+    StringVar[Key].set(str(getattr(PA.Plot, Key)))
+    values = ['Set', 'Cmd', 'Act']
+    Combobox[Key] = ttk.Combobox(Frame['绘图细节'], textvariable=StringVar[Key], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox[Key].place(relx=x+xBias+relwidth*3/5, rely=y+yBias, relheight=relheight, relwidth=relwidth*2/5)
+    yBias += yStep
+    Key = 'Plot2D_AbsPathVel'
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot2D_AbsPathVel'), text='PathVel取绝对值', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
+    ChangeCheckButtonColor(Key)
+    yBias += yStep
+    Key = 'Plot2D_AbsPathAcc'
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot2D_AbsPathAcc'), text='PathAcc取绝对值', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
+    ChangeCheckButtonColor(Key)
+    yBias += yStep
+    Key = 'Plot2D_AbsPathJerk'
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot2D_AbsPathJerk'), text='PathJerk取绝对值', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
+    ChangeCheckButtonColor(Key)
+    yBias += yStep
+    
+    
     ################################## 自定义绘图 ##################################
+    Frame['自定义绘图'] = ttk.Frame(Notebook['绘图'])
+    Notebook['绘图'].add(Frame['自定义绘图'], text='自定义绘图')
+    
     CheckVar['用户代码'] = tk.IntVar(); CheckVar['用户代码'].set(GUI.EnableUserCode)
     CheckButton['用户代码'] = ttk.Checkbutton(Frame['自定义绘图'], text='使用以下代码（Python 3.8）：', variable=CheckVar['用户代码'], onvalue=True, offvalue=False)
     CheckButton['用户代码'].place(relx=0.02, rely=0.02, relheight=0.1, relwidth=0.5)
