@@ -35,8 +35,12 @@
                 ActJerk_X                       Unit: m/s^3
 """
 
-Version = '1.7.1'
+Version = '1.7.2'
 ################################ Version History ##################################
+# ---------------------------------Version 1.7.2--------------------------------- #
+# Date: 2021/9/27
+# Author: yangxiaosheng
+# Update: fix bug in saving user code that inclucing space
 # ---------------------------------Version 1.7.1--------------------------------- #
 # Date: 2021/9/27
 # Author: yangxiaosheng
@@ -618,13 +622,13 @@ class PA_Data_Analyze:
         #XY with PathAcc
         if self.Plot.XY_PathAcc == True:
             try:
-                if self.Plot.Plot2D_PathVelType == 'Set':
+                if self.Plot.Plot2D_PathAccType == 'Set':
                     color = self.Data.SetPathAcc
                     name = 'SetPathAcc'
-                elif self.Plot.Plot2D_PathVelType == 'Cmd':
+                elif self.Plot.Plot2D_PathAccType == 'Cmd':
                     color = self.Data.CmdPathAcc
                     name = 'CmdPathAcc'
-                elif self.Plot.Plot2D_PathVelType == 'Act':
+                elif self.Plot.Plot2D_PathAccType == 'Act':
                     color = self.Data.ActPathAcc
                     name = 'ActPathAcc'
                 else:
@@ -642,13 +646,13 @@ class PA_Data_Analyze:
         #XY with PathJerk
         if self.Plot.XY_PathJerk == True:
             try:
-                if self.Plot.Plot2D_PathVelType == 'Set':
+                if self.Plot.Plot2D_PathJerkType == 'Set':
                     color = self.Data.SetPathJerk
                     name = 'SetPathJerk'
-                elif self.Plot.Plot2D_PathVelType == 'Cmd':
+                elif self.Plot.Plot2D_PathJerkType == 'Cmd':
                     color = self.Data.CmdPathJerk
                     name = 'CmdPathJerk'
-                elif self.Plot.Plot2D_PathVelType == 'Act':
+                elif self.Plot.Plot2D_PathJerkType == 'Act':
                     color = self.Data.ActPathJerk
                     name = 'ActPathJerk'
                 else:
@@ -733,13 +737,13 @@ class PA_Data_Analyze:
         #YZ with PathAcc
         if self.Plot.YZ_PathAcc == True:
             try:
-                if self.Plot.Plot2D_PathVelType == 'Set':
+                if self.Plot.Plot2D_PathAccType == 'Set':
                     color = self.Data.SetPathAcc
                     name = 'SetPathAcc'
-                elif self.Plot.Plot2D_PathVelType == 'Cmd':
+                elif self.Plot.Plot2D_PathAccType == 'Cmd':
                     color = self.Data.CmdPathAcc
                     name = 'CmdPathAcc'
-                elif self.Plot.Plot2D_PathVelType == 'Act':
+                elif self.Plot.Plot2D_PathAccType == 'Act':
                     color = self.Data.ActPathAcc
                     name = 'ActPathAcc'
                 else:
@@ -757,13 +761,13 @@ class PA_Data_Analyze:
         #YZ with PathJerk
         if self.Plot.YZ_PathJerk == True:
             try:
-                if self.Plot.Plot2D_PathVelType == 'Set':
+                if self.Plot.Plot2D_PathJerkType == 'Set':
                     color = self.Data.SetPathJerk
                     name = 'SetPathJerk'
-                elif self.Plot.Plot2D_PathVelType == 'Cmd':
+                elif self.Plot.Plot2D_PathJerkType == 'Cmd':
                     color = self.Data.CmdPathJerk
                     name = 'CmdPathJerk'
-                elif self.Plot.Plot2D_PathVelType == 'Act':
+                elif self.Plot.Plot2D_PathJerkType == 'Act':
                     color = self.Data.ActPathJerk
                     name = 'ActPathJerk'
                 else:
@@ -848,13 +852,13 @@ class PA_Data_Analyze:
         #XZ with PathAcc
         if self.Plot.XZ_PathAcc == True:
             try:
-                if self.Plot.Plot2D_PathVelType == 'Set':
+                if self.Plot.Plot2D_PathAccType == 'Set':
                     color = self.Data.SetPathAcc
                     name = 'SetPathAcc'
-                elif self.Plot.Plot2D_PathVelType == 'Cmd':
+                elif self.Plot.Plot2D_PathAccType == 'Cmd':
                     color = self.Data.CmdPathAcc
                     name = 'CmdPathAcc'
-                elif self.Plot.Plot2D_PathVelType == 'Act':
+                elif self.Plot.Plot2D_PathAccType == 'Act':
                     color = self.Data.ActPathAcc
                     name = 'ActPathAcc'
                 else:
@@ -872,13 +876,13 @@ class PA_Data_Analyze:
         #XZ with PathJerk
         if self.Plot.XZ_PathJerk == True:
             try:
-                if self.Plot.Plot2D_PathVelType == 'Set':
+                if self.Plot.Plot2D_PathJerkType == 'Set':
                     color = self.Data.SetPathJerk
                     name = 'SetPathJerk'
-                elif self.Plot.Plot2D_PathVelType == 'Cmd':
+                elif self.Plot.Plot2D_PathJerkType == 'Cmd':
                     color = self.Data.CmdPathJerk
                     name = 'CmdPathJerk'
-                elif self.Plot.Plot2D_PathVelType == 'Act':
+                elif self.Plot.Plot2D_PathJerkType == 'Act':
                     color = self.Data.ActPathJerk
                     name = 'ActPathJerk'
                 else:
@@ -1080,7 +1084,9 @@ class PA_Data_Analyze:
         fig = plt.figure(self.FigNum)
         if newFigure:
             fig.clf()
-        if shareAxis == 'XY' or shareAxis == 'xy':
+        if equalScale == True:
+            shareAx = None # do not use shareAxis when equalScale
+        elif shareAxis == 'XY' or shareAxis == 'xy':
             shareAx = self.ShareAxis.XY
         elif shareAxis == 'YZ' or shareAxis == 'yz':
             shareAx = self.ShareAxis.YZ
@@ -1866,6 +1872,10 @@ if __name__ == '__main__':
             GUI.WindowPosition  = str(get_param('WINDOW', 'WindowPosition', str(GUI.WindowPosition)))
             GUI.EnableUserCode  = bool(get_param('WINDOW', 'EnableUserCode', str(bool(GUI.EnableUserCode))) == 'True')
             GUI.UserCode        = str(get_param('WINDOW', 'UserCode', str(GUI.UserCode)))
+            try:
+                GUI.UserCode    = str(bytearray(bytes.fromhex(GUI.UserCode)), 'utf-8')
+            except:
+                GUI.UserCode    = ''
             
             PA.DataFileName     = str(get_param('LOAD', 'DataFileName', str(PA.DataFileName)))
             PA.Ts               = float(get_param('LOAD', 'Ts', str(PA.Ts)))
@@ -1902,7 +1912,7 @@ if __name__ == '__main__':
                     write_param('WINDOW', 'WindowSize', str(GUI.WindowSize))
                     write_param('WINDOW', 'WindowPosition', str(GUI.WindowPosition))
                 write_param('WINDOW', 'EnableUserCode', str(bool(GUI.EnableUserCode)))
-                write_param('WINDOW', 'UserCode', str(GUI.UserCode))
+                write_param('WINDOW', 'UserCode', str(GUI.UserCode).encode('utf-8').hex())
                     
                 write_param('LOAD', 'DataFileName', str(PA.DataFileName))
                 write_param('LOAD', 'BlockRange[0]', str(PA.BlockRange[0]))
@@ -2049,9 +2059,9 @@ if __name__ == '__main__':
         PA.Plot.Plot1D_ShowActAxisAcc = int(CheckVar['Plot1D_ShowActAxisAcc'].get())
         PA.Plot.Plot1D_ShowActAxisJerk = int(CheckVar['Plot1D_ShowActAxisJerk'].get())
         
-        PA.Plot2D_PathVelType = Combobox['Plot2D_PathVelType'].get()
-        PA.Plot2D_PathAccType = Combobox['Plot2D_PathAccType'].get()
-        PA.Plot2D_PathJerkType = Combobox['Plot2D_PathJerkType'].get()
+        PA.Plot.Plot2D_PathVelType = Combobox['Plot2D_PathVelType'].get()
+        PA.Plot.Plot2D_PathAccType = Combobox['Plot2D_PathAccType'].get()
+        PA.Plot.Plot2D_PathJerkType = Combobox['Plot2D_PathJerkType'].get()
         PA.Plot.Plot2D_AbsPathVel = int(CheckVar['Plot2D_AbsPathVel'].get())
         PA.Plot.Plot2D_AbsPathAcc = int(CheckVar['Plot2D_AbsPathAcc'].get())
         PA.Plot.Plot2D_AbsPathJerk = int(CheckVar['Plot2D_AbsPathJerk'].get())
