@@ -35,10 +35,14 @@
                 ActJerk_X                       Unit: m/s^3
 """
 
-Version = '1.7.2'
+Version = '1.7.3'
 ################################ Version History ##################################
+# ---------------------------------Version 1.7.3--------------------------------- #
+# Date: 2021/9/28
+# Author: yangxiaosheng
+# Update: fix bug in plot 2D figure with equal scale
 # ---------------------------------Version 1.7.2--------------------------------- #
-# Date: 2021/9/27
+# Date: 2021/9/28
 # Author: yangxiaosheng
 # Update: fix bug in saving user code that inclucing space
 # ---------------------------------Version 1.7.1--------------------------------- #
@@ -1015,7 +1019,7 @@ class PA_Data_Analyze:
     ##################################################################################
     # ----------------------------------Plot 1D Data-------------------------------- #
     ##################################################################################
-    def Plot1D(self, x, axisName_1=None, dataName=None, shareAxis=None, newFigure=True, mark='.-', tLimit=None, xLimit=None, title=''):
+    def Plot1D(self, x, axisName=None, axisName_1=None, dataName=None, shareAxis=None, newFigure=True, mark='.-', tLimit=None, xLimit=None, title=''):
         plt.rcParams['font.family'] = 'Microsoft YaHei'
         plt.rcParams.update({'figure.max_open_warning': 0})
         x = np.array(x)
@@ -1038,6 +1042,8 @@ class PA_Data_Analyze:
             ax = fig.get_axes()[0]
         ax.plot(self.Data.Time, x, mark, label=dataName, alpha=0.7)
         ax.set_xlabel('Time (s)')
+        if axisName != None:
+            axisName_1 = axisName
         ax.set_ylabel(axisName_1)
         if dataName != None:
             ax.legend(loc="upper right")
@@ -1790,6 +1796,7 @@ if __name__ == '__main__':
     # for UserCode in GUI
     data                = PA.Data
     var                 = PA.Data.Var
+    plot                = PA.Plot1D
     plot1               = PA.Plot1D
     plot2               = PA.Plot2D
     plot3               = PA.Plot3D
@@ -2736,7 +2743,7 @@ if __name__ == '__main__':
     
     Key = 'Plot2D_EqualScale'
     CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot2D_EqualScale'), text='等比例刻度缩放', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot2D_EqualScale'), text='等比例刻度显示及缩放', variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
     ChangeCheckButtonColor(Key)
     yBias += yStep
