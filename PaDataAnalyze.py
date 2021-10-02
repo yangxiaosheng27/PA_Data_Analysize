@@ -35,8 +35,12 @@
                 ActJerk_X                       Unit: m/s^3
 """
 
-Version = '1.7.3'
+Version = '1.7.4'
 ################################ Version History ##################################
+# ---------------------------------Version 1.7.4--------------------------------- #
+# Date: 2021/10/2
+# Author: yangxiaosheng
+# Update: provide more options for drawing 2D figure and circle error figure
 # ---------------------------------Version 1.7.3--------------------------------- #
 # Date: 2021/9/28
 # Author: yangxiaosheng
@@ -56,7 +60,7 @@ Version = '1.7.3'
 # ---------------------------------Version 1.6.4--------------------------------- #
 # Date: 2021/9/22
 # Author: yangxiaosheng
-# Update: fix the bug in drawing figure
+# Update: fix the bug in drawing 2D figure
 # ---------------------------------Version 1.6.3--------------------------------- #
 # Date: 2021/9/13
 # Author: yangxiaosheng
@@ -280,11 +284,18 @@ class PA_Data_Analyze:
             'XZ', 'XZ_Time', 'XZ_BlockNo', 'XZ_PathVel', 'XZ_PathAcc', 'XZ_PathJerk', 'XZ_PosErr', 'XZ_Y',
             'XYZ', 'XYZ_Time', 'XYZ_Z', 'XYZ_PathVel', 'XYZ_PathAcc', 'XYZ_PathJerk', 
             'CircleErr_XY', 'CircleErr_YZ', 'CircleErr_XZ',
+            
             'Plot1D_ShowActPathVel', 'Plot1D_ShowActPathAcc', 'Plot1D_ShowActPathJerk',
             'Plot1D_ShowActAxisVel', 'Plot1D_ShowActAxisAcc', 'Plot1D_ShowActAxisJerk',
+            
+            'Plot2D_EqualScale', 
             'Plot2D_PathVelType', 'Plot2D_PathAccType', 'Plot2D_PathJerkType',
             'Plot2D_AbsPathVel', 'Plot2D_AbsPathAcc', 'Plot2D_AbsPathJerk',
-            'Plot2D_EqualScale'
+            'Plot2D_LimitPathVel', 'Plot2D_MinPathVel', 'Plot2D_MaxPathVel',
+            'Plot2D_LimitPathAcc', 'Plot2D_MaxPathAcc', 'Plot2D_MaxPathAcc',
+            'Plot2D_LimitPathJerk', 'Plot2D_MinPathJerk', 'Plot2D_MaxPathJerk',
+            
+            'PlotCircleErrXY_MaxErr', 'PlotCircleErrYZ_MaxErr', 'PlotCircleErrXZ_MaxErr'
             ]
         def __init__(self):
             for name in self.paramName:
@@ -295,13 +306,28 @@ class PA_Data_Analyze:
             self.Plot1D_ShowActAxisVel  = True
             self.Plot1D_ShowActAxisAcc  = True
             self.Plot1D_ShowActAxisJerk = False
+            self.Plot2D_EqualScale      = False
             self.Plot2D_PathVelType     = 'Cmd' # 'Set' or 'Cmd' or 'Act'
             self.Plot2D_PathAccType     = 'Cmd'
             self.Plot2D_PathJerkType    = 'Cmd'
+            
+            self.Plot2D_LimitPathVel    = False
+            self.Plot2D_MinPathVel      = -np.inf
+            self.Plot2D_MaxPathVel      = np.inf
+            self.Plot2D_LimitPathAcc    = False
+            self.Plot2D_MinPathAcc      = -np.inf
+            self.Plot2D_MaxPathAcc      = np.inf
+            self.Plot2D_LimitPathJerk   = False
+            self.Plot2D_MinPathJerk     = -np.inf
+            self.Plot2D_MaxPathJerk     = np.inf
+            
             self.Plot2D_AbsPathVel      = False
             self.Plot2D_AbsPathAcc      = True
             self.Plot2D_AbsPathJerk     = True
-            self.Plot2D_EqualScale      = False
+            
+            self.PlotCircleErrXY_MaxErr = 25.0 #um
+            self.PlotCircleErrYZ_MaxErr = 25.0
+            self.PlotCircleErrXZ_MaxErr = 25.0
 
     ##################################################################################
     # -----------------------------------Plot Data---------------------------------- #
@@ -614,6 +640,12 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathVel
                     name = 'CmdPathVel'
+                if self.Plot.Plot2D_LimitPathVel:
+                    if self.Plot.Plot2D_MinPathVel > self.Plot.Plot2D_MaxPathVel:
+                        print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathVel: Plot2D_MinPathVel > Plot2D_MaxPathVel\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathVel, self.Plot.Plot2D_MaxPathVel))
+                        self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathVel: Plot2D_MinPathVel > Plot2D_MaxPathVel (%f > %f)' % (self.Plot.Plot2D_MinPathVel, self.Plot.Plot2D_MaxPathVel))
+                    else:
+                        color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathVel), self.Plot.Plot2D_MaxPathVel), color)))
                 if self.Plot.Plot2D_AbsPathVel == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) (mm/min)' % name
@@ -638,6 +670,12 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathAcc
                     name = 'CmdPathAcc'
+                if self.Plot.Plot2D_LimitPathAcc:
+                    if self.Plot.Plot2D_MinPathAcc > self.Plot.Plot2D_MaxPathAcc:
+                        print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathAcc: Plot2D_MinPathAcc > Plot2D_MaxPathAcc\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathAcc, self.Plot.Plot2D_MaxPathAcc))
+                        self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathAcc: Plot2D_MinPathAcc > Plot2D_MaxPathAcc (%f > %f)' % (self.Plot.Plot2D_MinPathAcc, self.Plot.Plot2D_MaxPathAcc))
+                    else:
+                        color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathAcc), self.Plot.Plot2D_MaxPathAcc), color)))
                 if self.Plot.Plot2D_AbsPathAcc == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^2)' % name
@@ -662,6 +700,12 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathJerk
                     name = 'CmdPathJerk'
+                if self.Plot.Plot2D_LimitPathJerk:
+                    if self.Plot.Plot2D_MinPathJerk > self.Plot.Plot2D_MaxPathJerk:
+                        print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathJerk: Plot2D_MinPathJerk > Plot2D_MaxPathJerk\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathJerk, self.Plot.Plot2D_MaxPathJerk))
+                        self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathJerk: Plot2D_MinPathJerk > Plot2D_MaxPathJerk (%f > %f)' % (self.Plot.Plot2D_MinPathJerk, self.Plot.Plot2D_MaxPathJerk))
+                    else:
+                        color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathJerk), self.Plot.Plot2D_MaxPathJerk), color)))
                 if self.Plot.Plot2D_AbsPathJerk == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^3)' % name
@@ -728,6 +772,13 @@ class PA_Data_Analyze:
                     name = 'ActPathVel'
                 else:
                     color = self.Data.CmdPathVel
+                    name = 'CmdPathVel'
+                if self.Plot.Plot2D_LimitPathVel:
+                    if self.Plot.Plot2D_MinPathVel > self.Plot.Plot2D_MaxPathVel:
+                        print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathVel: Plot2D_MinPathVel > Plot2D_MaxPathVel\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathVel, self.Plot.Plot2D_MaxPathVel))
+                        self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathVel: Plot2D_MinPathVel > Plot2D_MaxPathVel (%f > %f)' % (self.Plot.Plot2D_MinPathVel, self.Plot.Plot2D_MaxPathVel))
+                    else:
+                        color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathVel), self.Plot.Plot2D_MaxPathVel), color)))
                 if self.Plot.Plot2D_AbsPathVel == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) (mm/min)' % name
@@ -753,6 +804,12 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathAcc
                     name = 'CmdPathAcc'
+                if self.Plot.Plot2D_LimitPathAcc:
+                    if self.Plot.Plot2D_MinPathAcc > self.Plot.Plot2D_MaxPathAcc:
+                        print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathAcc: Plot2D_MinPathAcc > Plot2D_MaxPathAcc\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathAcc, self.Plot.Plot2D_MaxPathAcc))
+                        self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathAcc: Plot2D_MinPathAcc > Plot2D_MaxPathAcc (%f > %f)' % (self.Plot.Plot2D_MinPathAcc, self.Plot.Plot2D_MaxPathAcc))
+                    else:
+                        color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathAcc), self.Plot.Plot2D_MaxPathAcc), color)))
                 if self.Plot.Plot2D_AbsPathAcc == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^2)' % name
@@ -777,6 +834,12 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathJerk
                     name = 'CmdPathJerk'
+                if self.Plot.Plot2D_LimitPathJerk:
+                    if self.Plot.Plot2D_MinPathJerk > self.Plot.Plot2D_MaxPathJerk:
+                        print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathJerk: Plot2D_MinPathJerk > Plot2D_MaxPathJerk\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathJerk, self.Plot.Plot2D_MaxPathJerk))
+                        self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathJerk: Plot2D_MinPathJerk > Plot2D_MaxPathJerk (%f > %f)' % (self.Plot.Plot2D_MinPathJerk, self.Plot.Plot2D_MaxPathJerk))
+                    else:
+                        color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathJerk), self.Plot.Plot2D_MaxPathJerk), color)))
                 if self.Plot.Plot2D_AbsPathJerk == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^3)' % name
@@ -844,6 +907,12 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathVel
                     name = 'CmdPathVel'
+                if self.Plot.Plot2D_LimitPathVel:
+                    if self.Plot.Plot2D_MinPathVel > self.Plot.Plot2D_MaxPathVel:
+                        print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathVel: Plot2D_MinPathVel > Plot2D_MaxPathVel\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathVel, self.Plot.Plot2D_MaxPathVel))
+                        self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathVel: Plot2D_MinPathVel > Plot2D_MaxPathVel (%f > %f)' % (self.Plot.Plot2D_MinPathVel, self.Plot.Plot2D_MaxPathVel))
+                    else:
+                        color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathVel), self.Plot.Plot2D_MaxPathVel), color)))
                 if self.Plot.Plot2D_AbsPathVel == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) (mm/min)' % name
@@ -868,6 +937,12 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathAcc
                     name = 'CmdPathAcc'
+                if self.Plot.Plot2D_LimitPathAcc:
+                    if self.Plot.Plot2D_MinPathAcc > self.Plot.Plot2D_MaxPathAcc:
+                        print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathAcc: Plot2D_MinPathAcc > Plot2D_MaxPathAcc\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathAcc, self.Plot.Plot2D_MaxPathAcc))
+                        self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathAcc: Plot2D_MinPathAcc > Plot2D_MaxPathAcc (%f > %f)' % (self.Plot.Plot2D_MinPathAcc, self.Plot.Plot2D_MaxPathAcc))
+                    else:
+                        color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathAcc), self.Plot.Plot2D_MaxPathAcc), color)))
                 if self.Plot.Plot2D_AbsPathAcc == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^2)' % name
@@ -892,6 +967,12 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathJerk
                     name = 'CmdPathJerk'
+                if self.Plot.Plot2D_LimitPathJerk:
+                    if self.Plot.Plot2D_MinPathJerk > self.Plot.Plot2D_MaxPathJerk:
+                        print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathJerk: Plot2D_MinPathJerk > Plot2D_MaxPathJerk\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathJerk, self.Plot.Plot2D_MaxPathJerk))
+                        self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathJerk: Plot2D_MinPathJerk > Plot2D_MaxPathJerk (%f > %f)' % (self.Plot.Plot2D_MinPathJerk, self.Plot.Plot2D_MaxPathJerk))
+                    else:
+                        color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathJerk), self.Plot.Plot2D_MaxPathJerk), color)))
                 if self.Plot.Plot2D_AbsPathJerk == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) ((m/s^3)' % name
@@ -981,21 +1062,19 @@ class PA_Data_Analyze:
             try:
                 Center1 = (max(self.Data.SetPos_X) + min(self.Data.SetPos_X)) / 2
                 Center2 = (max(self.Data.SetPos_Y) + min(self.Data.SetPos_Y)) / 2
-                R_MaxErr = 0.05
                 R = (max(self.Data.SetPos_X) - min(self.Data.SetPos_X)) / 2
-                self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data.CmdPos_X, self.Data.CmdPos_Y, self.Data.ActPos_X, self.Data.ActPos_Y, F=None, title='CircleErr_XY')
+                self.PlotCircleError(R, self.Plot.PlotCircleErrXY_MaxErr/1e3, Center1, Center2, self.Data.CmdPos_X, self.Data.CmdPos_Y, self.Data.ActPos_X, self.Data.ActPos_Y, F=None, title='CircleErr_XY (um)')
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_XY: %s\033[0m' % str(e))
                 self.OutputMessageToGUI('\nPlotData: Error CircleErr_XY: %s' % str(e))
-
+                
         # circular error of YZ
         if self.Plot.CircleErr_YZ == True:
             try:
                 Center1 = (max(self.Data.SetPos_Y) + min(self.Data.SetPos_Y)) / 2
                 Center2 = (max(self.Data.SetPos_Z) + min(self.Data.SetPos_Z)) / 2
-                R_MaxErr = 0.05
                 R = (max(self.Data.SetPos_Y) - min(self.Data.SetPos_Y)) / 2
-                self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data.CmdPos_Y, self.Data.CmdPos_Z, self.Data.ActPos_Y, self.Data.ActPos_Z, F=None, title='CircleErr_YZ')
+                self.PlotCircleError(R, self.Plot.PlotCircleErrYZ_MaxErr/1e3, Center1, Center2, self.Data.CmdPos_Y, self.Data.CmdPos_Z, self.Data.ActPos_Y, self.Data.ActPos_Z, F=None, title='CircleErr_YZ (um)')
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_YZ: %s\033[0m' % str(e))
                 self.OutputMessageToGUI('\nPlotData: Error CircleErr_YZ: %s' % str(e))
@@ -1005,14 +1084,12 @@ class PA_Data_Analyze:
             try:
                 Center1 = (max(self.Data.SetPos_X) + min(self.Data.SetPos_X)) / 2
                 Center2 = (max(self.Data.SetPos_Z) + min(self.Data.SetPos_Z)) / 2
-                R_MaxErr = 0.05
                 R = (max(self.Data.SetPos_X) - min(self.Data.SetPos_X)) / 2
-                self.PlotCircleError(R, R_MaxErr, Center1, Center2, self.Data.CmdPos_X, self.Data.CmdPos_Z, self.Data.ActPos_X, self.Data.ActPos_Z, F=None, title='CircleErr_XZ')
+                self.PlotCircleError(R, self.Plot.PlotCircleErrXZ_MaxErr/1e3, Center1, Center2, self.Data.CmdPos_X, self.Data.CmdPos_Z, self.Data.ActPos_X, self.Data.ActPos_Z, F=None, title='CircleErr_XZ (um)')
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError CircleErr_XZ: %s\033[0m' % str(e))
                 self.OutputMessageToGUI('\nPlotData: Error CircleErr_XZ: %s' % str(e))
 
-        
         # ---------------------------------end---------------------------------- #
         return None
 
@@ -1202,9 +1279,9 @@ class PA_Data_Analyze:
     ##################################################################################
     # -------------------------------Plot Circle Error------------------------------ #
     ##################################################################################
-    def PlotCircleError(self, R, R_MaxErr, Center1, Center2, CmdPos1_mm, CmdPos2_mm, ActPos1_mm, ActPos2_mm, F=None, title=''):
-        R_Display = 2 * R_MaxErr
-        R_DisplayStep = R_MaxErr / 3
+    def PlotCircleError(self, R, R_MaxErr_mm, Center1, Center2, CmdPos1_mm, CmdPos2_mm, ActPos1_mm, ActPos2_mm, F=None, title=''):
+        R_Display = 2 * R_MaxErr_mm
+        R_DisplayStep = R_MaxErr_mm / 3
         Len = CmdPos1_mm.__len__()
         
         Theta_Set = np.linspace(0, 2 * np.pi, Len)
@@ -1213,13 +1290,13 @@ class PA_Data_Analyze:
         Theta_Cmd = np.arctan2(CmdPos2_mm - Center2, CmdPos1_mm - Center1)
         R_Cmd = np.sqrt(np.multiply(CmdPos1_mm - Center1, CmdPos1_mm - Center1) + np.multiply(CmdPos2_mm - Center2, CmdPos2_mm - Center2))
         R_CmdErr = R_Cmd - R
-        R_CmdErr_NoNeg = R_CmdErr;
+        R_CmdErr_NoNeg = R_CmdErr
         R_CmdErr_NoNeg[R_CmdErr_NoNeg < -R_Display] = -R_Display
 
         Theta_Act = np.arctan2(ActPos2_mm - Center2, ActPos1_mm - Center1)
         R_Act = np.sqrt(np.multiply(ActPos1_mm - Center1, ActPos1_mm - Center1) + np.multiply(ActPos2_mm - Center2, ActPos2_mm - Center2))
         R_ActErr = R_Act - R
-        R_ActErr_NoNeg = R_ActErr;
+        R_ActErr_NoNeg = R_ActErr
         R_ActErr_NoNeg[R_ActErr_NoNeg < -R_Display] = -R_Display
 
         if title == None:
@@ -1237,14 +1314,15 @@ class PA_Data_Analyze:
         dataName = [dataNmae1, dataName2, dataName3]
         
         self.PlotPolar(Thtea, Radius, title=title, dataName=dataName, newFigure=True)
-        plt.yticks(np.array(range(int((R_Display - R_MaxErr) * 1000), int((R_Display + R_MaxErr) * 1000), int(R_DisplayStep * 1000))) / 1000, np.array(range(int(-R_MaxErr * 1000), int(R_MaxErr * 1000), int(R_DisplayStep * 1000))))
+        #yxs
+        #plt.yticks(np.array(range(int((R_Display - R_MaxErr_mm) * 1e6), int((R_Display + R_MaxErr_mm) * 1e6), int(R_DisplayStep * 1e6))) / 1e6, np.array(range(int(-R_MaxErr_mm * 1e9), int(R_MaxErr_mm * 1e9), int(R_DisplayStep * 1e9))))
         
         return None
 
     ##################################################################################
     # --------------------------------Plot Polar Data------------------------------- #
     ##################################################################################
-    def PlotPolar(self, Theta, Radius, dataName=None, mark='-', newFigure=True, title=''):
+    def PlotPolar(self, Theta, Radius, dataName=None, mark='-', newFigure=True, title='', limit=None):
         plt.rcParams['font.family'] = 'Microsoft YaHei'
         plt.rcParams.update({'figure.max_open_warning': 0})
         #len = min(Theta.__len__(), Radius.__len__())
@@ -1265,6 +1343,8 @@ class PA_Data_Analyze:
             plt.title(title)
         if dataName != None:
             plt.legend(dataName, loc="upper right")
+        if limit != None:
+            plt.ylim(tuple(limit))
         plt.grid('on')
         plt.ion()
         plt.draw()
@@ -1859,7 +1939,6 @@ if __name__ == '__main__':
     class Config():
         def __init__(self):
             self.fileName = os.path.splitext(os.path.basename(__file__))[0] + '.ini'
-            print(self.fileName)
             self.conf = configparser.ConfigParser()
             self.conf.read(self.fileName)
             
@@ -1898,13 +1977,15 @@ if __name__ == '__main__':
             
             for name in PA.Plot.paramName:
                 value = getattr(PA.Plot, name)
-                value = value if type(value) == str else str(bool(value))
+                Type = type(value)
+                value = str(value)
                 value = get_param('PLOT', name, value)
                 if value == 'True' or value == 'true':
                     value = True
                 elif value == 'False' or value == 'false':
                     value = False
-                setattr(PA.Plot, name, value)
+                setattr(PA.Plot, name, Type(value))
+                #print('%s(%s):%s' % (name, type(value), str(value)))
             
         def save(self):
             with open(self.fileName, 'w') as f:
@@ -1934,8 +2015,8 @@ if __name__ == '__main__':
                 
                 for name in PA.Plot.paramName:
                     value = getattr(PA.Plot, name)
-                    value = value if type(value) == str else str(bool(value))
-                    write_param('PLOT', name, value)
+                    write_param('PLOT', name, str(value))
+                    #print('%s(%s):%s' % (name, type(value), str(value)))
 
                 self.conf.write(f)
         
@@ -1998,83 +2079,104 @@ if __name__ == '__main__':
         PA.LoadData()
         
     def PlotParamSync():
-        PA.Plot.BlockNo = int(CheckVar['BlockNo'].get())
-        PA.Plot.PathVel = int(CheckVar['PathVel'].get())
-        PA.Plot.PathAcc = int(CheckVar['PathAcc'].get())
-        PA.Plot.PathJerk = int(CheckVar['PathJerk'].get())
-        PA.Plot.Pos_X = int(CheckVar['Pos_X'].get())
-        PA.Plot.Vel_X = int(CheckVar['Vel_X'].get())
-        PA.Plot.Acc_X = int(CheckVar['Acc_X'].get())
-        PA.Plot.Jerk_X = int(CheckVar['Jerk_X'].get())
-        PA.Plot.Pos_Y = int(CheckVar['Pos_Y'].get())
-        PA.Plot.Vel_Y = int(CheckVar['Vel_Y'].get())
-        PA.Plot.Acc_Y = int(CheckVar['Acc_Y'].get())
-        PA.Plot.Jerk_Y = int(CheckVar['Jerk_Y'].get())
-        PA.Plot.Pos_Z = int(CheckVar['Pos_Z'].get())
-        PA.Plot.Vel_Z = int(CheckVar['Vel_Z'].get())
-        PA.Plot.Acc_Z = int(CheckVar['Acc_Z'].get())
-        PA.Plot.Jerk_Z = int(CheckVar['Jerk_Z'].get())
-        PA.Plot.Pos_A = int(CheckVar['Pos_A'].get())
-        PA.Plot.Vel_A = int(CheckVar['Vel_A'].get())
-        PA.Plot.Acc_A = int(CheckVar['Acc_A'].get())
-        PA.Plot.Jerk_A = int(CheckVar['Jerk_A'].get())
-        PA.Plot.Pos_B = int(CheckVar['Pos_B'].get())
-        PA.Plot.Vel_B = int(CheckVar['Vel_B'].get())
-        PA.Plot.Acc_B = int(CheckVar['Acc_B'].get())
-        PA.Plot.Jerk_B = int(CheckVar['Jerk_B'].get())
+        PA.Plot.BlockNo = bool(CheckVar['BlockNo'].get())
+        PA.Plot.PathVel = bool(CheckVar['PathVel'].get())
+        PA.Plot.PathAcc = bool(CheckVar['PathAcc'].get())
+        PA.Plot.PathJerk = bool(CheckVar['PathJerk'].get())
+        PA.Plot.Pos_X = bool(CheckVar['Pos_X'].get())
+        PA.Plot.Vel_X = bool(CheckVar['Vel_X'].get())
+        PA.Plot.Acc_X = bool(CheckVar['Acc_X'].get())
+        PA.Plot.Jerk_X = bool(CheckVar['Jerk_X'].get())
+        PA.Plot.Pos_Y = bool(CheckVar['Pos_Y'].get())
+        PA.Plot.Vel_Y = bool(CheckVar['Vel_Y'].get())
+        PA.Plot.Acc_Y = bool(CheckVar['Acc_Y'].get())
+        PA.Plot.Jerk_Y = bool(CheckVar['Jerk_Y'].get())
+        PA.Plot.Pos_Z = bool(CheckVar['Pos_Z'].get())
+        PA.Plot.Vel_Z = bool(CheckVar['Vel_Z'].get())
+        PA.Plot.Acc_Z = bool(CheckVar['Acc_Z'].get())
+        PA.Plot.Jerk_Z = bool(CheckVar['Jerk_Z'].get())
+        PA.Plot.Pos_A = bool(CheckVar['Pos_A'].get())
+        PA.Plot.Vel_A = bool(CheckVar['Vel_A'].get())
+        PA.Plot.Acc_A = bool(CheckVar['Acc_A'].get())
+        PA.Plot.Jerk_A = bool(CheckVar['Jerk_A'].get())
+        PA.Plot.Pos_B = bool(CheckVar['Pos_B'].get())
+        PA.Plot.Vel_B = bool(CheckVar['Vel_B'].get())
+        PA.Plot.Acc_B = bool(CheckVar['Acc_B'].get())
+        PA.Plot.Jerk_B = bool(CheckVar['Jerk_B'].get())
 
-        PA.Plot.XY = int(CheckVar['XY'].get())
-        PA.Plot.XY_Time = int(CheckVar['XY_Time'].get())
-        PA.Plot.XY_BlockNo = int(CheckVar['XY_BlockNo'].get())
-        PA.Plot.XY_PathVel = int(CheckVar['XY_PathVel'].get())
-        PA.Plot.XY_PathAcc = int(CheckVar['XY_PathAcc'].get())
-        PA.Plot.XY_PathJerk = int(CheckVar['XY_PathJerk'].get())
-        PA.Plot.XY_PosErr = int(CheckVar['XY_PosErr'].get())
-        PA.Plot.XY_Z = int(CheckVar['XY_Z'].get())
-        PA.Plot.YZ = int(CheckVar['YZ'].get())
-        PA.Plot.YZ_Time = int(CheckVar['YZ_Time'].get())
-        PA.Plot.YZ_BlockNo = int(CheckVar['YZ_BlockNo'].get())
-        PA.Plot.YZ_PathVel = int(CheckVar['YZ_PathVel'].get())
-        PA.Plot.YZ_PathAcc = int(CheckVar['YZ_PathAcc'].get())
-        PA.Plot.YZ_PathJerk = int(CheckVar['YZ_PathJerk'].get())
-        PA.Plot.YZ_PosErr = int(CheckVar['YZ_PosErr'].get())
-        PA.Plot.YZ_X = int(CheckVar['YZ_X'].get())
-        PA.Plot.XZ = int(CheckVar['XZ'].get())
-        PA.Plot.XZ_Time = int(CheckVar['XZ_Time'].get())
-        PA.Plot.XZ_BlockNo = int(CheckVar['XZ_BlockNo'].get())
-        PA.Plot.XZ_PathVel = int(CheckVar['XZ_PathVel'].get())
-        PA.Plot.XZ_PathAcc = int(CheckVar['XZ_PathAcc'].get())
-        PA.Plot.XZ_PathJerk = int(CheckVar['XZ_PathJerk'].get())
-        PA.Plot.XZ_PosErr = int(CheckVar['XZ_PosErr'].get())
-        PA.Plot.XZ_Y = int(CheckVar['XZ_Y'].get())
+        PA.Plot.XY = bool(CheckVar['XY'].get())
+        PA.Plot.XY_Time = bool(CheckVar['XY_Time'].get())
+        PA.Plot.XY_BlockNo = bool(CheckVar['XY_BlockNo'].get())
+        PA.Plot.XY_PathVel = bool(CheckVar['XY_PathVel'].get())
+        PA.Plot.XY_PathAcc = bool(CheckVar['XY_PathAcc'].get())
+        PA.Plot.XY_PathJerk = bool(CheckVar['XY_PathJerk'].get())
+        PA.Plot.XY_PosErr = bool(CheckVar['XY_PosErr'].get())
+        PA.Plot.XY_Z = bool(CheckVar['XY_Z'].get())
+        PA.Plot.YZ = bool(CheckVar['YZ'].get())
+        PA.Plot.YZ_Time = bool(CheckVar['YZ_Time'].get())
+        PA.Plot.YZ_BlockNo = bool(CheckVar['YZ_BlockNo'].get())
+        PA.Plot.YZ_PathVel = bool(CheckVar['YZ_PathVel'].get())
+        PA.Plot.YZ_PathAcc = bool(CheckVar['YZ_PathAcc'].get())
+        PA.Plot.YZ_PathJerk = bool(CheckVar['YZ_PathJerk'].get())
+        PA.Plot.YZ_PosErr = bool(CheckVar['YZ_PosErr'].get())
+        PA.Plot.YZ_X = bool(CheckVar['YZ_X'].get())
+        PA.Plot.XZ = bool(CheckVar['XZ'].get())
+        PA.Plot.XZ_Time = bool(CheckVar['XZ_Time'].get())
+        PA.Plot.XZ_BlockNo = bool(CheckVar['XZ_BlockNo'].get())
+        PA.Plot.XZ_PathVel = bool(CheckVar['XZ_PathVel'].get())
+        PA.Plot.XZ_PathAcc = bool(CheckVar['XZ_PathAcc'].get())
+        PA.Plot.XZ_PathJerk = bool(CheckVar['XZ_PathJerk'].get())
+        PA.Plot.XZ_PosErr = bool(CheckVar['XZ_PosErr'].get())
+        PA.Plot.XZ_Y = bool(CheckVar['XZ_Y'].get())
 
-        PA.Plot.XYZ = int(CheckVar['XYZ'].get())
-        PA.Plot.XYZ_Time = int(CheckVar['XYZ_Time'].get())
-        PA.Plot.XYZ_Z = int(CheckVar['XYZ_Z'].get())
-        PA.Plot.XYZ_PathVel = int(CheckVar['XYZ_PathVel'].get())
-        PA.Plot.XYZ_PathAcc = int(CheckVar['XYZ_PathAcc'].get())
-        PA.Plot.XYZ_PathJerk = int(CheckVar['XYZ_PathJerk'].get())
+        PA.Plot.XYZ = bool(CheckVar['XYZ'].get())
+        PA.Plot.XYZ_Time = bool(CheckVar['XYZ_Time'].get())
+        PA.Plot.XYZ_Z = bool(CheckVar['XYZ_Z'].get())
+        PA.Plot.XYZ_PathVel = bool(CheckVar['XYZ_PathVel'].get())
+        PA.Plot.XYZ_PathAcc = bool(CheckVar['XYZ_PathAcc'].get())
+        PA.Plot.XYZ_PathJerk = bool(CheckVar['XYZ_PathJerk'].get())
 
-        PA.Plot.CircleErr_XY = int(CheckVar['CircleErr_XY'].get())
-        PA.Plot.CircleErr_YZ = int(CheckVar['CircleErr_YZ'].get())
-        PA.Plot.CircleErr_XZ = int(CheckVar['CircleErr_XZ'].get())
+        PA.Plot.CircleErr_XY = bool(CheckVar['CircleErr_XY'].get())
+        PA.Plot.CircleErr_YZ = bool(CheckVar['CircleErr_YZ'].get())
+        PA.Plot.CircleErr_XZ = bool(CheckVar['CircleErr_XZ'].get())
         
-        PA.Plot.Plot1D_ShowActPathVel = int(CheckVar['Plot1D_ShowActPathVel'].get())
-        PA.Plot.Plot1D_ShowActPathAcc = int(CheckVar['Plot1D_ShowActPathAcc'].get())
-        PA.Plot.Plot1D_ShowActPathJerk = int(CheckVar['Plot1D_ShowActPathJerk'].get())
-        PA.Plot.Plot1D_ShowActAxisVel = int(CheckVar['Plot1D_ShowActAxisVel'].get())
-        PA.Plot.Plot1D_ShowActAxisAcc = int(CheckVar['Plot1D_ShowActAxisAcc'].get())
-        PA.Plot.Plot1D_ShowActAxisJerk = int(CheckVar['Plot1D_ShowActAxisJerk'].get())
+        PA.Plot.Plot1D_ShowActPathVel = bool(CheckVar['Plot1D_ShowActPathVel'].get())
+        PA.Plot.Plot1D_ShowActPathAcc = bool(CheckVar['Plot1D_ShowActPathAcc'].get())
+        PA.Plot.Plot1D_ShowActPathJerk = bool(CheckVar['Plot1D_ShowActPathJerk'].get())
+        PA.Plot.Plot1D_ShowActAxisVel = bool(CheckVar['Plot1D_ShowActAxisVel'].get())
+        PA.Plot.Plot1D_ShowActAxisAcc = bool(CheckVar['Plot1D_ShowActAxisAcc'].get())
+        PA.Plot.Plot1D_ShowActAxisJerk = bool(CheckVar['Plot1D_ShowActAxisJerk'].get())
         
-        PA.Plot.Plot2D_PathVelType = Combobox['Plot2D_PathVelType'].get()
-        PA.Plot.Plot2D_PathAccType = Combobox['Plot2D_PathAccType'].get()
-        PA.Plot.Plot2D_PathJerkType = Combobox['Plot2D_PathJerkType'].get()
-        PA.Plot.Plot2D_AbsPathVel = int(CheckVar['Plot2D_AbsPathVel'].get())
-        PA.Plot.Plot2D_AbsPathAcc = int(CheckVar['Plot2D_AbsPathAcc'].get())
-        PA.Plot.Plot2D_AbsPathJerk = int(CheckVar['Plot2D_AbsPathJerk'].get())
-        PA.Plot.Plot2D_EqualScale = int(CheckVar['Plot2D_EqualScale'].get())
+        PA.Plot.Plot2D_EqualScale = bool(CheckVar['Plot2D_EqualScale'].get())
+        PA.Plot.Plot2D_PathVelType = str(Combobox['Plot2D_PathVelType'].get())
+        PA.Plot.Plot2D_PathAccType = str(Combobox['Plot2D_PathAccType'].get())
+        PA.Plot.Plot2D_PathJerkType = str(Combobox['Plot2D_PathJerkType'].get())
+        PA.Plot.Plot2D_AbsPathVel = bool(CheckVar['Plot2D_AbsPathVel'].get())
+        PA.Plot.Plot2D_AbsPathAcc = bool(CheckVar['Plot2D_AbsPathAcc'].get())
+        PA.Plot.Plot2D_AbsPathJerk = bool(CheckVar['Plot2D_AbsPathJerk'].get())
+
+        PA.Plot.Plot2D_LimitPathVel = bool(CheckVar['Plot2D_LimitPathVel'].get())
+        PA.Plot.Plot2D_LimitPathAcc = bool(CheckVar['Plot2D_LimitPathAcc'].get())
+        PA.Plot.Plot2D_LimitPathJerk = bool(CheckVar['Plot2D_LimitPathJerk'].get())
         
-        GUI.EnableUserCode = int(CheckVar['用户代码'].get())
+        def getEntryParam(key):
+            try:
+                setattr(PA.Plot, key, float(Entry[key].get()))
+            except Exception as e:
+                PA.OutputMessageToGUI('\n\nPlotData: Error %s: %s' % (str(key), str(e)))
+        
+        getEntryParam('Plot2D_MinPathVel')
+        getEntryParam('Plot2D_MinPathAcc')
+        getEntryParam('Plot2D_MinPathJerk')
+        getEntryParam('Plot2D_MaxPathVel')
+        getEntryParam('Plot2D_MaxPathAcc')
+        getEntryParam('Plot2D_MaxPathJerk')
+        
+        getEntryParam('PlotCircleErrXY_MaxErr')
+        getEntryParam('PlotCircleErrYZ_MaxErr')
+        getEntryParam('PlotCircleErrXZ_MaxErr')
+        
+        GUI.EnableUserCode = bool(CheckVar['用户代码'].get())
         GUI.UserCode = ScrolledText['用户代码'].get('1.0', 'end')
         return None
 
@@ -2654,8 +2756,8 @@ if __name__ == '__main__':
     # ---------------------------------- 绘图选项Circle --------------------------------#
     x = 0.852
     y = 0
-    LabelFrame['循圆误差选项'] = ttk.LabelFrame(Frame['绘图选项'], text='循圆误差选项')
-    LabelFrame['循圆误差选项'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.127)
+    LabelFrame['循圆绘图选项'] = ttk.LabelFrame(Frame['绘图选项'], text='循圆绘图选项')
+    LabelFrame['循圆绘图选项'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.127)
 
     xBias = 0.02
     yBias = 0.11
@@ -2679,14 +2781,14 @@ if __name__ == '__main__':
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=0.1, relwidth=0.11)
     ChangeCheckButtonColor(Key)
     
-    ################################## 绘图细节 ##################################
-    Frame['绘图细节'] = ttk.Frame(Notebook['绘图'])
-    Notebook['绘图'].add(Frame['绘图细节'], text='绘图细节')
+    ################################## 绘图设置 ##################################
+    Frame['绘图设置'] = ttk.Frame(Notebook['绘图'])
+    Notebook['绘图'].add(Frame['绘图设置'], text='绘图设置')
     
     x = 0
     y = 0
-    LabelFrame['一维绘图细节'] = ttk.LabelFrame(Frame['绘图细节'], text='一维绘图细节')
-    LabelFrame['一维绘图细节'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.2)
+    LabelFrame['一维绘图设置'] = ttk.LabelFrame(Frame['绘图设置'], text='一维绘图设置')
+    LabelFrame['一维绘图设置'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.2)
     xBias = 0.02
     yBias = 0.11
     xStep = 0.11
@@ -2696,44 +2798,44 @@ if __name__ == '__main__':
     
     Key = 'Plot1D_ShowActPathVel'
     CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActPathVel'), text='显示实际合成速度', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActPathVel'), text='显示实际PathVel', variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
     ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Plot1D_ShowActPathAcc'
     CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActPathAcc'), text='显示实际合成加速度', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActPathAcc'), text='显示实际PathAcc', variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
     ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Plot1D_ShowActPathJerk'
     CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActPathJerk'), text='显示实际合成加加速度', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActPathJerk'), text='显示实际PathJerk', variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
     ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Plot1D_ShowActAxisVel'
     CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActAxisVel'), text='显示实际各轴速度', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActAxisVel'), text='显示各轴实际Vel', variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
     ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Plot1D_ShowActAxisAcc'
     CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActAxisAcc'), text='显示实际各轴加速度', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActAxisAcc'), text='显示各轴实际Acc', variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
     ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Plot1D_ShowActAxisJerk'
     CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActAxisJerk'), text='显示实际各轴加加速度', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot1D_ShowActAxisJerk'), text='显示各轴实际Jerk', variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
     ChangeCheckButtonColor(Key)
     
     x = 0.22
     y = 0
-    LabelFrame['二维绘图细节'] = ttk.LabelFrame(Frame['绘图细节'], text='二维绘图细节')
-    LabelFrame['二维绘图细节'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.2)
+    LabelFrame['二维绘图设置'] = ttk.LabelFrame(Frame['绘图设置'], text='二维绘图设置')
+    LabelFrame['二维绘图设置'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.4)
     xBias = 0.02
     yBias = 0.11
     xStep = 0.11
@@ -2743,56 +2845,192 @@ if __name__ == '__main__':
     
     Key = 'Plot2D_EqualScale'
     CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot2D_EqualScale'), text='等比例刻度显示及缩放', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot2D_EqualScale'), text='等比例刻度显示及缩放', variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
     ChangeCheckButtonColor(Key)
-    yBias += yStep
-    Key = 'Plot2D_PathVelType'
-    Label[Key] = ttk.Label(Frame['绘图细节'], text='PathVel来源', anchor='w', font=('Microsoft YaHei', 9))
-    Label[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidth*3/5)
-    StringVar[Key] = tk.StringVar()
-    StringVar[Key].set(str(getattr(PA.Plot, Key)))
-    values = ['Set', 'Cmd', 'Act']
-    Combobox[Key] = ttk.Combobox(Frame['绘图细节'], textvariable=StringVar[Key], values=values, font=('Microsoft YaHei', 9), state='readonly')
-    Combobox[Key].place(relx=x+xBias+relwidth*3/5, rely=y+yBias, relheight=relheight, relwidth=relwidth*2/5)
-    yBias += yStep
-    Key = 'Plot2D_PathAccType'
-    Label[Key] = ttk.Label(Frame['绘图细节'], text='PathAcc来源', anchor='w', font=('Microsoft YaHei', 9))
-    Label[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidth*3/5)
-    StringVar[Key] = tk.StringVar()
-    StringVar[Key].set(str(getattr(PA.Plot, Key)))
-    values = ['Set', 'Cmd', 'Act']
-    Combobox[Key] = ttk.Combobox(Frame['绘图细节'], textvariable=StringVar[Key], values=values, font=('Microsoft YaHei', 9), state='readonly')
-    Combobox[Key].place(relx=x+xBias+relwidth*3/5, rely=y+yBias, relheight=relheight, relwidth=relwidth*2/5)
-    yBias += yStep
-    Key = 'Plot2D_PathJerkType'
-    Label[Key] = ttk.Label(Frame['绘图细节'], text='PathJerk来源', anchor='w', font=('Microsoft YaHei', 9))
-    Label[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidth*3/5)
-    StringVar[Key] = tk.StringVar()
-    StringVar[Key].set(str(getattr(PA.Plot, Key)))
-    values = ['Set', 'Cmd', 'Act']
-    Combobox[Key] = ttk.Combobox(Frame['绘图细节'], textvariable=StringVar[Key], values=values, font=('Microsoft YaHei', 9), state='readonly')
-    Combobox[Key].place(relx=x+xBias+relwidth*3/5, rely=y+yBias, relheight=relheight, relwidth=relwidth*2/5)
+    
     yBias += yStep
     Key = 'Plot2D_AbsPathVel'
     CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot2D_AbsPathVel'), text='PathVel取绝对值', variable=CheckVar[Key], onvalue=True, offvalue=False)
-    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot2D_AbsPathVel'), text='PathVel取绝对值', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth-0.03)
     ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Plot2D_AbsPathAcc'
     CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot2D_AbsPathAcc'), text='PathAcc取绝对值', variable=CheckVar[Key], onvalue=True, offvalue=False)
-    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot2D_AbsPathAcc'), text='PathAcc取绝对值', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth-0.03)
     ChangeCheckButtonColor(Key)
     yBias += yStep
     Key = 'Plot2D_AbsPathJerk'
     CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图细节'], command=lambda: ChangeCheckButtonColor('Plot2D_AbsPathJerk'), text='PathJerk取绝对值', variable=CheckVar[Key], onvalue=True, offvalue=False)
-    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot2D_AbsPathJerk'), text='PathJerk取绝对值', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth-0.03)
     ChangeCheckButtonColor(Key)
-    yBias += yStep
     
+    yBias += yStep
+    xBias = 0.02
+    Key = 'Plot2D_LimitPathVel'
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot2D_LimitPathVel'), text='PathVel限幅(mm/min):', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth+0.05)
+    ChangeCheckButtonColor(Key)
+    xBias += 0.18
+    relwidthEntry = 0.08
+    Key = 'Plot2D_MinPathVel'
+    Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
+    Entry[Key].delete(0, tk.END)
+    if type(getattr(PA.Plot, Key)) == float:
+        Entry[Key].insert('insert', getattr(PA.Plot, Key))
+    else:
+        Entry[Key].insert('insert', '无')
+    Entry[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidthEntry)
+    xBias += 0.085
+    Label['PathVel限幅'] = ttk.Label(Frame['绘图设置'], text='~', anchor='w', font=('Microsoft YaHei', 9))
+    Label['PathVel限幅'].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=0.1)
+    xBias += 0.02
+    Key = 'Plot2D_MaxPathVel'
+    Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
+    Entry[Key].delete(0, tk.END)
+    if type(getattr(PA.Plot, Key)) == float:
+        Entry[Key].insert('insert', getattr(PA.Plot, Key))
+    else:
+        Entry[Key].insert('insert', '无')
+    Entry[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidthEntry)
+    
+    yBias += yStep
+    xBias = 0.02
+    Key = 'Plot2D_LimitPathAcc'
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot2D_LimitPathAcc'), text='PathAcc限幅(m/s^2):', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth+0.05)
+    ChangeCheckButtonColor(Key)
+    xBias += 0.18
+    relwidthEntry = 0.08
+    Key = 'Plot2D_MinPathAcc'
+    Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
+    Entry[Key].delete(0, tk.END)
+    if type(getattr(PA.Plot, Key)) == float:
+        Entry[Key].insert('insert', getattr(PA.Plot, Key))
+    else:
+        Entry[Key].insert('insert', '无')
+    Entry[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidthEntry)
+    xBias += 0.085
+    Label['PathAcc限幅'] = ttk.Label(Frame['绘图设置'], text='~', anchor='w', font=('Microsoft YaHei', 9))
+    Label['PathAcc限幅'].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=0.1)
+    xBias += 0.02
+    Key = 'Plot2D_MaxPathAcc'
+    Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
+    Entry[Key].delete(0, tk.END)
+    if type(getattr(PA.Plot, Key)) == float:
+        Entry[Key].insert('insert', getattr(PA.Plot, Key))
+    else:
+        Entry[Key].insert('insert', '无')
+    Entry[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidthEntry)
+    
+    yBias += yStep
+    xBias = 0.02
+    Key = 'Plot2D_LimitPathJerk'
+    CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot2D_LimitPathJerk'), text='PathJerk限幅(m/s^3):', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth+0.05)
+    ChangeCheckButtonColor(Key)
+    xBias += 0.18
+    relwidthEntry = 0.08
+    Key = 'Plot2D_MinPathJerk'
+    Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
+    Entry[Key].delete(0, tk.END)
+    if type(getattr(PA.Plot, Key)) == float:
+        Entry[Key].insert('insert', getattr(PA.Plot, Key))
+    else:
+        Entry[Key].insert('insert', '无')
+    Entry[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidthEntry)
+    xBias += 0.085
+    Label['PathJerk限幅'] = ttk.Label(Frame['绘图设置'], text='~', anchor='w', font=('Microsoft YaHei', 9))
+    Label['PathJerk限幅'].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=0.1)
+    xBias += 0.02
+    Key = 'Plot2D_MaxPathJerk'
+    Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
+    Entry[Key].delete(0, tk.END)
+    if type(getattr(PA.Plot, Key)) == float:
+        Entry[Key].insert('insert', getattr(PA.Plot, Key))
+    else:
+        Entry[Key].insert('insert', '无')
+    Entry[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidthEntry)
+    
+    yBias = 0
+    yBias += yStep
+    yBias += yStep
+    xBias = 0.205
+    Key = 'Plot2D_PathVelType'
+    Label[Key] = ttk.Label(Frame['绘图设置'], text='PathVel来源', anchor='w', font=('Microsoft YaHei', 9))
+    Label[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidth*3/5)
+    StringVar[Key] = tk.StringVar()
+    StringVar[Key].set(str(getattr(PA.Plot, Key)))
+    values = ['Set', 'Cmd', 'Act']
+    Combobox[Key] = ttk.Combobox(Frame['绘图设置'], textvariable=StringVar[Key], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox[Key].place(relx=x+xBias+relwidth*3/5, rely=y+yBias, relheight=relheight, relwidth=relwidth*2/5)
+    yBias += yStep
+    Key = 'Plot2D_PathAccType'
+    Label[Key] = ttk.Label(Frame['绘图设置'], text='PathAcc来源', anchor='w', font=('Microsoft YaHei', 9))
+    Label[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidth*3/5)
+    StringVar[Key] = tk.StringVar()
+    StringVar[Key].set(str(getattr(PA.Plot, Key)))
+    values = ['Set', 'Cmd', 'Act']
+    Combobox[Key] = ttk.Combobox(Frame['绘图设置'], textvariable=StringVar[Key], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox[Key].place(relx=x+xBias+relwidth*3/5, rely=y+yBias, relheight=relheight, relwidth=relwidth*2/5)
+    yBias += yStep
+    Key = 'Plot2D_PathJerkType'
+    Label[Key] = ttk.Label(Frame['绘图设置'], text='PathJerk来源', anchor='w', font=('Microsoft YaHei', 9))
+    Label[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidth*3/5)
+    StringVar[Key] = tk.StringVar()
+    StringVar[Key].set(str(getattr(PA.Plot, Key)))
+    values = ['Set', 'Cmd', 'Act']
+    Combobox[Key] = ttk.Combobox(Frame['绘图设置'], textvariable=StringVar[Key], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox[Key].place(relx=x+xBias+relwidth*3/5, rely=y+yBias, relheight=relheight, relwidth=relwidth*2/5)
+    
+    x = 0.64
+    y = 0
+    LabelFrame['循圆绘图设置'] = ttk.LabelFrame(Frame['绘图设置'], text='循圆绘图设置')
+    LabelFrame['循圆绘图设置'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.22)
+    xBias = 0.02
+    yBias = 0.11
+    xStep = 0.11
+    yStep = 0.11
+    relheight = 0.1
+    relwidth = 0.2
+    Key = 'PlotCircleErrXY_MaxErr'
+    Label[Key] = ttk.Label(Frame['绘图设置'], text='XY最大循圆误差(um):', anchor='w', font=('Microsoft YaHei', 9))
+    Label[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidth*4/5)
+    Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
+    Entry[Key].delete(0, tk.END)
+    if type(getattr(PA.Plot, Key)) == float:
+        Entry[Key].insert('insert', getattr(PA.Plot, Key))
+    else:
+        Entry[Key].insert('insert', '无')
+    Entry[Key].place(relx=x+xBias+relwidth*4/5, rely=y+yBias, relheight=relheight, relwidth=relwidth*1/5)
+    yBias += yStep
+    Key = 'PlotCircleErrYZ_MaxErr'
+    Label[Key] = ttk.Label(Frame['绘图设置'], text='YZ最大循圆误差(um):', anchor='w', font=('Microsoft YaHei', 9))
+    Label[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidth*4/5)
+    Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
+    Entry[Key].delete(0, tk.END)
+    if type(getattr(PA.Plot, Key)) == float:
+        Entry[Key].insert('insert', getattr(PA.Plot, Key))
+    else:
+        Entry[Key].insert('insert', '无')
+    Entry[Key].place(relx=x+xBias+relwidth*4/5, rely=y+yBias, relheight=relheight, relwidth=relwidth*1/5)
+    yBias += yStep
+    Key = 'PlotCircleErrXZ_MaxErr'
+    Label[Key] = ttk.Label(Frame['绘图设置'], text='XZ最大循圆误差(um):', anchor='w', font=('Microsoft YaHei', 9))
+    Label[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidth*4/5)
+    Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
+    Entry[Key].delete(0, tk.END)
+    if type(getattr(PA.Plot, Key)) == float:
+        Entry[Key].insert('insert', getattr(PA.Plot, Key))
+    else:
+        Entry[Key].insert('insert', '无')
+    Entry[Key].place(relx=x+xBias+relwidth*4/5, rely=y+yBias, relheight=relheight, relwidth=relwidth*1/5)
     
     ################################## 自定义绘图 ##################################
     Frame['自定义绘图'] = ttk.Frame(Notebook['绘图'])
