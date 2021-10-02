@@ -35,8 +35,12 @@
                 ActJerk_X                       Unit: m/s^3
 """
 
-Version = '1.7.4'
+Version = '1.7.5'
 ################################ Version History ##################################
+# ---------------------------------Version 1.7.5--------------------------------- #
+# Date: 2021/10/3
+# Author: yangxiaosheng
+# Update: fix bug in plotting circle error figure
 # ---------------------------------Version 1.7.4--------------------------------- #
 # Date: 2021/10/2
 # Author: yangxiaosheng
@@ -1280,8 +1284,7 @@ class PA_Data_Analyze:
     # -------------------------------Plot Circle Error------------------------------ #
     ##################################################################################
     def PlotCircleError(self, R, R_MaxErr_mm, Center1, Center2, CmdPos1_mm, CmdPos2_mm, ActPos1_mm, ActPos2_mm, F=None, title=''):
-        R_Display = 2 * R_MaxErr_mm
-        R_DisplayStep = R_MaxErr_mm / 3
+        R_Display = R_MaxErr_mm
         Len = CmdPos1_mm.__len__()
         
         Theta_Set = np.linspace(0, 2 * np.pi, Len)
@@ -1314,8 +1317,16 @@ class PA_Data_Analyze:
         dataName = [dataNmae1, dataName2, dataName3]
         
         self.PlotPolar(Thtea, Radius, title=title, dataName=dataName, newFigure=True)
-        #yxs
-        #plt.yticks(np.array(range(int((R_Display - R_MaxErr_mm) * 1e6), int((R_Display + R_MaxErr_mm) * 1e6), int(R_DisplayStep * 1e6))) / 1e6, np.array(range(int(-R_MaxErr_mm * 1e9), int(R_MaxErr_mm * 1e9), int(R_DisplayStep * 1e9))))
+        
+        locs, labels = plt.yticks()
+        ticks = np.array(locs)
+        _ticks = (ticks - R_Display) * 1e3
+        _ticks = np.array(list(map(lambda x: round(x, 3), _ticks)))
+        plt.yticks(ticks, _ticks)
+        plt.ion()
+        plt.draw()
+        plt.pause(0.001)
+        plt.ioff()
         
         return None
 
@@ -1345,6 +1356,7 @@ class PA_Data_Analyze:
             plt.legend(dataName, loc="upper right")
         if limit != None:
             plt.ylim(tuple(limit))
+        
         plt.grid('on')
         plt.ion()
         plt.draw()
