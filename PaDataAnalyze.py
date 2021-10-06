@@ -2021,7 +2021,7 @@ if __name__ == '__main__':
                     write_param('WINDOW', 'WindowSize', str(GUI.WindowSize))
                     write_param('WINDOW', 'WindowPosition', str(GUI.WindowPosition))
                 write_param('WINDOW', 'EnableUserCode', str(bool(GUI.EnableUserCode)))
-                write_param('WINDOW', 'UserCode', str(GUI.UserCode).encode('utf-8').hex())
+                write_param('WINDOW', 'UserCode', str(GUI.UserCode[:-1]).encode('utf-8').hex())
                     
                 write_param('LOAD', 'DataFileName', str(PA.DataFileName))
                 write_param('LOAD', 'BlockRange[0]', str(PA.BlockRange[0]))
