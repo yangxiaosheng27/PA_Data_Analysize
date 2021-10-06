@@ -35,12 +35,8 @@
                 ActJerk_X                       Unit: m/s^3
 """
 
-Version = '1.7.6'
+Version = '1.7.5'
 ################################ Version History ##################################
-# ---------------------------------Version 1.7.6--------------------------------- #
-# Date: 2021/10/5
-# Author: yangxiaosheng
-# Update: fix bug in saving ini config file
 # ---------------------------------Version 1.7.5--------------------------------- #
 # Date: 2021/10/3
 # Author: yangxiaosheng
@@ -1954,7 +1950,6 @@ if __name__ == '__main__':
     import os
     class Config():
         def __init__(self):
-            os.chdir(os.path.dirname(__file__))
             self.fileName = os.path.splitext(os.path.basename(__file__))[0] + '.ini'
             self.conf = configparser.ConfigParser()
             self.conf.read(self.fileName)
@@ -3054,7 +3049,7 @@ if __name__ == '__main__':
     Notebook['绘图'].add(Frame['自定义绘图'], text='自定义绘图')
     
     CheckVar['用户代码'] = tk.IntVar(); CheckVar['用户代码'].set(GUI.EnableUserCode)
-    CheckButton['用户代码'] = ttk.Checkbutton(Frame['自定义绘图'], text='使用以下代码绘图（Python 3.8）：', variable=CheckVar['用户代码'], onvalue=True, offvalue=False)
+    CheckButton['用户代码'] = ttk.Checkbutton(Frame['自定义绘图'], text='使用以下代码（Python 3.8）：', variable=CheckVar['用户代码'], onvalue=True, offvalue=False)
     CheckButton['用户代码'].place(relx=0.02, rely=0.02, relheight=0.1, relwidth=0.5)
     ScrolledText['用户代码'] = scrolledtext.ScrolledText(Frame['自定义绘图'], font=('Consolas', 8))
     ScrolledText['用户代码'].insert('end', '%s' % GUI.UserCode)
