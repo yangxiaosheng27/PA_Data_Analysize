@@ -35,12 +35,16 @@
                 ActJerk_X                       Unit: m/s^3
 """
 
-Version = '1.7.6'
+Version = '1.8.0'
 ################################ Version History ##################################
+# ---------------------------------Version 1.8.0--------------------------------- #
+# Date: 2021/10/7
+# Author: yangxiaosheng
+# Update: generate sampling configuration files
 # ---------------------------------Version 1.7.6--------------------------------- #
 # Date: 2021/10/5
 # Author: yangxiaosheng
-# Update: fix bug in saving ini config file
+# Update: fix some bugs in saving ini config file
 # ---------------------------------Version 1.7.5--------------------------------- #
 # Date: 2021/10/3
 # Author: yangxiaosheng
@@ -2228,41 +2232,45 @@ if __name__ == '__main__':
     Entry['文件路径'].place(relx=x, rely=y, relheight=0.05, relwidth=0.7)
     Button['选择文件'] = ttk.Button(window, text="选择文件", command=OpenFile)
     Button['选择文件'].place(relx=x + 0.8, rely=y, relheight=0.05, relwidth=0.1)
-
-    #################################### 采样参数 ####################################
+    
+    ###################################### 采样配置 #####################################
     x = 0.05
     y = 0.15
-    LabelFrame['采样参数'] = ttk.LabelFrame(window, text='采样参数')
-    LabelFrame['采样参数'].place(relx=x - 0.03, rely=y - 0.03, relheight=0.165, relwidth=0.95)
+    Notebook['采样配置'] = ttk.Notebook(window)
+    Notebook['采样配置'].place(relx=x - 0.03, rely=y - 0.03, relheight=0.165, relwidth=0.95)
+    
+    #################################### 采样参数 ####################################
+    Frame['采样参数'] = ttk.Frame(Notebook['采样配置'])
+    Notebook['采样配置'].add(Frame['采样参数'], text='采样参数')
     
     x = 0
-    y = 0
+    y = 0.05
     xBias = 0.875
     yBias = 0.01
-    Button['加载文件'] = ttk.Button(LabelFrame['采样参数'], text="加载文件", command=load_file)
+    Button['加载文件'] = ttk.Button(Frame['采样参数'], text="加载文件", command=load_file)
     Button['加载文件'].place(relx=x+xBias, rely=y+yBias, relheight=0.88, relwidth=0.105)
     
     # --------------------------------- 采样参数 1 -----------------------------------#
     x = 0
-    y = 0
+    y = 0.05
     xBias = 0.01
     yBias = 0.01
-    Label['采样时间'] = ttk.Label(LabelFrame['采样参数'], text='采样时间(s)：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['采样时间'] = ttk.Label(Frame['采样参数'], text='采样时间(s)：', anchor='w', font=('Microsoft YaHei', 9))
     Label['采样时间'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
     xBias += 0.09
-    Entry['Ts'] = ttk.Entry(LabelFrame['采样参数'], font=('Microsoft YaHei', 9))
+    Entry['Ts'] = ttk.Entry(Frame['采样参数'], font=('Microsoft YaHei', 9))
     Entry['Ts'].delete(0, tk.END)
     Entry['Ts'].insert('insert', PA.Ts)
     Entry['Ts'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.06)
     
     x = 0.182
-    y = 0
+    y = 0.05
     xBias = 0.01
     yBias = 0.01
-    Label['NC行号范围'] = ttk.Label(LabelFrame['采样参数'], text='NC行号范围：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['NC行号范围'] = ttk.Label(Frame['采样参数'], text='NC行号范围：', anchor='w', font=('Microsoft YaHei', 9))
     Label['NC行号范围'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
     xBias += 0.1
-    Entry['BlockRange_0'] = ttk.Entry(LabelFrame['采样参数'], font=('Microsoft YaHei', 9))
+    Entry['BlockRange_0'] = ttk.Entry(Frame['采样参数'], font=('Microsoft YaHei', 9))
     Entry['BlockRange_0'].delete(0, tk.END)
     if PA.BlockRange[0]:
         Entry['BlockRange_0'].insert('insert', PA.BlockRange[0])
@@ -2270,10 +2278,10 @@ if __name__ == '__main__':
         Entry['BlockRange_0'].insert('insert', '无')
     Entry['BlockRange_0'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.09)
     xBias += 0.095
-    Label['NC行号范围波浪线'] = ttk.Label(LabelFrame['采样参数'], text='~', anchor='w', font=('Microsoft YaHei', 9))
+    Label['NC行号范围波浪线'] = ttk.Label(Frame['采样参数'], text='~', anchor='w', font=('Microsoft YaHei', 9))
     Label['NC行号范围波浪线'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
     xBias += 0.02
-    Entry['BlockRange_1'] = ttk.Entry(LabelFrame['采样参数'], font=('Microsoft YaHei', 9))
+    Entry['BlockRange_1'] = ttk.Entry(Frame['采样参数'], font=('Microsoft YaHei', 9))
     Entry['BlockRange_1'].delete(0, tk.END)
     if PA.BlockRange[1]:
         Entry['BlockRange_1'].insert('insert', PA.BlockRange[1])
@@ -2282,13 +2290,13 @@ if __name__ == '__main__':
     Entry['BlockRange_1'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.09)
         
     x = 0.52
-    y = 0
+    y = 0.05
     xBias = 0.01
     yBias = 0.01
-    Label['时间范围'] = ttk.Label(LabelFrame['采样参数'], text='时间范围(s)：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['时间范围'] = ttk.Label(Frame['采样参数'], text='时间范围(s)：', anchor='w', font=('Microsoft YaHei', 9))
     Label['时间范围'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
     xBias += 0.1
-    Entry['TimeRange_0'] = ttk.Entry(LabelFrame['采样参数'], font=('Microsoft YaHei', 9))
+    Entry['TimeRange_0'] = ttk.Entry(Frame['采样参数'], font=('Microsoft YaHei', 9))
     Entry['TimeRange_0'].delete(0, tk.END)
     if PA.TimeRange[0]:
         Entry['TimeRange_0'].insert('insert', PA.TimeRange[0])
@@ -2296,10 +2304,10 @@ if __name__ == '__main__':
         Entry['TimeRange_0'].insert('insert', '无')
     Entry['TimeRange_0'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.09)
     xBias += 0.095
-    Label['时间范围波浪线'] = ttk.Label(LabelFrame['采样参数'], text='~', anchor='w', font=('Microsoft YaHei', 9))
+    Label['时间范围波浪线'] = ttk.Label(Frame['采样参数'], text='~', anchor='w', font=('Microsoft YaHei', 9))
     Label['时间范围波浪线'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
     xBias += 0.02
-    Entry['TimeRange_1'] = ttk.Entry(LabelFrame['采样参数'], font=('Microsoft YaHei', 9))
+    Entry['TimeRange_1'] = ttk.Entry(Frame['采样参数'], font=('Microsoft YaHei', 9))
     Entry['TimeRange_1'].delete(0, tk.END)
     if PA.TimeRange[1]:
         Entry['TimeRange_1'].insert('insert', PA.TimeRange[1])
@@ -2310,10 +2318,10 @@ if __name__ == '__main__':
     # --------------------------------- 采样参数 2 -----------------------------------#
     xStep = 0.176
     x = 0
-    y = 0
+    y = 0.05
     xBias = 0.01
     yBias = 0.5
-    Label['X轴轴号'] = ttk.Label(LabelFrame['采样参数'], text='X轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['X轴轴号'] = ttk.Label(Frame['采样参数'], text='X轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
     Label['X轴轴号'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
     StringVar['X轴轴号'] = tk.StringVar()
     if int(PA.AxisID_X) >= 1 and int(PA.AxisID_X) <= 32:
@@ -2323,14 +2331,14 @@ if __name__ == '__main__':
     values = list(map(str, list(range(1, 33))))
     values.insert(0, '无')
     xBias += 0.07
-    Combobox['AxisID_X'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['X轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_X'] = ttk.Combobox(Frame['采样参数'], textvariable=StringVar['X轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
     Combobox['AxisID_X'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.05)
 
     x += xStep
-    y = 0
+    y = 0.05
     xBias = 0.01
     yBias = 0.5
-    Label['Y轴轴号'] = ttk.Label(LabelFrame['采样参数'], text='Y轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['Y轴轴号'] = ttk.Label(Frame['采样参数'], text='Y轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
     Label['Y轴轴号'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
     StringVar['Y轴轴号'] = tk.StringVar()
     if int(PA.AxisID_Y) >= 1 and int(PA.AxisID_Y) <= 32:
@@ -2340,14 +2348,14 @@ if __name__ == '__main__':
     values = list(map(str, list(range(1, 33))))
     values.insert(0, '无')
     xBias += 0.07
-    Combobox['AxisID_Y'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['Y轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_Y'] = ttk.Combobox(Frame['采样参数'], textvariable=StringVar['Y轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
     Combobox['AxisID_Y'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.05)
 
     x += xStep
-    y = 0
+    y = 0.05
     xBias = 0.01
     yBias = 0.5
-    Label['Z轴轴号'] = ttk.Label(LabelFrame['采样参数'], text='Z轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['Z轴轴号'] = ttk.Label(Frame['采样参数'], text='Z轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
     Label['Z轴轴号'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
     StringVar['Z轴轴号'] = tk.StringVar()
     if int(PA.AxisID_Z) >= 1 and int(PA.AxisID_Z) <= 32:
@@ -2357,14 +2365,14 @@ if __name__ == '__main__':
     values = list(map(str, list(range(1, 33))))
     values.insert(0, '无')
     xBias += 0.07
-    Combobox['AxisID_Z'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['Z轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_Z'] = ttk.Combobox(Frame['采样参数'], textvariable=StringVar['Z轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
     Combobox['AxisID_Z'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.05)
 
     x += xStep
-    y = 0
+    y = 0.05
     xBias = 0.01
     yBias = 0.5
-    Label['A轴轴号'] = ttk.Label(LabelFrame['采样参数'], text='A轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['A轴轴号'] = ttk.Label(Frame['采样参数'], text='A轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
     Label['A轴轴号'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
     StringVar['A轴轴号'] = tk.StringVar()
     if int(PA.AxisID_A) >= 1 and int(PA.AxisID_A) <= 32:
@@ -2374,14 +2382,14 @@ if __name__ == '__main__':
     values = list(map(str, list(range(1, 33))))
     values.insert(0, '无')
     xBias += 0.07
-    Combobox['AxisID_A'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['A轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_A'] = ttk.Combobox(Frame['采样参数'], textvariable=StringVar['A轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
     Combobox['AxisID_A'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.05)
 
     x += xStep
-    y = 0
+    y = 0.05
     xBias = 0.01
     yBias = 0.5
-    Label['B轴轴号'] = ttk.Label(LabelFrame['采样参数'], text='B轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['B轴轴号'] = ttk.Label(Frame['采样参数'], text='B轴轴号：', anchor='w', font=('Microsoft YaHei', 9))
     Label['B轴轴号'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.1)
     StringVar['B轴轴号'] = tk.StringVar()
     if int(PA.AxisID_B) >= 1 and int(PA.AxisID_B) <= 32:
@@ -2391,8 +2399,21 @@ if __name__ == '__main__':
     values = list(map(str, list(range(1, 33))))
     values.insert(0, '无')
     xBias += 0.07
-    Combobox['AxisID_B'] = ttk.Combobox(LabelFrame['采样参数'], textvariable=StringVar['B轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
+    Combobox['AxisID_B'] = ttk.Combobox(Frame['采样参数'], textvariable=StringVar['B轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
     Combobox['AxisID_B'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.05)
+
+    ###################################### 导出采样配置文件 #####################################
+    Frame['生成采样配置文件'] = ttk.Frame(Notebook['采样配置'])
+    Notebook['采样配置'].add(Frame['生成采样配置文件'], text='生成采样配置文件')
+    
+    x = 0
+    y = 0.05
+    xBias = 0.875
+    yBias = 0.01
+    Button['选择导出路径'] = ttk.Button(Frame['生成采样配置文件'], text="选择导出路径", command=load_file)
+    Button['选择导出路径'].place(relx=x+xBias, rely=y+yBias, relheight=0.88, relwidth=0.105)
+    
+    
 
     ###################################### 绘图 #####################################
     Notebook['绘图'] = ttk.Notebook(window)
