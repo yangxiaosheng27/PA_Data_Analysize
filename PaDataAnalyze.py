@@ -1517,7 +1517,8 @@ class PA_Data_Analyze:
                     self.Data.Length = 0
                     return None
                 if BlockNoExistFlag:
-                    if float(self.LineData[BlockNoIndex]) >= 1.23456789e308:
+                    #if float(self.LineData[BlockNoIndex]) >= 1.23456789e308:
+                    if float(self.LineData[BlockNoIndex]) >= 1.2345678e162:
                         self.LineData[BlockNoIndex] = LastBlockNo
                     if dataStartFlag == False and Time >= self.TimeRange[0] and float(self.LineData[BlockNoIndex]) >= self.BlockRange[0]:
                         dataStartFlag = True
@@ -1938,7 +1939,7 @@ if __name__ == '__main__':
             self.WindowPosition = ''
             self.lastTime = time.time()
             self.EnableUserCode = True
-            self.UserCode = ''
+            self.UserCode = '#Example:\nplot(data.CmdPos_X)'
             
         def getWindowSize(self, event):
             if str(event.widget) != '.':
@@ -1978,9 +1979,10 @@ if __name__ == '__main__':
             GUI.WindowSize      = str(get_param('WINDOW', 'WindowSize', str(GUI.WindowSize)))
             GUI.WindowPosition  = str(get_param('WINDOW', 'WindowPosition', str(GUI.WindowPosition)))
             GUI.EnableUserCode  = bool(get_param('WINDOW', 'EnableUserCode', str(bool(GUI.EnableUserCode))) == 'True')
-            GUI.UserCode        = str(get_param('WINDOW', 'UserCode', str(GUI.UserCode)))
+            UserCodeHex         = str(GUI.UserCode).encode('utf-8').hex()
+            UserCodeHex         = str(get_param('WINDOW', 'UserCode', UserCodeHex))
             try:
-                GUI.UserCode    = str(bytearray(bytes.fromhex(GUI.UserCode)), 'utf-8')
+                GUI.UserCode    = str(bytearray(bytes.fromhex(UserCodeHex)), 'utf-8')
             except:
                 GUI.UserCode    = ''
             
@@ -2021,7 +2023,8 @@ if __name__ == '__main__':
                     write_param('WINDOW', 'WindowSize', str(GUI.WindowSize))
                     write_param('WINDOW', 'WindowPosition', str(GUI.WindowPosition))
                 write_param('WINDOW', 'EnableUserCode', str(bool(GUI.EnableUserCode)))
-                write_param('WINDOW', 'UserCode', str(GUI.UserCode[:-1]).encode('utf-8').hex())
+                UserCode = GUI.UserCode if GUI.UserCode[-1] != '\n' else GUI.UserCode[:-1]
+                write_param('WINDOW', 'UserCode', str(UserCode).encode('utf-8').hex())
                     
                 write_param('LOAD', 'DataFileName', str(PA.DataFileName))
                 write_param('LOAD', 'BlockRange[0]', str(PA.BlockRange[0]))
@@ -2057,12 +2060,12 @@ if __name__ == '__main__':
     def OpenFile():
         filename = filedialog.askopenfilename(title='打开文件', filetypes=[('txt', '*.txt')])
         if type(filename)==str and filename != '':
-            Entry['文件路径'].delete(0, tk.END)
-            Entry['文件路径'].insert('insert', filename)
+            Entry['采样文件路径'].delete(0, tk.END)
+            Entry['采样文件路径'].insert('insert', filename)
 
     err = -1
     def LoadParamSync():
-        PA.DataFileName = Entry['文件路径'].get()
+        PA.DataFileName = Entry['采样文件路径'].get()
         try:
             PA.Ts = float(Entry['Ts'].get())
         except Exception as e:
@@ -2220,16 +2223,16 @@ if __name__ == '__main__':
             print('\033[1;34m\nPlotData: \033[1;31mNo Figure\033[0m')
             PA.OutputMessageToGUI('\nPlotData: No Figure')
     
-    #################################### 文件路径 ####################################
+    #################################### 采样文件路径 ####################################
     x = 0.05
     y = 0.05
-    LabelFrame['文件路径'] = ttk.LabelFrame(window, text='文件路径')
-    LabelFrame['文件路径'].place(relx=x - 0.03, rely=y - 0.03, relheight=0.093, relwidth=0.95)
+    LabelFrame['采样文件路径'] = ttk.LabelFrame(window, text='采样文件路径')
+    LabelFrame['采样文件路径'].place(relx=x - 0.03, rely=y - 0.03, relheight=0.093, relwidth=0.95)
 
-    Entry['文件路径'] = ttk.Entry(window, font=('Microsoft YaHei', 10))
-    Entry['文件路径'].delete(0, tk.END)
-    Entry['文件路径'].insert('insert', PA.DataFileName)
-    Entry['文件路径'].place(relx=x, rely=y, relheight=0.05, relwidth=0.7)
+    Entry['采样文件路径'] = ttk.Entry(window, font=('Microsoft YaHei', 10))
+    Entry['采样文件路径'].delete(0, tk.END)
+    Entry['采样文件路径'].insert('insert', PA.DataFileName)
+    Entry['采样文件路径'].place(relx=x, rely=y, relheight=0.05, relwidth=0.7)
     Button['选择文件'] = ttk.Button(window, text="选择文件", command=OpenFile)
     Button['选择文件'].place(relx=x + 0.8, rely=y, relheight=0.05, relwidth=0.1)
     
