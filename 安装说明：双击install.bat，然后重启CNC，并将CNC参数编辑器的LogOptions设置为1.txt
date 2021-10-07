@@ -1,5 +1,0 @@
-安装说明：
-双击install.bat，然后重启CNC，并将CNC参数编辑器的LogOptions设置为1
-
-卸载说明：
-双击uninstall.bat，然后重启CNC
