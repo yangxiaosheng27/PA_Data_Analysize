@@ -173,7 +173,7 @@ class PA_Data_Analyze:
         ##################################################################################
         self.Precision_um           = 1; # 1 internal incremental = Precision_um * 1um
         self.Ts                     = 0.001  # sample time, unit: s
-        self.DataFileName           = r'C:\PACnc\CNCVariableTrace.txt'
+        self.DataFileName           = r'C:/PACnc/CNCVariableTrace.txt'
         self.TimeRange              = [0, 0] # select the sample data in Time range of [minTime, maxTime] (unit: s) ([0, 0] means select all Time)
         self.BlockRange             = [0, 0] # select the sample data in NC Block range of [minBlockNo, maxBlockNo] ([0, 0] means select all NC Block)
         self.Plot                   = self.PlotFlag_Class()
@@ -1933,13 +1933,24 @@ if __name__ == '__main__':
     from tkinter import ttk
     from tkinter import filedialog
     from tkinter import scrolledtext
+    import os
     class GUI_Param():
         def __init__(self):
             self.WindowSize = '1000x615'
             self.WindowPosition = ''
             self.lastTime = time.time()
-            self.EnableUserCode = True
+            self.EnableUserCode = False
             self.UserCode = '#Example:\nplot(data.CmdPos_X)'
+            #os.chdir(os.path.dirname(__file__))
+            WorkPath = os.path.dirname(__file__)
+            WorkPath = ''.join(map(lambda c: '/' if c == '\\' else c, WorkPath))
+            self.GuiConfigFileName = WorkPath + '/' + os.path.splitext(os.path.basename(__file__))[0] + '.ini'
+            self.SampleConfigSubfolder              = '/PA采样配置文件'
+            self.SampleConfigFolder                 = WorkPath + self.SampleConfigSubfolder
+            self.SampleConfigFileName_CncPlcVarDefs = '/CncPlcVarDefs.ini'
+            self.SampleConfigFileName_install       = '/install.bat'
+            self.SampleConfigFileName_uninstall     = '/uninstall.bat'
+            self.SampleConfigFileName_killCNC       = '/kill CNC.bat'
             
         def getWindowSize(self, event):
             if str(event.widget) != '.':
@@ -1956,12 +1967,10 @@ if __name__ == '__main__':
     
     # init config used in GUI
     import configparser
-    import os
     class Config():
         def __init__(self):
-            os.chdir(os.path.dirname(__file__))
-            self.fileName = os.path.splitext(os.path.basename(__file__))[0] + '.ini'
             self.conf = configparser.ConfigParser()
+            self.fileName = GUI.GuiConfigFileName
             self.conf.read(self.fileName)
             
         def read(self):
@@ -1976,27 +1985,28 @@ if __name__ == '__main__':
                         self.conf.set(section, key, str(defaultValue))
                     return defaultValue
                 
-            GUI.WindowSize      = str(get_param('WINDOW', 'WindowSize', str(GUI.WindowSize)))
-            GUI.WindowPosition  = str(get_param('WINDOW', 'WindowPosition', str(GUI.WindowPosition)))
-            GUI.EnableUserCode  = bool(get_param('WINDOW', 'EnableUserCode', str(bool(GUI.EnableUserCode))) == 'True')
-            UserCodeHex         = str(GUI.UserCode).encode('utf-8').hex()
-            UserCodeHex         = str(get_param('WINDOW', 'UserCode', UserCodeHex))
+            GUI.WindowSize          = str(get_param('GUI', 'WindowSize', str(GUI.WindowSize)))
+            GUI.WindowPosition      = str(get_param('GUI', 'WindowPosition', str(GUI.WindowPosition)))
+            GUI.SampleConfigFolder  = str(get_param('GUI', 'SampleConfigFolder', str(GUI.SampleConfigFolder)))
+            GUI.EnableUserCode      = bool(get_param('GUI', 'EnableUserCode', str(bool(GUI.EnableUserCode))) == 'True')
+            UserCodeHex             = str(GUI.UserCode).encode('utf-8').hex()
+            UserCodeHex             = str(get_param('GUI', 'UserCode', UserCodeHex))
             try:
-                GUI.UserCode    = str(bytearray(bytes.fromhex(UserCodeHex)), 'utf-8')
+                GUI.UserCode        = str(bytearray(bytes.fromhex(UserCodeHex)), 'utf-8')
             except:
-                GUI.UserCode    = ''
+                GUI.UserCode        = ''
             
-            PA.DataFileName     = str(get_param('LOAD', 'DataFileName', str(PA.DataFileName)))
-            PA.Ts               = float(get_param('LOAD', 'Ts', str(PA.Ts)))
-            PA.BlockRange[0]    = int(float(get_param('LOAD', 'BlockRange[0]', str(PA.BlockRange[0]))))
-            PA.BlockRange[1]    = int(float(get_param('LOAD', 'BlockRange[1]', str(PA.BlockRange[1]))))
-            PA.TimeRange[0]     = float(get_param('LOAD', 'TimeRange[0]', str(PA.TimeRange[0])))
-            PA.TimeRange[1]     = float(get_param('LOAD', 'TimeRange[1]', str(PA.TimeRange[1])))
-            PA.AxisID_X         = int(float(get_param('LOAD', 'AxisID_X', str(PA.AxisID_X))))
-            PA.AxisID_Y         = int(float(get_param('LOAD', 'AxisID_Y', str(PA.AxisID_Y))))
-            PA.AxisID_Z         = int(float(get_param('LOAD', 'AxisID_Z', str(PA.AxisID_Z))))
-            PA.AxisID_A         = int(float(get_param('LOAD', 'AxisID_A', str(PA.AxisID_A))))
-            PA.AxisID_B         = int(float(get_param('LOAD', 'AxisID_B', str(PA.AxisID_B))))
+            PA.DataFileName         = str(get_param('LOAD', 'DataFileName', str(PA.DataFileName)))
+            PA.Ts                   = float(get_param('LOAD', 'Ts', str(PA.Ts)))
+            PA.BlockRange[0]        = int(float(get_param('LOAD', 'BlockRange[0]', str(PA.BlockRange[0]))))
+            PA.BlockRange[1]        = int(float(get_param('LOAD', 'BlockRange[1]', str(PA.BlockRange[1]))))
+            PA.TimeRange[0]         = float(get_param('LOAD', 'TimeRange[0]', str(PA.TimeRange[0])))
+            PA.TimeRange[1]         = float(get_param('LOAD', 'TimeRange[1]', str(PA.TimeRange[1])))
+            PA.AxisID_X             = int(float(get_param('LOAD', 'AxisID_X', str(PA.AxisID_X))))
+            PA.AxisID_Y             = int(float(get_param('LOAD', 'AxisID_Y', str(PA.AxisID_Y))))
+            PA.AxisID_Z             = int(float(get_param('LOAD', 'AxisID_Z', str(PA.AxisID_Z))))
+            PA.AxisID_A             = int(float(get_param('LOAD', 'AxisID_A', str(PA.AxisID_A))))
+            PA.AxisID_B             = int(float(get_param('LOAD', 'AxisID_B', str(PA.AxisID_B))))
             
             for name in PA.Plot.paramName:
                 value = getattr(PA.Plot, name)
@@ -2020,11 +2030,12 @@ if __name__ == '__main__':
                         self.conf.set(section, key, str(defaultValue))
 
                 if GUI.WindowSize != '1x1':
-                    write_param('WINDOW', 'WindowSize', str(GUI.WindowSize))
-                    write_param('WINDOW', 'WindowPosition', str(GUI.WindowPosition))
-                write_param('WINDOW', 'EnableUserCode', str(bool(GUI.EnableUserCode)))
+                    write_param('GUI', 'WindowSize', str(GUI.WindowSize))
+                    write_param('GUI', 'WindowPosition', str(GUI.WindowPosition))
+                write_param('GUI', 'SampleConfigFolder', str(GUI.SampleConfigFolder))
+                write_param('GUI', 'EnableUserCode', str(bool(GUI.EnableUserCode)))
                 UserCode = GUI.UserCode if GUI.UserCode[-1] != '\n' else GUI.UserCode[:-1]
-                write_param('WINDOW', 'UserCode', str(UserCode).encode('utf-8').hex())
+                write_param('GUI', 'UserCode', str(UserCode).encode('utf-8').hex())
                     
                 write_param('LOAD', 'DataFileName', str(PA.DataFileName))
                 write_param('LOAD', 'BlockRange[0]', str(PA.BlockRange[0]))
@@ -2057,15 +2068,11 @@ if __name__ == '__main__':
     window.update()
     window.deiconify()
 
-    def OpenFile():
-        filename = filedialog.askopenfilename(title='打开文件', filetypes=[('txt', '*.txt')])
-        if type(filename)==str and filename != '':
-            Entry['采样文件路径'].delete(0, tk.END)
-            Entry['采样文件路径'].insert('insert', filename)
-
     err = -1
     def LoadParamSync():
         PA.DataFileName = Entry['采样文件路径'].get()
+        GUI.SampleConfigFolder = Entry['采样配置文件导出路径'].get()
+        
         try:
             PA.Ts = float(Entry['Ts'].get())
         except Exception as e:
@@ -2091,9 +2098,18 @@ if __name__ == '__main__':
         PA.AxisID_Z = int(Combobox['AxisID_Z'].get()) if Combobox['AxisID_Z'].get() != '无' else 0
         PA.AxisID_A = int(Combobox['AxisID_A'].get()) if Combobox['AxisID_A'].get() != '无' else 0
         PA.AxisID_B = int(Combobox['AxisID_B'].get()) if Combobox['AxisID_B'].get() != '无' else 0
-        return None
         
-    def load_file():
+        return None
+   
+    def CallBack_SelectSampleFile():
+        filename = filedialog.askopenfilename(title='选择采样文件', filetypes=[('txt', '*.txt')])
+        if type(filename)==str and filename != '':
+            Entry['采样文件路径'].delete(0, tk.END)
+            Entry['采样文件路径'].insert('insert', filename)
+        LoadParamSync()
+        config.save()
+            
+    def CallBack_LoadSampleFile():
         PA.GuiText = ScrolledText['输出消息']
         if LoadParamSync() == err:
             return None
@@ -2102,6 +2118,114 @@ if __name__ == '__main__':
         config.save()
         PA.LoadData()
         
+    def CallBack_SelectSampleConfigFolder():
+        fileName = filedialog.askdirectory(title='选择采样配置文件导出路径')
+        if type(fileName)==str and fileName != '':
+            Entry['采样配置文件导出路径'].delete(0, tk.END)
+            if fileName[-len(GUI.SampleConfigSubfolder):] != GUI.SampleConfigSubfolder:
+                fileName += GUI.SampleConfigSubfolder
+            Entry['采样配置文件导出路径'].insert('insert', fileName)
+        LoadParamSync()
+        config.save()
+        
+    def CallBack_ExportSampleConfigFiles():
+        LoadParamSync()
+        config.save()
+        if os.path.exists(GUI.SampleConfigFolder) == False:
+            os.makedirs(GUI.SampleConfigFolder)
+        #-----------------------------------------------------------------------install.bat--------------------------------------------------------------------#
+        with open(GUI.SampleConfigFolder + GUI.SampleConfigFileName_install, 'w+') as f:
+            f.write(r'%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit' + '\n')
+            f.write(r'cd /D %~dp0' + '\n')
+            f.write(r'' + '\n')
+            f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\PowerAutomation\CncKernel\1 /v CncPlcDataDefinitions /t REG_SZ /d "User Data\CncPlcVarDefs.ini" /f' + '\n')
+            f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PowerAutomation\CncKernel\1 /v CncPlcDataDefinitions /t REG_SZ /d "User Data\CncPlcVarDefs.ini" /f' + '\n')
+            f.write(r'' + '\n')
+            f.write(r'copy /Y CncPlcVarDefs.ini "C:\PACnc\User data"' + '\n')
+            f.write(r'' + '\n')
+            f.write(r'set Options=0x5' + '\n')
+            f.write('for /f "tokens=2*" %%i in (\'reg query "HKEY_LOCAL_MACHINE\\SOFTWARE\\PowerAutomation\\System" /v "Options"\') do set Options=%%j' + '\n')
+            f.write(r'setlocal enabledelayedexpansion' + '\n')
+            f.write(r'set /a "Options=!Options!|0x10"' + '\n')
+            f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\PowerAutomation\System /v Options /t REG_DWORD /d %Options% /f' + '\n')
+            f.write(r'' + '\n')
+            f.write(r'set Options=0x5' + '\n')
+            f.write('for /f "tokens=2*" %%i in (\'reg query "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\PowerAutomation\\System" /v "Options"\') do set Options=%%j' + '\n')
+            f.write(r'setlocal enabledelayedexpansion' + '\n')
+            f.write(r'set /a "Options=!Options!|0x10"' + '\n')
+            f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PowerAutomation\System /v Options /t REG_DWORD /d %Options% /f' + '\n')
+            f.write(r'' + '\n')
+            f.write(r'@echo off' + '\n')
+            f.write(r'echo .' + '\n')
+            f.write(r'echo install done, wait to exit...' + '\n')
+            f.write(r'timeout /t 10' + '\n')
+        #-----------------------------------------------------------------------uninstall.bat--------------------------------------------------------------------#
+        with open(GUI.SampleConfigFolder + GUI.SampleConfigFileName_uninstall, 'w+') as f:
+            f.write(r'%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit' + '\n')
+            f.write(r'cd /D %~dp0' + '\n')
+            f.write(r'' + '\n')
+            f.write(r'REG Delete HKEY_LOCAL_MACHINE\SOFTWARE\PowerAutomation\CncKernel\1 /v CncPlcDataDefinitions /f' + '\n')
+            f.write(r'REG Delete HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PowerAutomation\CncKernel\1 /v CncPlcDataDefinitions /f' + '\n')
+            f.write(r'' + '\n')
+            f.write(r'copy  "C:\PACnc\User data\CncPlcVarDefs.ini" "C:\PACnc\User data\CncPlcVarDefs.ini.backup"' + '\n')
+            f.write(r'del /f "C:\PACnc\User data\CncPlcVarDefs.ini"' + '\n')
+            f.write(r'' + '\n')
+            f.write(r'set Options=0x5' + '\n')
+            f.write('for /f "tokens=2*" %%i in (\'reg query "HKEY_LOCAL_MACHINE\\SOFTWARE\\PowerAutomation\\System" /v "Options"\') do set Options=%%j' + '\n')
+            f.write(r'setlocal enabledelayedexpansion' + '\n')
+            f.write(r'set /a "Options=!Options!&0xFFEF"' + '\n')
+            f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\PowerAutomation\System /v Options /t REG_DWORD /d %Options% /f' + '\n')
+            f.write(r'' + '\n')
+            f.write(r'set Options=0x5' + '\n')
+            f.write('for /f "tokens=2*" %%i in (\'reg query "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\PowerAutomation\\System" /v "Options"\') do set Options=%%j' + '\n')
+            f.write(r'setlocal enabledelayedexpansion' + '\n')
+            f.write(r'set /a "Options=!Options!&0xFFEF"' + '\n')
+            f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PowerAutomation\System /v Options /t REG_DWORD /d %Options% /f' + '\n')
+            f.write(r'' + '\n')
+            f.write(r'@echo off' + '\n')
+            f.write(r'echo .' + '\n')
+            f.write(r'echo uninstall done, wait to exit...' + '\n')
+            f.write(r'timeout /t 10' + '\n')
+        #-----------------------------------------------------------------------kill CNC.bat--------------------------------------------------------------------#
+        with open(GUI.SampleConfigFolder + GUI.SampleConfigFileName_killCNC, 'w+') as f:
+            f.write(r'%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit' + '\n')
+            f.write(r'cd /D %~dp0' + '\n')
+            f.write(r'' + '\n')
+            f.write(r'taskkill /F /im lzs386.exe' + '\n')
+            f.write(r'taskkill /F /im logrec.exe' + '\n')
+            f.write(r'taskkill /F /im cncinterpolator.exe' + '\n')
+            f.write(r'taskkill /F /im cncinterpreter.exe' + '\n')
+            f.write(r'taskkill /F /im runcontrol.exe' + '\n')
+            f.write(r'taskkill /F /im cncsrv.exe' + '\n')
+            f.write(r'taskkill /F /im qmiframe.exe' + '\n')
+            f.write(r'' + '\n')
+            f.write(r'timeout /t 3' + '\n')
+        #-----------------------------------------------------------------------CncPlcVarDefs.ini--------------------------------------------------------------------#
+        with open(GUI.SampleConfigFolder + GUI.SampleConfigFileName_CncPlcVarDefs, 'w+') as f:
+            Num = 0
+            f.write('[IPO]' + '\n')
+            for AxisID in [PA.AxisID_X, PA.AxisID_Y, PA.AxisID_Z, PA.AxisID_A, PA.AxisID_B]:
+                if AxisID > 0:
+                    Num += 1
+                    f.write('%d = '%Num + PA.DataName_SetPos%AxisID + ', REAL' + '\n')
+                    Num += 1
+                    f.write('%d = '%Num + PA.DataName_CmdPos%AxisID + ', REAL' + '\n')
+                    Num += 1
+                    f.write('%d = '%Num + PA.DataName_ActPos%AxisID + ', REAL' + '\n')
+            Num += 1
+            f.write('%d = '%Num + PA.DataName_SetPathVel[:-3] + ', REAL' + '\n')
+            Num += 1
+            f.write('%d = '%Num + PA.DataName_CmdPathVel[:-3] + ', REAL' + '\n')
+            Num += 1
+            f.write('%d = '%Num + PA.DataName_BlockNo[:-3] + ', REAL' + '\n')
+        #-------------------------------------------------------------------------------------------------------------------------------------------#
+        with open(GUI.SampleConfigFolder + '\安装说明：双击install.bat，然后重启CNC，并将CNC参数编辑器的LogOptions设置为1.txt', 'w+') as f:
+            f.write(r'安装说明：' + '\n')
+            f.write(r'双击install.bat，然后重启CNC，并将CNC参数编辑器的LogOptions设置为1' + '\n')
+            f.write(r'' + '\n')
+            f.write(r'卸载说明：' + '\n')
+            f.write(r'双击uninstall.bat，然后重启CNC' + '\n')
+            
     def PlotParamSync():
         PA.Plot.BlockNo = bool(CheckVar['BlockNo'].get())
         PA.Plot.PathVel = bool(CheckVar['PathVel'].get())
@@ -2204,7 +2328,7 @@ if __name__ == '__main__':
         GUI.UserCode = ScrolledText['用户代码'].get('1.0', 'end')
         return None
 
-    def plot_data():
+    def CallBack_PlotData():
         PA.GuiText = ScrolledText['输出消息']
         if PlotParamSync() == err:
             return None
@@ -2233,7 +2357,7 @@ if __name__ == '__main__':
     Entry['采样文件路径'].delete(0, tk.END)
     Entry['采样文件路径'].insert('insert', PA.DataFileName)
     Entry['采样文件路径'].place(relx=x, rely=y, relheight=0.05, relwidth=0.7)
-    Button['选择文件'] = ttk.Button(window, text="选择文件", command=OpenFile)
+    Button['选择文件'] = ttk.Button(window, text="选择文件", command=CallBack_SelectSampleFile)
     Button['选择文件'].place(relx=x + 0.8, rely=y, relheight=0.05, relwidth=0.1)
     
     ###################################### 采样配置 #####################################
@@ -2250,7 +2374,7 @@ if __name__ == '__main__':
     y = 0.05
     xBias = 0.875
     yBias = 0.01
-    Button['加载文件'] = ttk.Button(Frame['采样参数'], text="加载文件", command=load_file)
+    Button['加载文件'] = ttk.Button(Frame['采样参数'], text="加载文件", command=CallBack_LoadSampleFile)
     Button['加载文件'].place(relx=x+xBias, rely=y+yBias, relheight=0.88, relwidth=0.105)
     
     # --------------------------------- 采样参数 1 -----------------------------------#
@@ -2405,18 +2529,36 @@ if __name__ == '__main__':
     Combobox['AxisID_B'] = ttk.Combobox(Frame['采样参数'], textvariable=StringVar['B轴轴号'], values=values, font=('Microsoft YaHei', 9), state='readonly')
     Combobox['AxisID_B'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.05)
 
-    ###################################### 导出采样配置文件 #####################################
+    ###################################### 生成采样配置文件 #####################################
     Frame['生成采样配置文件'] = ttk.Frame(Notebook['采样配置'])
     Notebook['采样配置'].add(Frame['生成采样配置文件'], text='生成采样配置文件')
+        
+    x = 0
+    y = 0.05
+    xBias = 0.01
+    yBias = 0.01
+    Label['采样配置文件导出路径'] = ttk.Label(Frame['生成采样配置文件'], text='采样配置文件导出路径：', anchor='w', font=('Microsoft YaHei', 9))
+    Label['采样配置文件导出路径'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.2)
+    
+    xBias += 0.16
+    Entry['采样配置文件导出路径'] = ttk.Entry(Frame['生成采样配置文件'], font=('Microsoft YaHei', 10))
+    Entry['采样配置文件导出路径'].delete(0, tk.END)
+    Entry['采样配置文件导出路径'].insert('insert', GUI.SampleConfigFolder)
+    Entry['采样配置文件导出路径'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.6)
     
     x = 0
     y = 0.05
     xBias = 0.875
     yBias = 0.01
-    Button['选择导出路径'] = ttk.Button(Frame['生成采样配置文件'], text="选择导出路径", command=load_file)
-    Button['选择导出路径'].place(relx=x+xBias, rely=y+yBias, relheight=0.88, relwidth=0.105)
+    Button['选择导出路径'] = ttk.Button(Frame['生成采样配置文件'], text="选择导出路径", command=CallBack_SelectSampleConfigFolder)
+    Button['选择导出路径'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.105)
     
-    
+    x = 0
+    y = 0.05
+    xBias = 0.875
+    yBias = 0.5
+    Button['导出配置文件'] = ttk.Button(Frame['生成采样配置文件'], text="导出配置文件", command=CallBack_ExportSampleConfigFiles)
+    Button['导出配置文件'].place(relx=x+xBias, rely=y+yBias, relheight=0.4, relwidth=0.105)
 
     ###################################### 绘图 #####################################
     Notebook['绘图'] = ttk.Notebook(window)
@@ -3087,7 +3229,7 @@ if __name__ == '__main__':
     #################################### 输出消息 ##################################
     x = 0.05
     y = 0.75
-    Button['绘制图形'] = ttk.Button(window, text="绘制图形", command=plot_data)
+    Button['绘制图形'] = ttk.Button(window, text="绘制图形", command=CallBack_PlotData)
     Button['绘制图形'].place(relx=x + 0.8, rely=y, relheight=0.22, relwidth=0.1)
     LabelFrame['输出消息'] = ttk.LabelFrame(window, text='输出消息')
     LabelFrame['输出消息'].place(relx=x - 0.03, rely=y - 0.04, relheight=0.28, relwidth=0.808)
