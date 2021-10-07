@@ -2219,7 +2219,7 @@ if __name__ == '__main__':
             Num += 1
             f.write('%d = '%Num + PA.DataName_BlockNo[:-3] + ', REAL' + '\n')
         #-------------------------------------------------------------------------------------------------------------------------------------------#
-        with open(GUI.SampleConfigFolder + '\安装说明：双击install.bat，然后重启CNC，并将CNC参数编辑器的LogOptions设置为1.txt', 'w+') as f:
+        with open(GUI.SampleConfigFolder + '/安装说明：双击install.bat，然后重启CNC，并将CNC参数编辑器的LogOptions设置为1.txt', 'w+') as f:
             f.write(r'安装说明：' + '\n')
             f.write(r'双击install.bat，然后重启CNC，并将CNC参数编辑器的LogOptions设置为1' + '\n')
             f.write(r'' + '\n')
