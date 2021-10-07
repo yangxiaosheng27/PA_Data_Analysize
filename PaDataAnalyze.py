@@ -2129,103 +2129,114 @@ if __name__ == '__main__':
         config.save()
         
     def CallBack_ExportSampleConfigFiles():
+        PA.GuiText = ScrolledText['输出消息']
         LoadParamSync()
         config.save()
         if os.path.exists(GUI.SampleConfigFolder) == False:
-            os.makedirs(GUI.SampleConfigFolder)
-        #-----------------------------------------------------------------------install.bat--------------------------------------------------------------------#
-        with open(GUI.SampleConfigFolder + GUI.SampleConfigFileName_install, 'w+') as f:
-            f.write(r'%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit' + '\n')
-            f.write(r'cd /D %~dp0' + '\n')
-            f.write(r'' + '\n')
-            f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\PowerAutomation\CncKernel\1 /v CncPlcDataDefinitions /t REG_SZ /d "User Data\CncPlcVarDefs.ini" /f' + '\n')
-            f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PowerAutomation\CncKernel\1 /v CncPlcDataDefinitions /t REG_SZ /d "User Data\CncPlcVarDefs.ini" /f' + '\n')
-            f.write(r'' + '\n')
-            f.write(r'copy /Y CncPlcVarDefs.ini "C:\PACnc\User data"' + '\n')
-            f.write(r'' + '\n')
-            f.write(r'set Options=0x5' + '\n')
-            f.write('for /f "tokens=2*" %%i in (\'reg query "HKEY_LOCAL_MACHINE\\SOFTWARE\\PowerAutomation\\System" /v "Options"\') do set Options=%%j' + '\n')
-            f.write(r'setlocal enabledelayedexpansion' + '\n')
-            f.write(r'set /a "Options=!Options!|0x10"' + '\n')
-            f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\PowerAutomation\System /v Options /t REG_DWORD /d %Options% /f' + '\n')
-            f.write(r'' + '\n')
-            f.write(r'set Options=0x5' + '\n')
-            f.write('for /f "tokens=2*" %%i in (\'reg query "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\PowerAutomation\\System" /v "Options"\') do set Options=%%j' + '\n')
-            f.write(r'setlocal enabledelayedexpansion' + '\n')
-            f.write(r'set /a "Options=!Options!|0x10"' + '\n')
-            f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PowerAutomation\System /v Options /t REG_DWORD /d %Options% /f' + '\n')
-            f.write(r'' + '\n')
-            f.write(r'@echo off' + '\n')
-            f.write(r'echo .' + '\n')
-            f.write(r'echo install done, wait to exit...' + '\n')
-            f.write(r'timeout /t 10' + '\n')
-        #-----------------------------------------------------------------------uninstall.bat--------------------------------------------------------------------#
-        with open(GUI.SampleConfigFolder + GUI.SampleConfigFileName_uninstall, 'w+') as f:
-            f.write(r'%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit' + '\n')
-            f.write(r'cd /D %~dp0' + '\n')
-            f.write(r'' + '\n')
-            f.write(r'REG Delete HKEY_LOCAL_MACHINE\SOFTWARE\PowerAutomation\CncKernel\1 /v CncPlcDataDefinitions /f' + '\n')
-            f.write(r'REG Delete HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PowerAutomation\CncKernel\1 /v CncPlcDataDefinitions /f' + '\n')
-            f.write(r'' + '\n')
-            f.write(r'copy  "C:\PACnc\User data\CncPlcVarDefs.ini" "C:\PACnc\User data\CncPlcVarDefs.ini.backup"' + '\n')
-            f.write(r'del /f "C:\PACnc\User data\CncPlcVarDefs.ini"' + '\n')
-            f.write(r'' + '\n')
-            f.write(r'set Options=0x5' + '\n')
-            f.write('for /f "tokens=2*" %%i in (\'reg query "HKEY_LOCAL_MACHINE\\SOFTWARE\\PowerAutomation\\System" /v "Options"\') do set Options=%%j' + '\n')
-            f.write(r'setlocal enabledelayedexpansion' + '\n')
-            f.write(r'set /a "Options=!Options!&0xFFEF"' + '\n')
-            f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\PowerAutomation\System /v Options /t REG_DWORD /d %Options% /f' + '\n')
-            f.write(r'' + '\n')
-            f.write(r'set Options=0x5' + '\n')
-            f.write('for /f "tokens=2*" %%i in (\'reg query "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\PowerAutomation\\System" /v "Options"\') do set Options=%%j' + '\n')
-            f.write(r'setlocal enabledelayedexpansion' + '\n')
-            f.write(r'set /a "Options=!Options!&0xFFEF"' + '\n')
-            f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PowerAutomation\System /v Options /t REG_DWORD /d %Options% /f' + '\n')
-            f.write(r'' + '\n')
-            f.write(r'@echo off' + '\n')
-            f.write(r'echo .' + '\n')
-            f.write(r'echo uninstall done, wait to exit...' + '\n')
-            f.write(r'timeout /t 10' + '\n')
-        #-----------------------------------------------------------------------kill CNC.bat--------------------------------------------------------------------#
-        with open(GUI.SampleConfigFolder + GUI.SampleConfigFileName_killCNC, 'w+') as f:
-            f.write(r'%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit' + '\n')
-            f.write(r'cd /D %~dp0' + '\n')
-            f.write(r'' + '\n')
-            f.write(r'taskkill /F /im lzs386.exe' + '\n')
-            f.write(r'taskkill /F /im logrec.exe' + '\n')
-            f.write(r'taskkill /F /im cncinterpolator.exe' + '\n')
-            f.write(r'taskkill /F /im cncinterpreter.exe' + '\n')
-            f.write(r'taskkill /F /im runcontrol.exe' + '\n')
-            f.write(r'taskkill /F /im cncsrv.exe' + '\n')
-            f.write(r'taskkill /F /im qmiframe.exe' + '\n')
-            f.write(r'' + '\n')
-            f.write(r'timeout /t 3' + '\n')
-        #-----------------------------------------------------------------------CncPlcVarDefs.ini--------------------------------------------------------------------#
-        with open(GUI.SampleConfigFolder + GUI.SampleConfigFileName_CncPlcVarDefs, 'w+') as f:
-            Num = 0
-            f.write('[IPO]' + '\n')
-            for AxisID in [PA.AxisID_X, PA.AxisID_Y, PA.AxisID_Z, PA.AxisID_A, PA.AxisID_B]:
-                if AxisID > 0:
-                    Num += 1
-                    f.write('%d = '%Num + PA.DataName_SetPos%AxisID + ', REAL' + '\n')
-                    Num += 1
-                    f.write('%d = '%Num + PA.DataName_CmdPos%AxisID + ', REAL' + '\n')
-                    Num += 1
-                    f.write('%d = '%Num + PA.DataName_ActPos%AxisID + ', REAL' + '\n')
-            Num += 1
-            f.write('%d = '%Num + PA.DataName_SetPathVel[:-3] + ', REAL' + '\n')
-            Num += 1
-            f.write('%d = '%Num + PA.DataName_CmdPathVel[:-3] + ', REAL' + '\n')
-            Num += 1
-            f.write('%d = '%Num + PA.DataName_BlockNo[:-3] + ', REAL' + '\n')
-        #-------------------------------------------------------------------------------------------------------------------------------------------#
-        with open(GUI.SampleConfigFolder + '/安装说明：双击install.bat，然后重启CNC，并将CNC参数编辑器的LogOptions设置为1.txt', 'w+') as f:
-            f.write(r'安装说明：' + '\n')
-            f.write(r'双击install.bat，然后重启CNC，并将CNC参数编辑器的LogOptions设置为1' + '\n')
-            f.write(r'' + '\n')
-            f.write(r'卸载说明：' + '\n')
-            f.write(r'双击uninstall.bat，然后重启CNC' + '\n')
-            
+                os.makedirs(GUI.SampleConfigFolder)
+        try:
+            #-----------------------------------------------------------------------install.bat--------------------------------------------------------------------#
+            with open(GUI.SampleConfigFolder + GUI.SampleConfigFileName_install, 'w+') as f:
+                f.write(r'%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit' + '\n')
+                f.write(r'cd /D %~dp0' + '\n')
+                f.write(r'' + '\n')
+                f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\PowerAutomation\CncKernel\1 /v CncPlcDataDefinitions /t REG_SZ /d "User Data\CncPlcVarDefs.ini" /f' + '\n')
+                f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PowerAutomation\CncKernel\1 /v CncPlcDataDefinitions /t REG_SZ /d "User Data\CncPlcVarDefs.ini" /f' + '\n')
+                f.write(r'' + '\n')
+                f.write(r'copy /Y CncPlcVarDefs.ini "C:\PACnc\User data"' + '\n')
+                f.write(r'' + '\n')
+                f.write(r'set Options=0x5' + '\n')
+                f.write('for /f "tokens=2*" %%i in (\'reg query "HKEY_LOCAL_MACHINE\\SOFTWARE\\PowerAutomation\\System" /v "Options"\') do set Options=%%j' + '\n')
+                f.write(r'setlocal enabledelayedexpansion' + '\n')
+                f.write(r'set /a "Options=!Options!|0x10"' + '\n')
+                f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\PowerAutomation\System /v Options /t REG_DWORD /d %Options% /f' + '\n')
+                f.write(r'' + '\n')
+                f.write(r'set Options=0x5' + '\n')
+                f.write('for /f "tokens=2*" %%i in (\'reg query "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\PowerAutomation\\System" /v "Options"\') do set Options=%%j' + '\n')
+                f.write(r'setlocal enabledelayedexpansion' + '\n')
+                f.write(r'set /a "Options=!Options!|0x10"' + '\n')
+                f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PowerAutomation\System /v Options /t REG_DWORD /d %Options% /f' + '\n')
+                f.write(r'' + '\n')
+                f.write(r'@echo off' + '\n')
+                f.write(r'echo .' + '\n')
+                f.write(r'echo install done, wait to exit...' + '\n')
+                f.write(r'timeout /t 10' + '\n')
+            #-----------------------------------------------------------------------uninstall.bat--------------------------------------------------------------------#
+            with open(GUI.SampleConfigFolder + GUI.SampleConfigFileName_uninstall, 'w+') as f:
+                f.write(r'%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit' + '\n')
+                f.write(r'cd /D %~dp0' + '\n')
+                f.write(r'' + '\n')
+                f.write(r'REG Delete HKEY_LOCAL_MACHINE\SOFTWARE\PowerAutomation\CncKernel\1 /v CncPlcDataDefinitions /f' + '\n')
+                f.write(r'REG Delete HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PowerAutomation\CncKernel\1 /v CncPlcDataDefinitions /f' + '\n')
+                f.write(r'' + '\n')
+                f.write(r'copy  "C:\PACnc\User data\CncPlcVarDefs.ini" "C:\PACnc\User data\CncPlcVarDefs.ini.backup"' + '\n')
+                f.write(r'del /f "C:\PACnc\User data\CncPlcVarDefs.ini"' + '\n')
+                f.write(r'' + '\n')
+                f.write(r'set Options=0x5' + '\n')
+                f.write('for /f "tokens=2*" %%i in (\'reg query "HKEY_LOCAL_MACHINE\\SOFTWARE\\PowerAutomation\\System" /v "Options"\') do set Options=%%j' + '\n')
+                f.write(r'setlocal enabledelayedexpansion' + '\n')
+                f.write(r'set /a "Options=!Options!&0xFFEF"' + '\n')
+                f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\PowerAutomation\System /v Options /t REG_DWORD /d %Options% /f' + '\n')
+                f.write(r'' + '\n')
+                f.write(r'set Options=0x5' + '\n')
+                f.write('for /f "tokens=2*" %%i in (\'reg query "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\PowerAutomation\\System" /v "Options"\') do set Options=%%j' + '\n')
+                f.write(r'setlocal enabledelayedexpansion' + '\n')
+                f.write(r'set /a "Options=!Options!&0xFFEF"' + '\n')
+                f.write(r'reg add HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PowerAutomation\System /v Options /t REG_DWORD /d %Options% /f' + '\n')
+                f.write(r'' + '\n')
+                f.write(r'@echo off' + '\n')
+                f.write(r'echo .' + '\n')
+                f.write(r'echo uninstall done, wait to exit...' + '\n')
+                f.write(r'timeout /t 10' + '\n')
+            #-----------------------------------------------------------------------kill CNC.bat--------------------------------------------------------------------#
+            with open(GUI.SampleConfigFolder + GUI.SampleConfigFileName_killCNC, 'w+') as f:
+                f.write(r'%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit' + '\n')
+                f.write(r'cd /D %~dp0' + '\n')
+                f.write(r'' + '\n')
+                f.write(r'taskkill /F /im lzs386.exe' + '\n')
+                f.write(r'taskkill /F /im logrec.exe' + '\n')
+                f.write(r'taskkill /F /im cncinterpolator.exe' + '\n')
+                f.write(r'taskkill /F /im cncinterpreter.exe' + '\n')
+                f.write(r'taskkill /F /im runcontrol.exe' + '\n')
+                f.write(r'taskkill /F /im cncsrv.exe' + '\n')
+                f.write(r'taskkill /F /im qmiframe.exe' + '\n')
+                f.write(r'' + '\n')
+                f.write(r'timeout /t 3' + '\n')
+            #-----------------------------------------------------------------------CncPlcVarDefs.ini--------------------------------------------------------------------#
+            with open(GUI.SampleConfigFolder + GUI.SampleConfigFileName_CncPlcVarDefs, 'w+') as f:
+                Num = 0
+                f.write('[IPO]' + '\n')
+                for AxisID in [PA.AxisID_X, PA.AxisID_Y, PA.AxisID_Z, PA.AxisID_A, PA.AxisID_B]:
+                    if AxisID > 0:
+                        Num += 1
+                        f.write('%d = '%Num + PA.DataName_SetPos%AxisID + ', REAL' + '\n')
+                        Num += 1
+                        f.write('%d = '%Num + PA.DataName_CmdPos%AxisID + ', REAL' + '\n')
+                        Num += 1
+                        f.write('%d = '%Num + PA.DataName_ActPos%AxisID + ', REAL' + '\n')
+                Num += 1
+                f.write('%d = '%Num + PA.DataName_SetPathVel[:-3] + ', REAL' + '\n')
+                Num += 1
+                f.write('%d = '%Num + PA.DataName_CmdPathVel[:-3] + ', REAL' + '\n')
+                Num += 1
+                f.write('%d = '%Num + PA.DataName_BlockNo[:-3] + ', REAL' + '\n')
+            #----------------------------------------------------------------------安装说明---------------------------------------------------------------------#
+            with open(GUI.SampleConfigFolder + '/安装说明：双击install.bat，然后重启CNC，并将CNC参数编辑器的LogOptions设置为1.txt', 'w+') as f:
+                f.write(r'安装说明：' + '\n')
+                f.write(r'双击install.bat，然后重启CNC，并将CNC参数编辑器的LogOptions设置为1' + '\n')
+                f.write(r'' + '\n')
+                f.write(r'卸载说明：' + '\n')
+                f.write(r'双击uninstall.bat，然后重启CNC' + '\n')
+            #----------------------------------------------------------------------OutputMessageToGUI---------------------------------------------------------------------#
+            print('\nThe sampling configure files were successfully exported to %s' % (str(GUI.SampleConfigFolder)))
+            PA.OutputMessageToGUI('\n\nThe sampling configure files were successfully exported to %s' % (str(GUI.SampleConfigFolder)))
+            return None
+        
+        except Exception as e:
+            print('\nThe sampling configure files export failed: %s' % (str(e)))
+            PA.OutputMessageToGUI('\n\nThe sampling configure files export failed: %s' % (str(e)))
+            return None
+        
     def PlotParamSync():
         PA.Plot.BlockNo = bool(CheckVar['BlockNo'].get())
         PA.Plot.PathVel = bool(CheckVar['PathVel'].get())
