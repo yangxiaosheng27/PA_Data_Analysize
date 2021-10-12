@@ -35,8 +35,12 @@
                 ActJerk_X                       Unit: m/s^3
 """
 
-Version = '1.8.0'
+Version = '1.8.1'
 ################################ Version History ##################################
+# ---------------------------------Version 1.8.1--------------------------------- #
+# Date: 2021/10/8
+# Author: yangxiaosheng
+# Update: fix bug in plotting 2D figure with PathVel limit
 # ---------------------------------Version 1.8.0--------------------------------- #
 # Date: 2021/10/7
 # Author: yangxiaosheng
@@ -334,8 +338,8 @@ class PA_Data_Analyze:
             self.Plot2D_MaxPathJerk     = np.inf
             
             self.Plot2D_AbsPathVel      = False
-            self.Plot2D_AbsPathAcc      = True
-            self.Plot2D_AbsPathJerk     = True
+            self.Plot2D_AbsPathAcc      = False
+            self.Plot2D_AbsPathJerk     = False
             
             self.PlotCircleErrXY_MaxErr = 25.0 #um
             self.PlotCircleErrYZ_MaxErr = 25.0
@@ -652,17 +656,17 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathVel
                     name = 'CmdPathVel'
+                if self.Plot.Plot2D_AbsPathVel == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) (mm/min)' % name
+                else:
+                    colorName = '%s (mm/min)' % name
                 if self.Plot.Plot2D_LimitPathVel:
                     if self.Plot.Plot2D_MinPathVel > self.Plot.Plot2D_MaxPathVel:
                         print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathVel: Plot2D_MinPathVel > Plot2D_MaxPathVel\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathVel, self.Plot.Plot2D_MaxPathVel))
                         self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathVel: Plot2D_MinPathVel > Plot2D_MaxPathVel (%f > %f)' % (self.Plot.Plot2D_MinPathVel, self.Plot.Plot2D_MaxPathVel))
                     else:
                         color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathVel), self.Plot.Plot2D_MaxPathVel), color)))
-                if self.Plot.Plot2D_AbsPathVel == True:
-                    color = np.abs(color)
-                    colorName = 'Abs(%s) (mm/min)' % name
-                else:
-                    colorName = '%s (mm/min)' % name
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName=colorName, shareAxis='xy', title='XY_PathVel', equalScale=equalScale, newFigure=True)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError XY_PathVel: %s\033[0m' % str(e))
@@ -682,17 +686,17 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathAcc
                     name = 'CmdPathAcc'
+                if self.Plot.Plot2D_AbsPathAcc == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) ((m/s^2)' % name
+                else:
+                    colorName = '%s ((m/s^2)' % name
                 if self.Plot.Plot2D_LimitPathAcc:
                     if self.Plot.Plot2D_MinPathAcc > self.Plot.Plot2D_MaxPathAcc:
                         print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathAcc: Plot2D_MinPathAcc > Plot2D_MaxPathAcc\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathAcc, self.Plot.Plot2D_MaxPathAcc))
                         self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathAcc: Plot2D_MinPathAcc > Plot2D_MaxPathAcc (%f > %f)' % (self.Plot.Plot2D_MinPathAcc, self.Plot.Plot2D_MaxPathAcc))
                     else:
                         color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathAcc), self.Plot.Plot2D_MaxPathAcc), color)))
-                if self.Plot.Plot2D_AbsPathAcc == True:
-                    color = np.abs(color)
-                    colorName = 'Abs(%s) ((m/s^2)' % name
-                else:
-                    colorName = '%s ((m/s^2)' % name
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName=colorName, shareAxis='xy', title='XY_PathAcc', equalScale=equalScale, newFigure=True)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError XY_PathAcc: %s\033[0m' % str(e))
@@ -712,17 +716,17 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathJerk
                     name = 'CmdPathJerk'
+                if self.Plot.Plot2D_AbsPathJerk == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) ((m/s^3)' % name
+                else:
+                    colorName = '%s ((m/s^3)' % name
                 if self.Plot.Plot2D_LimitPathJerk:
                     if self.Plot.Plot2D_MinPathJerk > self.Plot.Plot2D_MaxPathJerk:
                         print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathJerk: Plot2D_MinPathJerk > Plot2D_MaxPathJerk\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathJerk, self.Plot.Plot2D_MaxPathJerk))
                         self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathJerk: Plot2D_MinPathJerk > Plot2D_MaxPathJerk (%f > %f)' % (self.Plot.Plot2D_MinPathJerk, self.Plot.Plot2D_MaxPathJerk))
                     else:
                         color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathJerk), self.Plot.Plot2D_MaxPathJerk), color)))
-                if self.Plot.Plot2D_AbsPathJerk == True:
-                    color = np.abs(color)
-                    colorName = 'Abs(%s) ((m/s^3)' % name
-                else:
-                    colorName = '%s ((m/s^3)' % name
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Y, color=color, axisName_1='X (mm)', axisName_2='Y (mm)', colorName=colorName, shareAxis='xy', title='XY_PathJerk', equalScale=equalScale, newFigure=True)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError XY_PathJerk: %s\033[0m' % str(e))
@@ -785,18 +789,18 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathVel
                     name = 'CmdPathVel'
-                if self.Plot.Plot2D_LimitPathVel:
-                    if self.Plot.Plot2D_MinPathVel > self.Plot.Plot2D_MaxPathVel:
-                        print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathVel: Plot2D_MinPathVel > Plot2D_MaxPathVel\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathVel, self.Plot.Plot2D_MaxPathVel))
-                        self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathVel: Plot2D_MinPathVel > Plot2D_MaxPathVel (%f > %f)' % (self.Plot.Plot2D_MinPathVel, self.Plot.Plot2D_MaxPathVel))
-                    else:
-                        color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathVel), self.Plot.Plot2D_MaxPathVel), color)))
                 if self.Plot.Plot2D_AbsPathVel == True:
                     color = np.abs(color)
                     colorName = 'Abs(%s) (mm/min)' % name
                 else:
                     colorName = '%s (mm/min)' % name
                     name = 'CmdPathVel'
+                if self.Plot.Plot2D_LimitPathVel:
+                    if self.Plot.Plot2D_MinPathVel > self.Plot.Plot2D_MaxPathVel:
+                        print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathVel: Plot2D_MinPathVel > Plot2D_MaxPathVel\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathVel, self.Plot.Plot2D_MaxPathVel))
+                        self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathVel: Plot2D_MinPathVel > Plot2D_MaxPathVel (%f > %f)' % (self.Plot.Plot2D_MinPathVel, self.Plot.Plot2D_MaxPathVel))
+                    else:
+                        color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathVel), self.Plot.Plot2D_MaxPathVel), color)))
                 self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName=colorName, shareAxis='yz', title='YZ_PathVel', equalScale=equalScale, newFigure=True)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathVel: %s\033[0m' % str(e))
@@ -816,17 +820,17 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathAcc
                     name = 'CmdPathAcc'
+                if self.Plot.Plot2D_AbsPathAcc == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) ((m/s^2)' % name
+                else:
+                    colorName = '%s ((m/s^2)' % name
                 if self.Plot.Plot2D_LimitPathAcc:
                     if self.Plot.Plot2D_MinPathAcc > self.Plot.Plot2D_MaxPathAcc:
                         print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathAcc: Plot2D_MinPathAcc > Plot2D_MaxPathAcc\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathAcc, self.Plot.Plot2D_MaxPathAcc))
                         self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathAcc: Plot2D_MinPathAcc > Plot2D_MaxPathAcc (%f > %f)' % (self.Plot.Plot2D_MinPathAcc, self.Plot.Plot2D_MaxPathAcc))
                     else:
                         color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathAcc), self.Plot.Plot2D_MaxPathAcc), color)))
-                if self.Plot.Plot2D_AbsPathAcc == True:
-                    color = np.abs(color)
-                    colorName = 'Abs(%s) ((m/s^2)' % name
-                else:
-                    colorName = '%s ((m/s^2)' % name
                 self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName=colorName, shareAxis='yz', title='YZ_PathAcc', equalScale=equalScale, newFigure=True)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathAcc: %s\033[0m' % str(e))
@@ -846,17 +850,17 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathJerk
                     name = 'CmdPathJerk'
+                if self.Plot.Plot2D_AbsPathJerk == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) ((m/s^3)' % name
+                else:
+                    colorName = '%s ((m/s^3)' % name
                 if self.Plot.Plot2D_LimitPathJerk:
                     if self.Plot.Plot2D_MinPathJerk > self.Plot.Plot2D_MaxPathJerk:
                         print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathJerk: Plot2D_MinPathJerk > Plot2D_MaxPathJerk\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathJerk, self.Plot.Plot2D_MaxPathJerk))
                         self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathJerk: Plot2D_MinPathJerk > Plot2D_MaxPathJerk (%f > %f)' % (self.Plot.Plot2D_MinPathJerk, self.Plot.Plot2D_MaxPathJerk))
                     else:
                         color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathJerk), self.Plot.Plot2D_MaxPathJerk), color)))
-                if self.Plot.Plot2D_AbsPathJerk == True:
-                    color = np.abs(color)
-                    colorName = 'Abs(%s) ((m/s^3)' % name
-                else:
-                    colorName = '%s ((m/s^3)' % name
                 self.Plot2D(self.Data.CmdPos_Y, self.Data.CmdPos_Z, color=color, axisName_1='Y (mm)', axisName_2='Z (mm)', colorName=colorName, shareAxis='yz', title='YZ_PathJerk', equalScale=equalScale, newFigure=True)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError YZ_PathJerk: %s\033[0m' % str(e))
@@ -919,17 +923,17 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathVel
                     name = 'CmdPathVel'
+                if self.Plot.Plot2D_AbsPathVel == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) (mm/min)' % name
+                else:
+                    colorName = '%s (mm/min)' % name
                 if self.Plot.Plot2D_LimitPathVel:
                     if self.Plot.Plot2D_MinPathVel > self.Plot.Plot2D_MaxPathVel:
                         print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathVel: Plot2D_MinPathVel > Plot2D_MaxPathVel\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathVel, self.Plot.Plot2D_MaxPathVel))
                         self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathVel: Plot2D_MinPathVel > Plot2D_MaxPathVel (%f > %f)' % (self.Plot.Plot2D_MinPathVel, self.Plot.Plot2D_MaxPathVel))
                     else:
                         color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathVel), self.Plot.Plot2D_MaxPathVel), color)))
-                if self.Plot.Plot2D_AbsPathVel == True:
-                    color = np.abs(color)
-                    colorName = 'Abs(%s) (mm/min)' % name
-                else:
-                    colorName = '%s (mm/min)' % name
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName=colorName, shareAxis='xz', title='XZ_PathVel', equalScale=equalScale, newFigure=True)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathVel: %s\033[0m' % str(e))
@@ -949,17 +953,17 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathAcc
                     name = 'CmdPathAcc'
+                if self.Plot.Plot2D_AbsPathAcc == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) ((m/s^2)' % name
+                else:
+                    colorName = '%s ((m/s^2)' % name
                 if self.Plot.Plot2D_LimitPathAcc:
                     if self.Plot.Plot2D_MinPathAcc > self.Plot.Plot2D_MaxPathAcc:
                         print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathAcc: Plot2D_MinPathAcc > Plot2D_MaxPathAcc\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathAcc, self.Plot.Plot2D_MaxPathAcc))
                         self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathAcc: Plot2D_MinPathAcc > Plot2D_MaxPathAcc (%f > %f)' % (self.Plot.Plot2D_MinPathAcc, self.Plot.Plot2D_MaxPathAcc))
                     else:
                         color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathAcc), self.Plot.Plot2D_MaxPathAcc), color)))
-                if self.Plot.Plot2D_AbsPathAcc == True:
-                    color = np.abs(color)
-                    colorName = 'Abs(%s) ((m/s^2)' % name
-                else:
-                    colorName = '%s ((m/s^2)' % name
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName=colorName, shareAxis='xz', title='XZ_PathAcc', equalScale=equalScale, newFigure=True)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathAcc: %s\033[0m' % str(e))
@@ -979,17 +983,17 @@ class PA_Data_Analyze:
                 else:
                     color = self.Data.CmdPathJerk
                     name = 'CmdPathJerk'
+                if self.Plot.Plot2D_AbsPathJerk == True:
+                    color = np.abs(color)
+                    colorName = 'Abs(%s) ((m/s^3)' % name
+                else:
+                    colorName = '%s ((m/s^3)' % name
                 if self.Plot.Plot2D_LimitPathJerk:
                     if self.Plot.Plot2D_MinPathJerk > self.Plot.Plot2D_MaxPathJerk:
                         print('\033[1;34m\nPlotData: \033[1;31mError Plot2D_LimitPathJerk: Plot2D_MinPathJerk > Plot2D_MaxPathJerk\033[0m (%f > %f)' % (self.Plot.Plot2D_MinPathJerk, self.Plot.Plot2D_MaxPathJerk))
                         self.OutputMessageToGUI('\nPlotData: Error Plot2D_LimitPathJerk: Plot2D_MinPathJerk > Plot2D_MaxPathJerk (%f > %f)' % (self.Plot.Plot2D_MinPathJerk, self.Plot.Plot2D_MaxPathJerk))
                     else:
                         color = np.array(list(map(lambda x: min(max(x, self.Plot.Plot2D_MinPathJerk), self.Plot.Plot2D_MaxPathJerk), color)))
-                if self.Plot.Plot2D_AbsPathJerk == True:
-                    color = np.abs(color)
-                    colorName = 'Abs(%s) ((m/s^3)' % name
-                else:
-                    colorName = '%s ((m/s^3)' % name
                 self.Plot2D(self.Data.CmdPos_X, self.Data.CmdPos_Z, color=color, axisName_1='X (mm)', axisName_2='Z (mm)', colorName=colorName, shareAxis='xz', title='XZ_PathJerk', equalScale=equalScale, newFigure=True)
             except Exception as e:
                 print('\033[1;34m\nPlotData: \033[1;31mError XZ_PathJerk: %s\033[0m' % str(e))
@@ -2060,7 +2064,7 @@ if __name__ == '__main__':
 
     #init window
     window = tk.Tk()
-    window.title('PA Data Analyze v%s' % Version)
+    window.title('PA数据分析工具 v%s' % Version)
     window.geometry(GUI.WindowSize + GUI.WindowPosition)
     window.bind('<Configure>', GUI.getWindowSize)
     #Pop up window
@@ -2318,22 +2322,26 @@ if __name__ == '__main__':
         PA.Plot.Plot2D_LimitPathAcc = bool(CheckVar['Plot2D_LimitPathAcc'].get())
         PA.Plot.Plot2D_LimitPathJerk = bool(CheckVar['Plot2D_LimitPathJerk'].get())
         
-        def getEntryParam(key):
+        def getFloatEntryParam(key, defaultValue):
             try:
-                setattr(PA.Plot, key, float(Entry[key].get()))
+                if Entry[key].get() == '':
+                    Value = float(defaultValue)
+                else:
+                    Value = float(Entry[key].get())
+                setattr(PA.Plot, key, Value)
             except Exception as e:
                 PA.OutputMessageToGUI('\n\nPlotData: Error %s: %s' % (str(key), str(e)))
         
-        getEntryParam('Plot2D_MinPathVel')
-        getEntryParam('Plot2D_MinPathAcc')
-        getEntryParam('Plot2D_MinPathJerk')
-        getEntryParam('Plot2D_MaxPathVel')
-        getEntryParam('Plot2D_MaxPathAcc')
-        getEntryParam('Plot2D_MaxPathJerk')
+        getFloatEntryParam('Plot2D_MinPathVel', -np.inf)
+        getFloatEntryParam('Plot2D_MinPathAcc', -np.inf)
+        getFloatEntryParam('Plot2D_MinPathJerk', -np.inf)
+        getFloatEntryParam('Plot2D_MaxPathVel', np.inf)
+        getFloatEntryParam('Plot2D_MaxPathAcc', np.inf)
+        getFloatEntryParam('Plot2D_MaxPathJerk', np.inf)
         
-        getEntryParam('PlotCircleErrXY_MaxErr')
-        getEntryParam('PlotCircleErrYZ_MaxErr')
-        getEntryParam('PlotCircleErrXZ_MaxErr')
+        getFloatEntryParam('PlotCircleErrXY_MaxErr', 25)
+        getFloatEntryParam('PlotCircleErrYZ_MaxErr', 25)
+        getFloatEntryParam('PlotCircleErrXZ_MaxErr', 25)
         
         GUI.EnableUserCode = bool(CheckVar['用户代码'].get())
         GUI.UserCode = ScrolledText['用户代码'].get('1.0', 'end')
