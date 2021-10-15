@@ -35,12 +35,8 @@
                 ActJerk_X                       Unit: m/s^3
 """
 
-Version = '1.8.2'
+Version = '1.8.1'
 ################################ Version History ##################################
-# ---------------------------------Version 1.8.2--------------------------------- #
-# Date: 2021/10/16
-# Author: yangxiaosheng
-# Update: ouput message about file infomation to GUI
 # ---------------------------------Version 1.8.1--------------------------------- #
 # Date: 2021/10/8
 # Author: yangxiaosheng
@@ -354,7 +350,7 @@ class PA_Data_Analyze:
     ##################################################################################
     def PlotData(self):
         
-        print('\n[%s]\n\033[1;34mPlotData: \033[0mStarting......' % time.strftime('%Y-%m-%d %H:%M:%S'))
+        print('[%s]\n\033[1;34m\n\nPlotData: \033[0mStarting......' % time.strftime('%Y-%m-%d %H:%M:%S'))
         self.OutputMessageToGUI('\n\n[%s]\nPlotData: Starting......' % time.strftime('%Y-%m-%d %H:%M:%S'))
         
         if self.Data.Length == 0:
@@ -1434,6 +1430,9 @@ class PA_Data_Analyze:
     # -----------------------------Load Data from File------------------------------ #
     ##################################################################################
     def LoadData(self):
+        
+        print('[%s]\n\033[1;34m\n\nLoadData: \033[0mStarting......' % time.strftime('%Y-%m-%d %H:%M:%S'))
+        self.OutputMessageToGUI('\n\n[%s]\nLoadData: Starting......' % time.strftime('%Y-%m-%d %H:%M:%S'))
 
         # -----------------------open file and get textLen------------------------- #
         self.Data.Length = 0
@@ -1490,21 +1489,6 @@ class PA_Data_Analyze:
             self.BlockRange[1] = int(self.BlockRange[1])
         if  self.BlockRange[1] < self.BlockRange[0]:
             self.BlockRange[1] = 0
-        
-        print('[%s]\n\033[1;34mLoadData: \033[0mStarting......' % time.strftime('%Y-%m-%d %H:%M:%S'))
-        self.OutputMessageToGUI('[%s]\nLoadData: Starting......' % time.strftime('%Y-%m-%d %H:%M:%S'))
-        
-        #try:
-        modifiedTime = os.path.getmtime(self.DataFileName)
-        modifiedTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(modifiedTime))
-        fileSize = os.path.getsize(self.DataFileName)
-        fileSize = fileSize / 1024 / 1024
-        fileSize = '%.2fM'%fileSize
-        print('\033[1;34mLoadData: \033[0m%s    (FileSize: %s, ModifiedTime: %s)' % (self.DataFileName, fileSize, modifiedTime) )
-        self.OutputMessageToGUI('\nLoadData: %s    (FileSize: %s, ModifiedTime: %s)\n' % (self.DataFileName, fileSize, modifiedTime) )
-
-        #except:
-            #pass
             
         # ---------------------------------init Data--------------------------------- #
         for i in range(varNum):
@@ -1592,11 +1576,11 @@ class PA_Data_Analyze:
         if BlockNoExistFlag:
             self.Data.TimeRange  = [float(minTime), float(maxTime)]
             self.Data.BlockRange = [int(minBlockNo), int(maxBlockNo)]
-            print('\033[1;34m\rLoadData: \033[1;32m100%%\033[0m      DataLength=%d, TimeRange=[%.3f, %.3f], BlockRange=[%d, %d] \033[0m' % (self.Data.Length, minTime, maxTime, minBlockNo, maxBlockNo))
+            print('\033[1;34m\rLoadData: \033[1;32m100%%\033[0m\nDataLength=%d, TimeRange=[%.3f, %.3f], BlockRange=[%d, %d] \033[0m' % (self.Data.Length, minTime, maxTime, minBlockNo, maxBlockNo))
             self.OutputMessageToGUI('LoadData: 100%%      DataLength=%d, BlockRange=[%d, %d], TimeRange=[%.3f, %.3f]' % (self.Data.Length, minBlockNo, maxBlockNo, minTime, maxTime), overwrite=True)
         else:
             self.Data.TimeRange  = [float(minTime), float(maxTime)]
-            print('\033[1;34m\rLoadData: \033[1;32m100%%\033[0m      DataLength=%d, TimeRange=[%.3f, %.3f] \033[0m' % (self.Data.Length, minTime, maxTime))
+            print('\033[1;34m\rLoadData: \033[1;32m100%%\033[0m\nDataLength=%d, TimeRange=[%.3f, %.3f] \033[0m' % (self.Data.Length, minTime, maxTime))
             self.OutputMessageToGUI('LoadData: 100%%      DataLength=%d, TimeRange=[%.3f, %.3f]' % (self.Data.Length, minTime, maxTime), overwrite=True)
 
         # --------------------------------init Data-------------------------------- #
@@ -2143,8 +2127,6 @@ if __name__ == '__main__':
         if type(fileName)==str and fileName != '':
             Entry['采样配置文件导出路径'].delete(0, tk.END)
             if fileName[-len(GUI.SampleConfigSubfolder):] != GUI.SampleConfigSubfolder:
-                if fileName[-1] == '/':
-                    fileName=fileName[:-1]
                 fileName += GUI.SampleConfigSubfolder
             Entry['采样配置文件导出路径'].insert('insert', fileName)
         LoadParamSync()
@@ -2411,8 +2393,8 @@ if __name__ == '__main__':
     y = 0.05
     xBias = 0.875
     yBias = 0.01
-    Button['加载数据'] = ttk.Button(Frame['采样参数'], text="加载数据", command=CallBack_LoadSampleFile)
-    Button['加载数据'].place(relx=x+xBias, rely=y+yBias, relheight=0.88, relwidth=0.105)
+    Button['加载文件'] = ttk.Button(Frame['采样参数'], text="加载文件", command=CallBack_LoadSampleFile)
+    Button['加载文件'].place(relx=x+xBias, rely=y+yBias, relheight=0.88, relwidth=0.105)
     
     # --------------------------------- 采样参数 1 -----------------------------------#
     x = 0
@@ -3008,13 +2990,13 @@ if __name__ == '__main__':
     x = 0
     y = 0
     LabelFrame['一维绘图设置'] = ttk.LabelFrame(Frame['绘图设置'], text='一维绘图设置')
-    LabelFrame['一维绘图设置'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.17)
+    LabelFrame['一维绘图设置'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.2)
     xBias = 0.02
     yBias = 0.11
     xStep = 0.11
     yStep = 0.11
     relheight = 0.1
-    relwidth = 0.15
+    relwidth = 0.18
     
     Key = 'Plot1D_ShowActPathVel'
     CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
@@ -3052,10 +3034,10 @@ if __name__ == '__main__':
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth)
     ChangeCheckButtonColor(Key)
     
-    x = 0.18
+    x = 0.22
     y = 0
     LabelFrame['二维绘图设置'] = ttk.LabelFrame(Frame['绘图设置'], text='二维绘图设置')
-    LabelFrame['二维绘图设置'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.45)
+    LabelFrame['二维绘图设置'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.4)
     xBias = 0.02
     yBias = 0.11
     xStep = 0.11
@@ -3092,10 +3074,10 @@ if __name__ == '__main__':
     xBias = 0.02
     Key = 'Plot2D_LimitPathVel'
     CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot2D_LimitPathVel'), text='PathVel显示范围(mm/min):', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot2D_LimitPathVel'), text='PathVel限幅(mm/min):', variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth+0.05)
     ChangeCheckButtonColor(Key)
-    xBias += 0.22
+    xBias += 0.18
     relwidthEntry = 0.08
     Key = 'Plot2D_MinPathVel'
     Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
@@ -3106,8 +3088,8 @@ if __name__ == '__main__':
         Entry[Key].insert('insert', '无')
     Entry[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidthEntry)
     xBias += 0.085
-    Label['PathVel显示范围'] = ttk.Label(Frame['绘图设置'], text='~', anchor='w', font=('Microsoft YaHei', 9))
-    Label['PathVel显示范围'].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=0.1)
+    Label['PathVel限幅'] = ttk.Label(Frame['绘图设置'], text='~', anchor='w', font=('Microsoft YaHei', 9))
+    Label['PathVel限幅'].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=0.1)
     xBias += 0.02
     Key = 'Plot2D_MaxPathVel'
     Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
@@ -3122,10 +3104,10 @@ if __name__ == '__main__':
     xBias = 0.02
     Key = 'Plot2D_LimitPathAcc'
     CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot2D_LimitPathAcc'), text='PathAcc显示范围(m/s^2):', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot2D_LimitPathAcc'), text='PathAcc限幅(m/s^2):', variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth+0.05)
     ChangeCheckButtonColor(Key)
-    xBias += 0.22
+    xBias += 0.18
     relwidthEntry = 0.08
     Key = 'Plot2D_MinPathAcc'
     Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
@@ -3136,8 +3118,8 @@ if __name__ == '__main__':
         Entry[Key].insert('insert', '无')
     Entry[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidthEntry)
     xBias += 0.085
-    Label['PathAcc显示范围'] = ttk.Label(Frame['绘图设置'], text='~', anchor='w', font=('Microsoft YaHei', 9))
-    Label['PathAcc显示范围'].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=0.1)
+    Label['PathAcc限幅'] = ttk.Label(Frame['绘图设置'], text='~', anchor='w', font=('Microsoft YaHei', 9))
+    Label['PathAcc限幅'].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=0.1)
     xBias += 0.02
     Key = 'Plot2D_MaxPathAcc'
     Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
@@ -3152,10 +3134,10 @@ if __name__ == '__main__':
     xBias = 0.02
     Key = 'Plot2D_LimitPathJerk'
     CheckVar[Key] = tk.IntVar(); CheckVar[Key].set(getattr(PA.Plot, Key))
-    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot2D_LimitPathJerk'), text='PathJerk显示范围(m/s^3):', variable=CheckVar[Key], onvalue=True, offvalue=False)
+    CheckButton[Key] = ttk.Checkbutton(Frame['绘图设置'], command=lambda: ChangeCheckButtonColor('Plot2D_LimitPathJerk'), text='PathJerk限幅(m/s^3):', variable=CheckVar[Key], onvalue=True, offvalue=False)
     CheckButton[Key].place(relx=x + xBias, rely=y + yBias, relheight=relheight, relwidth=relwidth+0.05)
     ChangeCheckButtonColor(Key)
-    xBias += 0.22
+    xBias += 0.18
     relwidthEntry = 0.08
     Key = 'Plot2D_MinPathJerk'
     Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
@@ -3166,8 +3148,8 @@ if __name__ == '__main__':
         Entry[Key].insert('insert', '无')
     Entry[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidthEntry)
     xBias += 0.085
-    Label['PathJerk显示范围'] = ttk.Label(Frame['绘图设置'], text='~', anchor='w', font=('Microsoft YaHei', 9))
-    Label['PathJerk显示范围'].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=0.1)
+    Label['PathJerk限幅'] = ttk.Label(Frame['绘图设置'], text='~', anchor='w', font=('Microsoft YaHei', 9))
+    Label['PathJerk限幅'].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=0.1)
     xBias += 0.02
     Key = 'Plot2D_MaxPathJerk'
     Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
@@ -3181,7 +3163,7 @@ if __name__ == '__main__':
     yBias = 0
     yBias += yStep
     yBias += yStep
-    xBias = 0.245
+    xBias = 0.205
     Key = 'Plot2D_PathVelType'
     Label[Key] = ttk.Label(Frame['绘图设置'], text='PathVel来源', anchor='w', font=('Microsoft YaHei', 9))
     Label[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidth*3/5)
@@ -3212,15 +3194,15 @@ if __name__ == '__main__':
     x = 0.64
     y = 0
     LabelFrame['循圆绘图设置'] = ttk.LabelFrame(Frame['绘图设置'], text='循圆绘图设置')
-    LabelFrame['循圆绘图设置'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.26)
+    LabelFrame['循圆绘图设置'].place(relx=x + 0.01, rely=y + 0, relheight=0.96, relwidth=0.22)
     xBias = 0.02
     yBias = 0.11
     xStep = 0.11
     yStep = 0.11
     relheight = 0.1
-    relwidth = 0.24
+    relwidth = 0.2
     Key = 'PlotCircleErrXY_MaxErr'
-    Label[Key] = ttk.Label(Frame['绘图设置'], text='XY循圆误差显示范围(um):', anchor='w', font=('Microsoft YaHei', 9))
+    Label[Key] = ttk.Label(Frame['绘图设置'], text='XY最大循圆误差(um):', anchor='w', font=('Microsoft YaHei', 9))
     Label[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidth*4/5)
     Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
     Entry[Key].delete(0, tk.END)
@@ -3231,7 +3213,7 @@ if __name__ == '__main__':
     Entry[Key].place(relx=x+xBias+relwidth*4/5, rely=y+yBias, relheight=relheight, relwidth=relwidth*1/5)
     yBias += yStep
     Key = 'PlotCircleErrYZ_MaxErr'
-    Label[Key] = ttk.Label(Frame['绘图设置'], text='YZ循圆误差显示范围(um):', anchor='w', font=('Microsoft YaHei', 9))
+    Label[Key] = ttk.Label(Frame['绘图设置'], text='YZ最大循圆误差(um):', anchor='w', font=('Microsoft YaHei', 9))
     Label[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidth*4/5)
     Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
     Entry[Key].delete(0, tk.END)
@@ -3242,7 +3224,7 @@ if __name__ == '__main__':
     Entry[Key].place(relx=x+xBias+relwidth*4/5, rely=y+yBias, relheight=relheight, relwidth=relwidth*1/5)
     yBias += yStep
     Key = 'PlotCircleErrXZ_MaxErr'
-    Label[Key] = ttk.Label(Frame['绘图设置'], text='XZ循圆误差显示范围(um):', anchor='w', font=('Microsoft YaHei', 9))
+    Label[Key] = ttk.Label(Frame['绘图设置'], text='XZ最大循圆误差(um):', anchor='w', font=('Microsoft YaHei', 9))
     Label[Key].place(relx=x+xBias, rely=y+yBias, relheight=relheight, relwidth=relwidth*4/5)
     Entry[Key] = ttk.Entry(Frame['绘图设置'], font=('Microsoft YaHei', 9))
     Entry[Key].delete(0, tk.END)
