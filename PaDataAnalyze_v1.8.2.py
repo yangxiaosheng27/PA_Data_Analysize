@@ -35,12 +35,8 @@
                 ActJerk_X                       Unit: m/s^3
 """
 
-Version = '1.8.3'
+Version = '1.8.2'
 ################################ Version History ##################################
-# ---------------------------------Version 1.8.3--------------------------------- #
-# Date: 2021/10/16
-# Author: yangxiaosheng
-# Update: fix bug in loading data
 # ---------------------------------Version 1.8.2--------------------------------- #
 # Date: 2021/10/16
 # Author: yangxiaosheng
@@ -1532,8 +1528,6 @@ class PA_Data_Analyze:
                 sys.stdout.write('\033[1;34m\rLoadData: \033[0m%3d%%' % (self.LoadDataPercentage))
                 self.OutputMessageToGUI('LoadData: %3d%%' % (self.LoadDataPercentage), overwrite=True)
             self.LoadDataPercentageOld = self.LoadDataPercentage
-            if txt[i][0:6] == 'PLCmbx':
-                continue
             self.LineData = self.SplitDataStr(txt[i])
             while True:
                 self.LineData = self.RemainingLineData + self.LineData
