@@ -35,10 +35,14 @@
                 ActJerk_X                       Unit: m/s^3
 """
 
-Version = '1.8.3'
+Version = '1.8.4'
 ################################ Version History ##################################
+# ---------------------------------Version 1.8.4--------------------------------- #
+# Date: 2021/10/21
+# Author: yangxiaosheng
+# Update: fix bug in loading data for the sample file format of PA v4.7.1.0
 # ---------------------------------Version 1.8.3--------------------------------- #
-# Date: 2021/10/16
+# Date: 2021/10/20
 # Author: yangxiaosheng
 # Update: fix bug in loading data
 # ---------------------------------Version 1.8.2--------------------------------- #
@@ -328,9 +332,9 @@ class PA_Data_Analyze:
             self.Plot1D_ShowActPathAcc  = False
             self.Plot1D_ShowActPathJerk = False
             self.Plot1D_ShowActAxisVel  = True
-            self.Plot1D_ShowActAxisAcc  = True
+            self.Plot1D_ShowActAxisAcc  = False
             self.Plot1D_ShowActAxisJerk = False
-            self.Plot2D_EqualScale      = False
+            self.Plot2D_EqualScale      = True
             self.Plot2D_PathVelType     = 'Cmd' # 'Set' or 'Cmd' or 'Act'
             self.Plot2D_PathAccType     = 'Cmd'
             self.Plot2D_PathJerkType    = 'Cmd'
@@ -1462,12 +1466,21 @@ class PA_Data_Analyze:
         # -----------------------------get DataName-------------------------------- #
         self.DataName = self.ReadDataName(txt[0])
         varNum = self.DataName.__len__()
-        if varNum <= 0:
-            print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): varNum = %d  <= 0 \033[0m' % (sys._getframe().f_lineno, varNum))
-            self.OutputMessageToGUI('\nLoadData: Error (CodeLine %d): varNum = %d  <= 0 \n' % (sys._getframe().f_lineno, varNum))
+        #if varNum <= 0:
+        #    print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): varNum = %d  <= 0 \033[0m' % (sys._getframe().f_lineno, varNum))
+        #    self.OutputMessageToGUI('\nLoadData: Error (CodeLine %d): varNum = %d  <= 0 \n' % (sys._getframe().f_lineno, varNum))
+        #    self.Data.Var = dict()
+        #    self.Data.Length = 0
+        #    return None
+        try:
+            self.DataName[0] =  float(self.DataName[0])
+            print('\033[1;34m\nLoadData: \033[1;31mError (First Data Line): Please set LogOption = 1 in MachineParameters \033[0m')
+            self.OutputMessageToGUI('\nLoadData: Error (First Data Line): Please set LogOption = 1 in MachineParameters \n')
             self.Data.Var = dict()
             self.Data.Length = 0
             return None
+        except:
+            pass
         # -----------------------------get TimeRange-------------------------------- #
         if self.TimeRange.__len__() != 2:
             print('\033[1;34m\nLoadData: \033[1;31mError (CodeLine %d): TimeRange.__len__() = %d != 2 \033[0m' % (sys._getframe().f_lineno, self.TimeRange.__len__()))
@@ -1532,14 +1545,19 @@ class PA_Data_Analyze:
                 sys.stdout.write('\033[1;34m\rLoadData: \033[0m%3d%%' % (self.LoadDataPercentage))
                 self.OutputMessageToGUI('LoadData: %3d%%' % (self.LoadDataPercentage), overwrite=True)
             self.LoadDataPercentageOld = self.LoadDataPercentage
-            if txt[i][0:6] == 'PLCmbx':
+            if txt[i][0:3] == 'PLC' or txt[i][0:3] == 'HMI' or txt[i][0:3] == 'Mbx':
                 continue
             self.LineData = self.SplitDataStr(txt[i])
             while True:
                 self.LineData = self.RemainingLineData + self.LineData
-                if self.LineData.__len__() < varNum:
-                    print('\033[1;34m\nLoadData: \033[1;31mError (DataFileLine %d): LineData.__len__ < varNum (%d < %d) \033[0m' % ( i+1, self.LineData.__len__(), varNum))
-                    self.OutputMessageToGUI('\nLoadData: Error (DataFileLine %d): LineData.__len__ < varNum (%d < %d) \n' % ( i+1, self.LineData.__len__(), varNum))
+                if firstDataFlag == True and self.LineData.__len__() != varNum:
+                    print('\033[1;34m\nLoadData: \033[1;31mError (DataFileLine %d): LineData.__len__ != varNum (%d != %d) in "%s" \033[0m' % ( i+1, self.LineData.__len__(), varNum, txt[i] ))
+                    self.OutputMessageToGUI('\nLoadData: Error (DataFileLine %d): LineData.__len__ != varNum (%d != %d)  in "%s" \n' % ( i+1, self.LineData.__len__(), varNum, txt[i] ))
+                    self.Data.Length = 0
+                    return None
+                elif self.LineData.__len__() < varNum:
+                    print('\033[1;34m\nLoadData: \033[1;31mError (DataFileLine %d): LineData.__len__ < varNum (%d < %d) in "%s" \033[0m' % ( i+1, self.LineData.__len__(), varNum, txt[i] ))
+                    self.OutputMessageToGUI('\nLoadData: Error (DataFileLine %d): LineData.__len__ < varNum (%d < %d)  in "%s" \n' % ( i+1, self.LineData.__len__(), varNum, txt[i] ))
                     self.Data.Length = 0
                     return None
                 if BlockNoExistFlag:
@@ -2188,7 +2206,7 @@ if __name__ == '__main__':
                 f.write(r'@echo off' + '\n')
                 f.write(r'echo .' + '\n')
                 f.write(r'echo install done, wait to exit...' + '\n')
-                f.write(r'timeout /t 10' + '\n')
+                f.write(r'timeout /t 5' + '\n')
             #-----------------------------------------------------------------------uninstall.bat--------------------------------------------------------------------#
             with open(GUI.SampleConfigFolder + GUI.SampleConfigFileName_uninstall, 'w+') as f:
                 f.write(r'%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit' + '\n')
@@ -2215,7 +2233,7 @@ if __name__ == '__main__':
                 f.write(r'@echo off' + '\n')
                 f.write(r'echo .' + '\n')
                 f.write(r'echo uninstall done, wait to exit...' + '\n')
-                f.write(r'timeout /t 10' + '\n')
+                f.write(r'timeout /t 5' + '\n')
             #-----------------------------------------------------------------------kill CNC.bat--------------------------------------------------------------------#
             with open(GUI.SampleConfigFolder + GUI.SampleConfigFileName_killCNC, 'w+') as f:
                 f.write(r'%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit' + '\n')
