@@ -35,7 +35,7 @@
                 ActJerk_X                       Unit: m/s^3
 """
 
-Version = '1.9.0 alpha 3'
+Version = '1.9.0 alpha 4'
 """
 ################################ Version History ##################################
 # ---------------------------------Version 1.9.0--------------------------------- #
@@ -3336,6 +3336,8 @@ class GUI_Data_Analyze:
         self.display()
         self.window.mainloop()
         self.saveConfig()
+        PA.destroy()
+        Sem.release()
 
 ##################################################################################
 # -------------------------------------Main------------------------------------- #
@@ -3346,7 +3348,7 @@ if __name__ == '__main__':
     GUI = GUI_Data_Analyze()
     Sem = threading.Semaphore()
     
-    def Task_PA_Data_Analyze():
+    def Task_PA():
         global PA, GUI
         print('Task_PA Start (mainID:%d, CurrID:%d)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'\
               %(threading.main_thread().ident, threading.current_thread().ident))
@@ -3355,13 +3357,16 @@ if __name__ == '__main__':
                 PA.LoadData()
             elif PA.Operation == PA.Operation_PlotData:
                 PA.PlotData()
+                #fig = plt.figure(2)
+                #plt.plot([1,2,3,5])
+                
                 if GUI.EnableUserCode and PA.Data.Length != 0:
                     try:
                         exec(GUI.UserCode)
                     except Exception as e:
                         print('\033[1;34m\nUerCode: \033[1;31mError: %s\033[0m' % str(e))
                         PA.OutputMessageToGUI('\n\nUserCode Error: %s' % str(e))
-                PA.DataInfo()
+                #PA.DataInfo()
                 if PA.FigNum == 0:
                     print('\033[1;34m\nPlotData: \033[1;31mNo Figure\033[0m')
                     PA.OutputMessageToGUI('\nPlotData: No Figure')
@@ -3369,22 +3374,33 @@ if __name__ == '__main__':
             Sem.acquire()
         print('Task_PA End (mainID:%d, CurrID:%d)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'\
               %(threading.main_thread().ident, threading.current_thread().ident))
+            
+    def Task_GUI():
+        GUI.start()
+    """
+    Thread_GUI = threading.Thread(target = Task_GUI)
+    Thread_GUI.setDaemon(True)
+    Thread_GUI.start()
+    Task_PA()
         
+    """
     try:
         print('Main Start !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        Thread_PA = threading.Thread(target = Task_PA_Data_Analyze)
+        Thread_GUI = threading.Thread(target = Task_GUI)
+        Thread_GUI.setDaemon(False)
+        Thread_GUI.start()
+        
+        Thread_PA = threading.Thread(target = Task_PA)
         Thread_PA.setDaemon(False)
-        StopLoop_PA = False
         Thread_PA.start()
-        GUI.start()
         print('Try End !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        PA.destroy()
-        Sem.release()
-        print('Main End !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     except:
         print('Force End !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         PA.destroy()
         Sem.release()
         GUI.window.destroy()
         print('Main Quit !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    
+        
+        
     
