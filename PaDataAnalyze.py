@@ -35,7 +35,7 @@
                 ActJerk_X                       Unit: m/s^3
 """
 
-Version = '1.9.0 alpha 2'
+Version = '1.9.0 alpha 3'
 """
 ################################ Version History ##################################
 # ---------------------------------Version 1.9.0--------------------------------- #
@@ -233,6 +233,10 @@ class PA_Data_Analyze:
         self.DataName_SetPathVel    = 'PathVelocity[0]'
         self.DataName_CmdPathVel    = 'CommandedPathVelocity[0]'
         self.DataName_BlockNo       = 'BlockNoActive[0]'
+        self.Running                = True
+        self.Operation              = None
+        self.Operation_LoadData     = 1
+        self.Operation_PlotData     = 2
 
     class Data_Class:
         Length          = 0
@@ -374,6 +378,9 @@ class PA_Data_Analyze:
             self.PlotCircleErrXY_MaxErr = 25.0 #um
             self.PlotCircleErrYZ_MaxErr = 25.0
             self.PlotCircleErrXZ_MaxErr = 25.0
+
+    def destroy(self):
+        self.Running = False
 
     ##################################################################################
     # -----------------------------------Plot Data---------------------------------- #
@@ -1143,6 +1150,8 @@ class PA_Data_Analyze:
     # ----------------------------------Plot 1D Data-------------------------------- #
     ##################################################################################
     def Plot1D(self, x, axisName=None, axisName_1=None, dataName=None, shareAxis=None, newFigure=True, mark='.-', tLimit=None, xLimit=None, title=''):
+        if self.Running == False:
+            return None
         plt.rcParams['font.family'] = 'Microsoft YaHei'
         plt.rcParams.update({'figure.max_open_warning': 0})
         x = np.array(x)
@@ -1193,6 +1202,8 @@ class PA_Data_Analyze:
     # ----------------------------------Plot 2D Data-------------------------------- #
     ##################################################################################
     def Plot2D(self, x, y, color=None, axisName_1=None, axisName_2=None, colorName=None, dataName=None, shareAxis=None, newFigure=True, mark='.-', xLimit=None, yLimit=None, title='', equalScale=False):
+        if self.Running == False:
+            return None
         plt.rcParams['font.family'] = 'Microsoft YaHei'
         plt.rcParams.update({'figure.max_open_warning': 0})
         try:
@@ -1267,6 +1278,8 @@ class PA_Data_Analyze:
     # ----------------------------------Plot 3D Data-------------------------------- #
     ##################################################################################
     def Plot3D(self, x, y, z, color=None, axisName_1=None, axisName_2=None, axisName_3=None, colorName=None, dataName=None, newFigure=True, mark='-', xLimit=None, yLimit=None, zLimit=None, title=''):
+        if self.Running == False:
+            return None
         plt.rcParams['font.family'] = 'Microsoft YaHei'
         plt.rcParams.update({'figure.max_open_warning': 0})
         try:
@@ -1326,6 +1339,8 @@ class PA_Data_Analyze:
     # -------------------------------Plot Circle Error------------------------------ #
     ##################################################################################
     def PlotCircleError(self, R, R_MaxErr_mm, Center1, Center2, CmdPos1_mm, CmdPos2_mm, ActPos1_mm, ActPos2_mm, F=None, title=''):
+        if self.Running == False:
+            return None
         R_Display = R_MaxErr_mm
         Len = CmdPos1_mm.__len__()
         
@@ -1376,6 +1391,8 @@ class PA_Data_Analyze:
     # --------------------------------Plot Polar Data------------------------------- #
     ##################################################################################
     def PlotPolar(self, Theta, Radius, dataName=None, mark='-', newFigure=True, title='', limit=None):
+        if self.Running == False:
+            return None
         plt.rcParams['font.family'] = 'Microsoft YaHei'
         plt.rcParams.update({'figure.max_open_warning': 0})
         #len = min(Theta.__len__(), Radius.__len__())
@@ -1412,6 +1429,8 @@ class PA_Data_Analyze:
     # -----------------------------Output message to GUI------------------------------ #
     ##################################################################################
     def OutputMessageToGUI(self, message, overwrite=False):
+        if self.Running == False:
+            return None
         if self.GuiText != None:
             lineIndex = str(int(float(self.GuiText.index('end')))-1)
             if overwrite:
@@ -1567,6 +1586,8 @@ class PA_Data_Analyze:
                 continue
             self.LineData = self.SplitDataStr(txt[i])
             while True:
+                if self.Running == False:
+                    return None
                 self.LineData = self.RemainingLineData + self.LineData
                 if firstDataFlag == True and self.LineData.__len__() != varNum:
                     print('\033[1;34m\nLoadData: \033[1;31mError (DataFileLine %d): LineData.__len__ != varNum (%d != %d) in "%s" \033[0m' % ( i+1, self.LineData.__len__(), varNum, txt[i] ))
@@ -1886,6 +1907,8 @@ class PA_Data_Analyze:
         plt.show()
         
     def DataInfo(self, *DataInfo, infoName = []):
+        if self.Running == False:
+            return None
         try:
             import mpldatacursor
         except:
@@ -2139,13 +2162,16 @@ class GUI_Data_Analyze:
         return None
    
     def CallBack_LoadData(self):
-        PA.GuiText = self.ScrolledText['输出消息']
-        if self.LoadParamSync() == self.err:
-            return None
-        if PA.AxisID_X == 0 and PA.AxisID_Y == 0 and PA.AxisID_Z == 0 and PA.AxisID_A == 0:
-            return None
-        self.saveConfig()
-        PA.LoadData()
+        global Sem
+        if PA.Operation == None:
+            PA.Operation = PA.Operation_LoadData
+            PA.GuiText = self.ScrolledText['输出消息']
+            if self.LoadParamSync() == self.err:
+                return None
+            if PA.AxisID_X == 0 and PA.AxisID_Y == 0 and PA.AxisID_Z == 0 and PA.AxisID_A == 0:
+                return None
+            self.saveConfig()
+            Sem.release()
         
     def CallBack_SelectSampleDataFile(self):
         filename = filedialog.askopenfilename(title='选择采样文件', filetypes=[('txt', '*.txt')])
@@ -2382,24 +2408,27 @@ class GUI_Data_Analyze:
         self.UserCode = self.ScrolledText['用户代码'].get('1.0', 'end')
         return None
 
-    def CallBack_PlotData(self):
-        PA.GuiText = self.ScrolledText['输出消息']
-        if self.PlotParamSync() == self.err:
-            return None
-        self.saveConfig()
-        PA.PlotData()
-
+    def ExecUserCode(self):
         if self.EnableUserCode and PA.Data.Length != 0:
             try:
                 exec(self.UserCode)
             except Exception as e:
                 print('\033[1;34m\nUerCode: \033[1;31mError: %s\033[0m' % str(e))
                 PA.OutputMessageToGUI('\n\nUserCode Error: %s' % str(e))
-        
         PA.DataInfo()
         if PA.FigNum == 0:
             print('\033[1;34m\nPlotData: \033[1;31mNo Figure\033[0m')
             PA.OutputMessageToGUI('\nPlotData: No Figure')
+
+    def CallBack_PlotData(self):
+        global Sem
+        if PA.Operation == None:
+            PA.Operation = PA.Operation_PlotData
+            PA.GuiText = self.ScrolledText['输出消息']
+            if self.PlotParamSync() == self.err:
+                return None
+            self.saveConfig()
+            Sem.release()
     
     def display(self):
         #################################### 采样文件路径 ####################################
@@ -3315,26 +3344,47 @@ class GUI_Data_Analyze:
 if __name__ == '__main__':
     PA = PA_Data_Analyze()
     GUI = GUI_Data_Analyze()
+    Sem = threading.Semaphore()
     
-    def Task_PA():
-        global StopLoop_PA
+    def Task_PA_Data_Analyze():
+        global PA, GUI
         print('Task_PA Start (mainID:%d, CurrID:%d)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'\
               %(threading.main_thread().ident, threading.current_thread().ident))
-        while not StopLoop_PA:
-            time.sleep(0.1)
+        while PA.Running == True:
+            if PA.Operation == PA.Operation_LoadData:
+                PA.LoadData()
+            elif PA.Operation == PA.Operation_PlotData:
+                PA.PlotData()
+                if GUI.EnableUserCode and PA.Data.Length != 0:
+                    try:
+                        exec(GUI.UserCode)
+                    except Exception as e:
+                        print('\033[1;34m\nUerCode: \033[1;31mError: %s\033[0m' % str(e))
+                        PA.OutputMessageToGUI('\n\nUserCode Error: %s' % str(e))
+                PA.DataInfo()
+                if PA.FigNum == 0:
+                    print('\033[1;34m\nPlotData: \033[1;31mNo Figure\033[0m')
+                    PA.OutputMessageToGUI('\nPlotData: No Figure')
+            PA.Operation = None
+            Sem.acquire()
         print('Task_PA End (mainID:%d, CurrID:%d)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'\
               %(threading.main_thread().ident, threading.current_thread().ident))
         
     try:
         print('Main Start !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        Thread_PA = threading.Thread(target = Task_PA)
-        Thread_PA.setDaemon(True)
+        Thread_PA = threading.Thread(target = Task_PA_Data_Analyze)
+        Thread_PA.setDaemon(False)
         StopLoop_PA = False
         Thread_PA.start()
         GUI.start()
-        StopLoop_PA = True
-    except:
-        GUI.window.destroy()
-        StopLoop_PA = True
+        print('Try End !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        PA.destroy()
+        Sem.release()
         print('Main End !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    except:
+        print('Force End !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        PA.destroy()
+        Sem.release()
+        GUI.window.destroy()
+        print('Main Quit !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     
