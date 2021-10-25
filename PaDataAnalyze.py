@@ -35,7 +35,8 @@
                 ActJerk_X                       Unit: m/s^3
 """
 
-Version = '1.9.0 alpha 1'
+Version = '1.9.0 alpha 2'
+"""
 ################################ Version History ##################################
 # ---------------------------------Version 1.9.0--------------------------------- #
 # Date: 2021/10/24
@@ -174,6 +175,7 @@ Version = '1.9.0 alpha 1'
 # Author: yangxiaosheng
 # Update: Init Version
 ##################################################################################
+"""
 
 from matplotlib import pyplot as plt
 import numpy as np
@@ -182,7 +184,19 @@ import numpy
 import time
 import sys
 import re
-        
+
+import tkinter as tk
+from tkinter import ttk
+from tkinter import filedialog
+from tkinter import scrolledtext
+import os
+import configparser
+
+import threading
+
+##################################################################################
+# -------------------------------------PA--------------------------------------- #
+##################################################################################
 class PA_Data_Analyze:
     def __init__(self):
         self.initParam()
@@ -1934,13 +1948,6 @@ class PA_Data_Analyze:
 ##################################################################################
 # -------------------------------------GUI-------------------------------------- #
 ##################################################################################
-import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog
-from tkinter import scrolledtext
-import os
-import configparser
-
 class GUI_Data_Analyze:
     global PA
     
@@ -2131,15 +2138,7 @@ class GUI_Data_Analyze:
         
         return None
    
-    def CallBack_SelectSampleFile(self):
-        filename = filedialog.askopenfilename(title='选择采样文件', filetypes=[('txt', '*.txt')])
-        if type(filename)==str and filename != '':
-            self.Entry['采样文件路径'].delete(0, tk.END)
-            self.Entry['采样文件路径'].insert('insert', filename)
-        self.LoadParamSync()
-        self.saveConfig()
-            
-    def CallBack_LoadSampleFile(self):
+    def CallBack_LoadData(self):
         PA.GuiText = self.ScrolledText['输出消息']
         if self.LoadParamSync() == self.err:
             return None
@@ -2148,6 +2147,14 @@ class GUI_Data_Analyze:
         self.saveConfig()
         PA.LoadData()
         
+    def CallBack_SelectSampleDataFile(self):
+        filename = filedialog.askopenfilename(title='选择采样文件', filetypes=[('txt', '*.txt')])
+        if type(filename)==str and filename != '':
+            self.Entry['采样文件路径'].delete(0, tk.END)
+            self.Entry['采样文件路径'].insert('insert', filename)
+        self.LoadParamSync()
+        self.saveConfig()
+            
     def CallBack_SelectSampleConfigFolder(self):
         fileName = filedialog.askdirectory(title='选择采样配置文件导出路径')
         if type(fileName)==str and fileName != '':
@@ -2405,7 +2412,7 @@ class GUI_Data_Analyze:
         self.Entry['采样文件路径'].delete(0, tk.END)
         self.Entry['采样文件路径'].insert('insert', PA.DataFileName)
         self.Entry['采样文件路径'].place(relx=x, rely=y, relheight=0.05, relwidth=0.7)
-        self.Button['选择文件'] = ttk.Button(self.window, text="选择文件", command=self.CallBack_SelectSampleFile)
+        self.Button['选择文件'] = ttk.Button(self.window, text="选择文件", command=self.CallBack_SelectSampleDataFile)
         self.Button['选择文件'].place(relx=x + 0.8, rely=y, relheight=0.05, relwidth=0.1)
         
         ###################################### 采样配置 #####################################
@@ -2422,7 +2429,7 @@ class GUI_Data_Analyze:
         y = 0.05
         xBias = 0.875
         yBias = 0.01
-        self.Button['加载数据'] = ttk.Button(self.Frame['采样参数'], text="加载数据", command=self.CallBack_LoadSampleFile)
+        self.Button['加载数据'] = ttk.Button(self.Frame['采样参数'], text="加载数据", command=self.CallBack_LoadData)
         self.Button['加载数据'].place(relx=x+xBias, rely=y+yBias, relheight=0.88, relwidth=0.105)
         
         # --------------------------------- 采样参数 1 -----------------------------------#
@@ -3301,10 +3308,33 @@ class GUI_Data_Analyze:
         self.window.mainloop()
         self.saveConfig()
 
+##################################################################################
+# -------------------------------------Main------------------------------------- #
+##################################################################################
 
 if __name__ == '__main__':
-    # init paramters of PA
     PA = PA_Data_Analyze()
     GUI = GUI_Data_Analyze()
-    GUI.start()
+    
+    def Task_PA():
+        global StopLoop_PA
+        print('Task_PA Start (mainID:%d, CurrID:%d)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'\
+              %(threading.main_thread().ident, threading.current_thread().ident))
+        while not StopLoop_PA:
+            time.sleep(0.1)
+        print('Task_PA End (mainID:%d, CurrID:%d)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'\
+              %(threading.main_thread().ident, threading.current_thread().ident))
+        
+    try:
+        print('Main Start !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        Thread_PA = threading.Thread(target = Task_PA)
+        Thread_PA.setDaemon(True)
+        StopLoop_PA = False
+        Thread_PA.start()
+        GUI.start()
+        StopLoop_PA = True
+    except:
+        GUI.window.destroy()
+        StopLoop_PA = True
+        print('Main End !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     
