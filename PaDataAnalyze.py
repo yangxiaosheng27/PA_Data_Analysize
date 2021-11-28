@@ -35,9 +35,13 @@
                 ActJerk_X                       Unit: m/s^3
 """
 
-Version = '1.9.0 alpha 4'
+Version = '1.10.0 alpha 1'
 """
 ################################ Version History ##################################
+# ---------------------------------Version 1.10.0--------------------------------- #
+# Date: 2021/10/31
+# Author: yangxiaosheng
+# Update: implemented by multiprocessing because matplotlib is not supported by multithreading
 # ---------------------------------Version 1.9.0--------------------------------- #
 # Date: 2021/10/24
 # Author: yangxiaosheng
@@ -192,8 +196,9 @@ from tkinter import scrolledtext
 import os
 import configparser
 
+import multiprocessing
 import threading
-
+     
 ##################################################################################
 # -------------------------------------PA--------------------------------------- #
 ##################################################################################
@@ -379,7 +384,7 @@ class PA_Data_Analyze:
             self.PlotCircleErrYZ_MaxErr = 25.0
             self.PlotCircleErrXZ_MaxErr = 25.0
 
-    def destroy(self):
+    def terminate(self):
         self.Running = False
 
     ##################################################################################
@@ -2423,6 +2428,7 @@ class GUI_Data_Analyze:
     def CallBack_PlotData(self):
         global Sem
         if PA.Operation == None:
+            print('yxs:plot')
             PA.Operation = PA.Operation_PlotData
             PA.GuiText = self.ScrolledText['输出消息']
             if self.PlotParamSync() == self.err:
@@ -3321,10 +3327,11 @@ class GUI_Data_Analyze:
         self.ScrolledText['输出消息'].insert('end', 'PA Data Analyze v%s' % Version)
         self.ScrolledText['输出消息'].place(relx=x, rely=y, relheight=0.22, relwidth=0.76)
 
-    def start(self):
+    def init(self):
         self.readConfig()
-        #init window
         self.window = tk.Tk()
+        
+    def mainloop(self):
         self.window.title('PA数据分析工具 v%s' % Version)
         self.window.geometry(self.WindowSize + self.WindowPosition)
         self.window.bind('<Configure>', self.getWindowSize)
@@ -3336,71 +3343,81 @@ class GUI_Data_Analyze:
         self.display()
         self.window.mainloop()
         self.saveConfig()
-        PA.destroy()
-        Sem.release()
+
+Sem = multiprocessing.Semaphore()
+PA = PA_Data_Analyze()
+GUI = GUI_Data_Analyze()
+##################################################################################
+# -------------------------------------Task GUI--------------------------------- #
+##################################################################################
+def Task_GUI():
+    print('Task_GUI(pid %d) Start!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' % os.getpid())
+    GUI.init()
+    GUI.mainloop()
+    print('Task_GUI(pid %d) End!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' % os.getpid())
+        
+##################################################################################
+# -------------------------------------Task PA---------------------------------- #
+##################################################################################
+def Task_PA():
+    print('Task_PA(pid %d) Start!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' % os.getpid())
+    def closeFig():
+        time.sleep(5)
+        print('try close all')
+        #plt.close('all')
+        plt.show(block=False)
+        print('close all')
+    Thread_CloseFig = threading.Thread(target=closeFig)
+    Thread_CloseFig.start()
+    if True:
+        plt.ioff()
+        plt.figure(2)
+        plt.plot([1,2,5])
+        """
+        plt.ion()
+        plt.draw()
+        plt.pause(0.1)
+        plt.ioff()
+        """
+        plt.ioff()
+        plt.show(block=True)
+    print('Task_PA(pid %d) Loop!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' % os.getpid())
+    while True:
+        time.sleep(0.5)
+    print('Task_PA(pid %d) End!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' % os.getpid())
 
 ##################################################################################
 # -------------------------------------Main------------------------------------- #
 ##################################################################################
-
 if __name__ == '__main__':
-    PA = PA_Data_Analyze()
-    GUI = GUI_Data_Analyze()
-    Sem = threading.Semaphore()
-    
-    def Task_PA():
-        global PA, GUI
-        print('Task_PA Start (mainID:%d, CurrID:%d)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'\
-              %(threading.main_thread().ident, threading.current_thread().ident))
-        while PA.Running == True:
-            if PA.Operation == PA.Operation_LoadData:
-                PA.LoadData()
-            elif PA.Operation == PA.Operation_PlotData:
-                PA.PlotData()
-                #fig = plt.figure(2)
-                #plt.plot([1,2,3,5])
-                
-                if GUI.EnableUserCode and PA.Data.Length != 0:
-                    try:
-                        exec(GUI.UserCode)
-                    except Exception as e:
-                        print('\033[1;34m\nUerCode: \033[1;31mError: %s\033[0m' % str(e))
-                        PA.OutputMessageToGUI('\n\nUserCode Error: %s' % str(e))
-                #PA.DataInfo()
-                if PA.FigNum == 0:
-                    print('\033[1;34m\nPlotData: \033[1;31mNo Figure\033[0m')
-                    PA.OutputMessageToGUI('\nPlotData: No Figure')
-            PA.Operation = None
-            Sem.acquire()
-        print('Task_PA End (mainID:%d, CurrID:%d)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'\
-              %(threading.main_thread().ident, threading.current_thread().ident))
-            
-    def Task_GUI():
-        GUI.start()
-    """
-    Thread_GUI = threading.Thread(target = Task_GUI)
-    Thread_GUI.setDaemon(True)
-    Thread_GUI.start()
-    Task_PA()
-        
-    """
     try:
-        print('Main Start !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        Thread_GUI = threading.Thread(target = Task_GUI)
-        Thread_GUI.setDaemon(False)
-        Thread_GUI.start()
+        Process_GUI = multiprocessing.Process(target=Task_GUI, args=())
+        #Process_GUI.start()
+        print('Try Start Process_GUI(pid %s)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' % Process_GUI.pid)
         
-        Thread_PA = threading.Thread(target = Task_PA)
-        Thread_PA.setDaemon(False)
-        Thread_PA.start()
-        print('Try End !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        print('Main Start !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        Process_PA = multiprocessing.Process(target=Task_PA, args=())
+        #Process_PA.start()
+        print('Try Start Process_PA(pid %s)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' % Process_PA.pid)
+        
+        #Task_GUI()
+        Task_PA()
+        
+        while Process_GUI.is_alive() == True:
+            time.sleep(0.1)
+        
+        if Process_PA.pid:
+            print('Force End Process_PA(pid %d)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' % Process_PA.pid)
+            Process_PA.terminate()
+        print('Main End !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     except:
-        print('Force End !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        PA.destroy()
-        Sem.release()
-        GUI.window.destroy()
+        if Process_GUI.pid:
+            print('Force End Process_GUI(pid %s)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' % Process_GUI.pid)
+            Process_GUI.terminate()
+        if Process_PA.pid:
+            print('Force End Process_PA(pid %s)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' % Process_PA.pid)
+            Process_PA.terminate()
         print('Main Quit !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-    
         
         
     
